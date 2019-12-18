@@ -9,7 +9,7 @@ import MainMenu from './screens/MainMenu.js';
 import QRScanner from './screens/QRScanner.js';
 import PaymentPage from './screens/PaymentPage.js';
 import CheckPayment from './screens/CheckPayment.js';
-
+/*
 // declare and initialise firebase
 var firebase = require("firebase");
 
@@ -19,7 +19,7 @@ var config = {
 };
 
 firebase.initializeApp(config);
-
+*/
 // stack navigation
 const StackNavigation = createStackNavigator(
     {
