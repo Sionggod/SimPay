@@ -1,58 +1,72 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View ,TextInput, Button, ScrollView, FlatList} from 'react-native';
-import GoalItem from './components/GoalItem';
-import GoalInput from './components/GoalInput';
+import React, { Component } from 'react';
+import { createAppContainer, createSwitchNavigator} from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import firebase from 'firebase';
 
-export default function App() {
-  const [courseGoals, setCoursegoals] = useState([]);
-  const [isAddMode, setIsAddMode] = useState('');
-  
+// import pages
+import LoginPage from './screens/LoginPage';
+import RegistrationPage from './screens/RegistrationPage';
+import MainMenu from './screens/MainMenu.js';
+import QRScanner from './screens/QRScanner.js';
+import PaymentPage from './screens/PaymentPage.js';
+import CheckPayment from './screens/CheckPayment.js';
+/*
+// declare and initialise firebase
+var firebase = require("firebase");
 
-  const addGoalHandler = goalTitle => {
-    setCoursegoals(currentGoals => [...courseGoals, 
-      { id: Math.random().toString(), value: goalTitle }
-    ]);
-    setIsAddMode(false);
-  };
+var config = {
+    databaseURL: "https://simpay-8bc6c.firebaseio.com",
+    projectId: "simpay-8bc6c"
+};
 
-  const removeGoalHandler = goalId => {
-    setCoursegoals(currentGoals => {
-        return currentGoals.filter((goal) => goal.id !== goalId);
-    });
-  };
+firebase.initializeApp(config);
+*/
+// stack navigation
+const StackNavigation = createStackNavigator(
+    {
+        Main: { screen: MainMenu },
+        QRScan:
+        {
+            screen: QRScanner,
+            navigationOptions:
+            {
+                headerTitle: 'Scan QR Code',
+            },
+        },
+        Payment:
+        {
+            screen: PaymentPage,
+            navigationOptions:
+            {
+                headerTitle: 'Payment Details',
+            },
+        },
+        ConfirmPayment:
+        {
+            screen: CheckPayment,
+            navigationOptions:
+            {
+                headerTitle: 'Confirm Payment Details',
+            },
+        },
+    },
+    {
+        // starting route
+        initialRouteName: 'Main',
+    }
+);
 
-  const CancelGoalAddHandler = () => {
-    setIsAddMode(false);
-  };
+// switch navigation
+const SwitchNavigation = createSwitchNavigator(
+    {
+        Login: { screen: LoginPage },
+        Registration: { screen: RegistrationPage },
+        Landing: { screen: StackNavigation },
+    },
+    {
+        // starting route
+        initialRouteName: 'Login',
+    }
+);
 
-  return (
-    <ScrollView>
-    <View style={styles.screen}>
-      <Button title="Add New Card" onPress={() => setIsAddMode(true)}/>
-      <GoalInput visible={isAddMode} onAddGoal={addGoalHandler} onCancel={CancelGoalAddHandler}/>
-        <FlatList 
-          keyExtractor={(item, index) => item.id}
-          data={courseGoals} 
-          renderItem={itemData => (
-          <GoalItem 
-            id={itemData.item.id} 
-            onDelete={removeGoalHandler} 
-            title={itemData.item.value} 
-            />
-          )}
-
-        />
-    </View>
-    </ScrollView> 
-  );
-}
-
-const styles = StyleSheet.create({
-  screen: {
-    padding: 50
-  },
-  
-
-});
-
-
+export default createAppContainer(SwitchNavigation);
