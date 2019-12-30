@@ -1,13 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { createAppContainer, createSwitchNavigator} from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Hello Jesus Christ</Text>
-    </View>
-  );
-}
+import InputPage from './screens/InputPage.js';
+
+const StackNavigation = createStackNavigator(
+  {
+      Main: { screen: InputPage }
+  },
+  {
+      // starting route
+      initialRouteName: 'Main',
+  }
+);
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -17,3 +25,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const SwitchNavigation = createSwitchNavigator(
+  {
+      Login: { screen: InputPage },
+  },
+  {
+      // starting route
+      initialRouteName: 'Login',
+  }
+);
+export default createAppContainer(SwitchNavigation);
