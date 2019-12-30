@@ -33,7 +33,11 @@ export default class RegistrationPage extends Component {
         this.state ={email: ''};
         this.state ={Hp: ''};
         this.state ={Pw: ''};
+        this.state ={VerifyPw: null};
+       
     }
+
+    
     handleNameText = (typedText) => {
         this.setState({name:typedText}, () => {
           console.log(this.state.name);
@@ -54,22 +58,83 @@ export default class RegistrationPage extends Component {
           console.log(this.state.Pw);
         });
       }
+      handleVerifyPwText = (typedText) => {
+        this.setState({VerifyPw:typedText}, () => {
+          console.log(this.state.VerifyPw);
+        });
+      }
+      remove_character(str_to_remove, str) {
+        let reg = new RegExp(str_to_remove)
+        return str.replace(reg, '')
+      }
 
       handleSubmit = (event) => {
         // do something after submit
-        firebase.database().ref('users/'+ this.state.Hp).set(
-            {
-                name: this.state.name,
-                email: this.state.email,
-                phone: this.state.Hp,
-                password: this.state.Pw,
-            }
-        ).then(()=> {
-            this.props.navigation.navigate('Login');
-            console.log(this.state.name ,'inserted');
-        }).catch((error) => {
 
-        });
+        // boolean to check if all fields are valid
+        var Valid = true;
+
+        if(this.state.name == null|| this.state.Hp == null || this.state.email == null
+          || this.state.Pw == null || this.state.VerifyPw == null){
+            console.log("not all fields are filled");
+            var sentence = "";
+            if(this.state.name == null)
+              sentence += "Name not filled\n";
+            if(this.state.Hp == null)
+            sentence +="Phone Number not filled\n";
+            if(this.state.email == null)
+            sentence +="email not filled\n";
+            if(this.state.Pw == null || this.state.VerifyPw ==null)
+            sentence +="Password not filled\n";
+            alert(sentence);
+            Valid = false;
+          }
+          if(this.state.Hp != null)
+          {
+            var numbers = /^\d+$/.test(this.state.Hp);
+            if(!numbers)
+            {
+              Valid = false;
+              alert('Please Input a valid phone number!');
+            }
+          }
+          if(this.state.Pw != null && this.state.Pw != this.state.VerifyPw)
+          {
+            alert('Password Mismatch!');
+            Valid = false;
+          }
+          else if(this.state.Pw.length < 6)
+          {
+            alert('Password length must be a minimum of 6');
+            Valid = false;
+          }
+          
+          if(Valid)
+          {
+            var temp = this.remove_character('@',this.state.email);
+            var userEmail = temp.replace(/\./g, ''); 
+            console.log("userEmail is  " + userEmail);
+            firebase.database().ref('users/'+ userEmail).set(
+              {
+                 name: this.state.name,
+                 email: this.state.email,
+                 phone: this.state.Hp,
+                 password: this.state.Pw,
+             }
+            ).then(()=> {
+              this.props.navigation.navigate('Login');
+              console.log(this.state.name ,'inserted');
+            // code to retrieve data from DB
+            // let users = firebase.database().ref('users/' + 777).once('value').then(function(snapshot) {
+            //   var username = snapshot.val() || 'Anonymous';
+            //   console.log(username.email);
+            // });
+            
+          }).catch((error) => {
+
+          });
+        }
+
       }
 
     UNSAFE_componentWillMount() {
@@ -102,9 +167,10 @@ export default class RegistrationPage extends Component {
                 onChangeText={this.handleEmailText}  value={this.state.email}></TextInput>
                 <TextInput style={styles.input} placeholder={'Phone Number'}
                 onChangeText={this.handleHpText}  value={this.state.Hp}></TextInput>
-                <TextInput style={styles.input} placeholder={'Password'} secureTextEntry={true} ></TextInput>
-                <TextInput style={styles.input} placeholder={'Verify Password'} secureTextEntry={true} 
-                onChangeText={this.handlePwText}  value={this.state.Pw}></TextInput>
+                <TextInput style={styles.input} placeholder={'Password'} secureTextEntry={true} 
+                onChangeText={this.handlePwText}  value={this.state.Pw}/>
+                <TextInput style={styles.input} placeholder={'Verify Password'} secureTextEntry={true}
+                onChangeText={this.handleVerifyPwText}  value={this.state.VerifyPw}/>
                 <Button
                 title='Sign Up'
                 onPress={this.handleSubmit}/>
