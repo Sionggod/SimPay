@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createAppContainer, createSwitchNavigator} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import firebase from 'firebase';
 
 // import pages
 import LoginPage from './screens/LoginPage';
