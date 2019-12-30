@@ -103,36 +103,50 @@ export default class RegistrationPage extends Component {
             alert('Password Mismatch!');
             Valid = false;
           }
-          else if(this.state.Pw.length < 6)
+          else if(this.state.Pw != null &&this.state.Pw.length < 6)
           {
             alert('Password length must be a minimum of 6');
             Valid = false;
           }
+
           
           if(Valid)
           {
+  
             var temp = this.remove_character('@',this.state.email);
             var userEmail = temp.replace(/\./g, ''); 
             console.log("userEmail is  " + userEmail);
-            firebase.database().ref('users/'+ userEmail).set(
-              {
-                 name: this.state.name,
-                 email: this.state.email,
-                 phone: this.state.Hp,
-                 password: this.state.Pw,
-             }
-            ).then(()=> {
-              this.props.navigation.navigate('Login');
-              console.log(this.state.name ,'inserted');
-            // code to retrieve data from DB
-            // let users = firebase.database().ref('users/' + 777).once('value').then(function(snapshot) {
-            //   var username = snapshot.val() || 'Anonymous';
-            //   console.log(username.email);
-            // });
-            
-          }).catch((error) => {
+            firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
+              var exists = (snapshot.val() !== null);
+              if (exists) {
+                alert('Email : ' + this.state.email + ' already exists');
+              }
+              else{
+                firebase.database().ref('users/'+ userEmail).set(
+                  {
+                     name: this.state.name,
+                     email: this.state.email,
+                     phone: this.state.Hp,
+                     password: this.state.Pw,
+                 }
+                ).then(()=> {
+                  this.props.navigation.navigate('Login');
+                  console.log(this.state.name ,'inserted');
+                // code to retrieve data from DB
+                // let users = firebase.database().ref('users/' + 777).once('value').then(function(snapshot) {
+                //   var username = snapshot.val() || 'Anonymous';
+                //   console.log(username.email);
+                // });
+                
+              }).catch((error) => {
+    
+              });
 
-          });
+              }
+
+            }.bind(this));
+
+           
         }
 
       }
