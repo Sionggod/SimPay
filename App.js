@@ -3,6 +3,7 @@ import { createAppContainer, createSwitchNavigator} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import firebase from 'firebase';
 
+
 // import pages
 import LoginPage from './screens/LoginPage';
 import RegistrationPage from './screens/RegistrationPage';
@@ -10,6 +11,7 @@ import MainMenu from './screens/MainMenu.js';
 import QRScanner from './screens/QRScanner.js';
 import PaymentPage from './screens/PaymentPage.js';
 import CheckPayment from './screens/CheckPayment.js';
+import InputPage from './screens/InputPage.js';
 /*
 // declare and initialise firebase
 var firebase = require("firebase");
@@ -31,6 +33,14 @@ const StackNavigation = createStackNavigator(
             navigationOptions:
             {
                 headerTitle: 'Scan QR Code',
+            },
+        },
+        AddCard:
+        {
+            screen: InputPage,
+            navigationOptions:
+            {
+                headerTitle: 'Input Card Details',
             },
         },
         Payment:

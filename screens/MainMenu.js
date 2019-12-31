@@ -16,6 +16,9 @@ export default class MainMenu extends Component {
             <View style={styles.container}>
                 <Text>This is the main page</Text>
                 <Button
+                title={'Add Card'}
+                onPress={()=>this.props.navigation.navigate('AddCard')} />
+                <Button
                 title={'Start Scanning'}
                 onPress={()=>this.props.navigation.navigate('QRScan')} />
             </View>

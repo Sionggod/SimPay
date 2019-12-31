@@ -49,6 +49,7 @@ export default class LoginPage extends Component {
         const {email, password} = this.state;
         Alert.alert('Credentials', `Username = ${email}\nPassword = ${password}`);
     }
+    
 
     remove_character(str_to_remove, str) {
         let reg = new RegExp(str_to_remove)

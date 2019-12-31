@@ -98,7 +98,7 @@ export default class RegistrationPage extends Component {
               alert('Please Input a valid phone number!');
             }
           }
-          if(this.state.Pw != null && this.state.Pw != this.state.VerifyPw)
+          if(this.state.Pw != null && this.state.VerifyPw != null && this.state.Pw != this.state.VerifyPw)
           {
             alert('Password Mismatch!');
             Valid = false;
