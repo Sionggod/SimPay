@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, Button } from 'react-native';
+import { Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -30,6 +30,7 @@ export default class PaymentPage extends Component {
         // get merchant ID from previous screen
         const merchantID = this.props.navigation.getParam('merchantID');
         return (
+            <KeyboardAvoidingView style={styles.container} behaviour='padding' enabled>
             <View style={styles.container}>
                 <Text>Vendor Name:</Text>
                 <Text>Merchant ID = {merchantID}</Text>
@@ -38,6 +39,7 @@ export default class PaymentPage extends Component {
                 <Button title={'Next'}
                 onPress={()=>this.props.navigation.navigate('ConfirmPayment', {merchantID: merchantID, amountPayable: this.state.amount})} />
             </View>
+            </KeyboardAvoidingView>
         );
     }
 }

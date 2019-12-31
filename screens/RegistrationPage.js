@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, Button } from 'react-native';
+import { Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 
 
@@ -169,6 +169,7 @@ export default class RegistrationPage extends Component {
 
     render() {
         return(
+          <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
             <View style={styles.container}>
                 <Image
                 source={require('../assets/images/credit-card.png')}
@@ -189,7 +190,7 @@ export default class RegistrationPage extends Component {
                 onPress={this.handleSubmit}/>
                 <Button title={'Back'} style={styles.input} onPress={()=>this.props.navigation.navigate('Login')} />
             </View>
-   
+          </KeyboardAvoidingView>
         );
     }
   
