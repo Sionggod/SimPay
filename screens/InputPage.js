@@ -171,39 +171,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white'
-},
-input: {
-   alignItems: 'center',
-    width: 200,
-    height: 40,
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15
-},
-inputtext: {
-    fontSize: 12
-},
-cardimage: {
-    width: 160,
-    height: 150
-},
-forget: {
-    marginBottom: 15,
-    color: 'blue',
-    textDecorationLine: 'underline',
-    textAlign: 'right',
-    alignItems: 'flex-end'
-},
-loginFooter: {
-    marginTop: 25
-},
-buttonContainer: {
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  width: '60%'
-},
-buttonview: {
-  width: '60%'
-}
+  },
+  input: {
+    alignItems: 'center',
+      width: 200,
+      height: 40,
+      padding: 10,
+      borderWidth: 1,
+      borderRadius: 5,
+      marginBottom: 15
+  },
+  inputtext: {
+      fontSize: 12
+  },
+  cardimage: {
+      width: 160,
+      height: 150
+  },
+
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '60%'
+  },
+  buttonview: {
+    width: '60%'
+  }
 });
