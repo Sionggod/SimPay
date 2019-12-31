@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, Button } from 'react-native';
+import { Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -49,12 +47,11 @@ export default class LoginPage extends Component {
         const {email, password} = this.state;
         Alert.alert('Credentials', `Username = ${email}\nPassword = ${password}`);
     }
-    
 
     remove_character(str_to_remove, str) {
         let reg = new RegExp(str_to_remove)
         return str.replace(reg, '')
-      }
+    }
 
     handleLogin = (event) => {
 
@@ -111,6 +108,7 @@ export default class LoginPage extends Component {
 
     render() {
         return (
+            <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
             <View style={styles.container}>
                 <Image
                 source={require('../assets/images/credit-card.png')}
@@ -136,6 +134,7 @@ export default class LoginPage extends Component {
                 <Text style={styles.loginFooter, {color: 'blue', textDecorationLine: 'underline'}}
                 onPress={()=>this.props.navigation.navigate('Registration')}>Create new account</Text>
             </View>
+            </KeyboardAvoidingView>
         );
     }
 }

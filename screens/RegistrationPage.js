@@ -3,7 +3,6 @@ import { Alert, StyleSheet, TextInput, Text, View, Image, Button } from 'react-n
 import firebase from 'firebase';
 
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -42,114 +41,114 @@ export default class RegistrationPage extends Component {
         this.setState({name:typedText}, () => {
           console.log(this.state.name);
         });
-      }
-      handleEmailText = (typedText) => {
-        this.setState({email:typedText}, () => {
-          console.log(this.state.email);
-        });
-      }
-      handleHpText = (typedText) => {
-        this.setState({Hp:typedText}, () => {
-          console.log(this.state.Hp);
-        });
-      }
-      handlePwText = (typedText) => {
-        this.setState({Pw:typedText}, () => {
-          console.log(this.state.Pw);
-        });
-      }
-      handleVerifyPwText = (typedText) => {
-        this.setState({VerifyPw:typedText}, () => {
-          console.log(this.state.VerifyPw);
-        });
-      }
-      remove_character(str_to_remove, str) {
-        let reg = new RegExp(str_to_remove)
-        return str.replace(reg, '')
-      }
+    }
+    handleEmailText = (typedText) => {
+      this.setState({email:typedText}, () => {
+        console.log(this.state.email);
+      });
+    }
+    handleHpText = (typedText) => {
+      this.setState({Hp:typedText}, () => {
+        console.log(this.state.Hp);
+      });
+    }
+    handlePwText = (typedText) => {
+      this.setState({Pw:typedText}, () => {
+        console.log(this.state.Pw);
+      });
+    }
+    handleVerifyPwText = (typedText) => {
+      this.setState({VerifyPw:typedText}, () => {
+        console.log(this.state.VerifyPw);
+      });
+    }
+    remove_character(str_to_remove, str) {
+      let reg = new RegExp(str_to_remove)
+      return str.replace(reg, '')
+    }
 
-      handleSubmit = (event) => {
-        // do something after submit
+    handleSubmit = (event) => {
+      // do something after submit
 
-        // boolean to check if all fields are valid
-        var Valid = true;
+      // boolean to check if all fields are valid
+      var Valid = true;
 
-        if(this.state.name == null|| this.state.Hp == null || this.state.email == null
-          || this.state.Pw == null || this.state.VerifyPw == null){
-            console.log("not all fields are filled");
-            var sentence = "";
-            if(this.state.name == null)
-              sentence += "Name not filled\n";
-            if(this.state.Hp == null)
-            sentence +="Phone Number not filled\n";
-            if(this.state.email == null)
-            sentence +="email not filled\n";
-            if(this.state.Pw == null || this.state.VerifyPw ==null)
-            sentence +="Password not filled\n";
-            alert(sentence);
+      if(this.state.name == null|| this.state.Hp == null || this.state.email == null
+        || this.state.Pw == null || this.state.VerifyPw == null){
+          console.log("not all fields are filled");
+          var sentence = "";
+          if(this.state.name == null)
+            sentence += "Name not filled\n";
+          if(this.state.Hp == null)
+          sentence +="Phone Number not filled\n";
+          if(this.state.email == null)
+          sentence +="email not filled\n";
+          if(this.state.Pw == null || this.state.VerifyPw ==null)
+          sentence +="Password not filled\n";
+          alert(sentence);
+          Valid = false;
+        }
+        if(this.state.Hp != null)
+        {
+          var numbers = /^\d+$/.test(this.state.Hp);
+          if(!numbers)
+          {
             Valid = false;
+            alert('Please Input a valid phone number!');
           }
-          if(this.state.Hp != null)
-          {
-            var numbers = /^\d+$/.test(this.state.Hp);
-            if(!numbers)
-            {
-              Valid = false;
-              alert('Please Input a valid phone number!');
-            }
-          }
-          if(this.state.Pw != null && this.state.VerifyPw != null && this.state.Pw != this.state.VerifyPw)
-          {
-            alert('Password Mismatch!');
-            Valid = false;
-          }
-          else if(this.state.Pw != null &&this.state.Pw.length < 6)
-          {
-            alert('Password length must be a minimum of 6');
-            Valid = false;
-          }
-
-          
-          if(Valid)
-          {
-  
-            var temp = this.remove_character('@',this.state.email);
-            var userEmail = temp.replace(/\./g, ''); 
-            console.log("userEmail is  " + userEmail);
-            firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
-              var exists = (snapshot.val() !== null);
-              if (exists) {
-                alert('Email : ' + this.state.email + ' already exists');
-              }
-              else{
-                firebase.database().ref('users/'+ userEmail).set(
-                  {
-                     name: this.state.name,
-                     email: this.state.email,
-                     phone: this.state.Hp,
-                     password: this.state.Pw,
-                 }
-                ).then(()=> {
-                  this.props.navigation.navigate('Login');
-                  console.log(this.state.name ,'inserted');
-                // code to retrieve data from DB
-                // let users = firebase.database().ref('users/' + 777).once('value').then(function(snapshot) {
-                //   var username = snapshot.val() || 'Anonymous';
-                //   console.log(username.email);
-                // });
-                
-              }).catch((error) => {
-    
-              });
-
-              }
-
-            }.bind(this));
-
-           
+        }
+        if(this.state.Pw != null && this.state.VerifyPw != null && this.state.Pw != this.state.VerifyPw)
+        {
+          alert('Password Mismatch!');
+          Valid = false;
+        }
+        else if(this.state.Pw != null &&this.state.Pw.length < 6)
+        {
+          alert('Password length must be a minimum of 6');
+          Valid = false;
         }
 
-      }
+        
+        if(Valid)
+        {
+
+          var temp = this.remove_character('@',this.state.email);
+          var userEmail = temp.replace(/\./g, ''); 
+          console.log("userEmail is  " + userEmail);
+          firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
+            var exists = (snapshot.val() !== null);
+            if (exists) {
+              alert('Email : ' + this.state.email + ' already exists');
+            }
+            else{
+              firebase.database().ref('users/'+ userEmail).set(
+                {
+                    name: this.state.name,
+                    email: this.state.email,
+                    phone: this.state.Hp,
+                    password: this.state.Pw,
+                }
+              ).then(()=> {
+                this.props.navigation.navigate('Login');
+                console.log(this.state.name ,'inserted');
+              // code to retrieve data from DB
+              // let users = firebase.database().ref('users/' + 777).once('value').then(function(snapshot) {
+              //   var username = snapshot.val() || 'Anonymous';
+              //   console.log(username.email);
+              // });
+              
+            }).catch((error) => {
+  
+            });
+
+            }
+
+          }.bind(this));
+
+          
+        }
+
+    }
 
     UNSAFE_componentWillMount() {
         var config = {
@@ -195,4 +194,3 @@ export default class RegistrationPage extends Component {
     }
   
 }
-
