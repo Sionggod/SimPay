@@ -122,7 +122,7 @@ export default class WalletOverview extends Component {
                 data = {name:'',cardNum:'',expiry:'',cvc:''}
               });
               //getting card info
-            console.log(DATA[0].cardNum);
+            //console.log(DATA[0].cardNum);
             //console.log(DATA[1].name);
             
         }.bind(this));
