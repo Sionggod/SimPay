@@ -36,6 +36,7 @@ firebase.initializeApp(config);
 global.currentScreenIndex = 0;
 
 class NavigationDrawerStructure extends Component {
+    
     toggleDrawer = () => {
         this.props.navigationProps.toggleDrawer();
     };
@@ -132,31 +133,35 @@ const QRStackNavigation = createStackNavigator(
 // drawer navigation
 const DrawerNavigation = createDrawerNavigator(
     {
-        QRStack:
-        {
-            screen: QRStackNavigation,
-        },
-        WalletStack:
-        {
-            screen: WalletStackNavigation,
-        },
-        ProfileStack:
-        {
-            screen: ProfileStackNavigation,
-        },
+   
+            QRStack:
+            {
+               screen: QRStackNavigation,
+            },
+            WalletStack:
+            {
+               screen: WalletStackNavigation,
+            },
+            ProfileStack:
+            {
+                screen: ProfileStackNavigation,
+            },
     },
     {
+         
         // for custom SidebarMenu
         contentComponent: SidebarMenu,
     }
 );
+
+
 
 // switch navigation
 const SwitchNavigation = createSwitchNavigator(
     {
         Login: { screen: LoginPage },
         Registration: { screen: RegistrationPage },
-        Landing: { screen: DrawerNavigation },
+        Landing: { screen: DrawerNavigation},
     },
     {
         // starting route

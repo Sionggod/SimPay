@@ -11,6 +11,16 @@ const styles = StyleSheet.create({
 });
 
 export default class MainMenu extends Component {
+
+    constructor(props) {
+        super(props);
+        const {navigation} = this.props;
+        this.state = {
+            email: null,
+        };
+        this.state.email=(navigation.getParam('email'));
+        console.log('QRMain ' + this.state.email);
+    }
     render() {
         return (
             <View style={styles.container}>

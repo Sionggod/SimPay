@@ -20,9 +20,12 @@ const styles = StyleSheet.create({
 });
 
 export default class SidebarMenu extends Component {
+  
     constructor() {
         super();
-
+       
+      
+   
         this.items = [
             {
                 navOptionName: 'Scan QR',
@@ -45,6 +48,7 @@ export default class SidebarMenu extends Component {
     }
 
     render() {
+      const {navigation} = this.props;
         return(
           <View style={styles.sideMenuContainer}>
               {/*Setting up Navigation Options from option array using loop*/}

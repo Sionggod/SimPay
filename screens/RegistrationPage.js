@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
+import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 
 
@@ -23,17 +23,29 @@ const styles = StyleSheet.create({
         height: 130,
     },
 });
-
+const { State: TextInputState } = TextInput;
 export default class RegistrationPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state ={name: ''};
-        this.state ={email: ''};
-        this.state ={Hp: ''};
-        this.state ={Pw: ''};
-        this.state ={VerifyPw: null};
-       
+        this.state = {
+          name: '',
+          email: '',
+          Hp: '',
+          Pw: '',
+          VerifyPw: null,
+          shift: new Animated.Value(0),
+        };
+ 
+    }
+    componentWillMount() {
+      this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
+      this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
+    }
+  
+    componentWillUnmount() {
+      this.keyboardDidShowSub.remove();
+      this.keyboardDidHideSub.remove();
     }
 
     
@@ -168,8 +180,9 @@ export default class RegistrationPage extends Component {
     }
 
     render() {
-        return(
-          <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
+      const { shift } = this.state;
+      return (
+          <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
             <View style={styles.container}>
                 <Image
                 source={require('../assets/images/credit-card.png')}
@@ -190,8 +203,40 @@ export default class RegistrationPage extends Component {
                 onPress={this.handleSubmit}/>
                 <Button title={'Back'} style={styles.input} onPress={()=>this.props.navigation.navigate('Login')} />
             </View>
-          </KeyboardAvoidingView>
+            </Animated.View>
         );
+    }
+    handleKeyboardDidShow = (event) => {
+      const { height: windowHeight } = Dimensions.get('window');
+      const keyboardHeight = event.endCoordinates.height;
+      const currentlyFocusedField = TextInputState.currentlyFocusedField();
+      UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+        const fieldHeight = height;
+        const fieldTop = pageY;
+        const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+        if (gap >= 0) {
+          return;
+        }
+        Animated.timing(
+          this.state.shift,
+          {
+            toValue: gap,
+            duration: 200,
+            useNativeDriver: true,
+          }
+        ).start();
+      });
+    }
+  
+    handleKeyboardDidHide = () => {
+      Animated.timing(
+        this.state.shift,
+        {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }
+      ).start();
     }
   
 }

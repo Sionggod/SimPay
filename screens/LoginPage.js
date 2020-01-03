@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
+import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 
 const styles = StyleSheet.create({
@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
     }
     });
 
+    const { State: TextInputState } = TextInput;
+
 export default class LoginPage extends Component {
     constructor(props) {
         super(props);
@@ -40,8 +42,19 @@ export default class LoginPage extends Component {
         this.state = {
             email: null,
             password: null,
+            shift: new Animated.Value(0),
         };
     }
+
+    componentWillMount() {
+        this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
+        this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
+      }
+    
+      componentWillUnmount() {
+        this.keyboardDidShowSub.remove();
+        this.keyboardDidHideSub.remove();
+      }
 
     onLogin() {
         const {email, password} = this.state;
@@ -72,7 +85,9 @@ export default class LoginPage extends Component {
                 {
                     validLogin = true;
                     console.log('yea its true');
-                    this.props.navigation.navigate('Landing');
+                    this.props.navigation.navigate('WalletMain',{email: this.state.email});
+                    this.props.navigation.navigate('ProfileMain',{email: this.state.email});
+                    this.props.navigation.navigate('QRMain',{email: this.state.email});
                 }
                 
                     
@@ -107,8 +122,9 @@ export default class LoginPage extends Component {
     }
 
     render() {
+        const { shift } = this.state;
         return (
-            <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
+            <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
             <View style={styles.container}>
                 <Image
                 source={require('../assets/images/credit-card.png')}
@@ -134,7 +150,41 @@ export default class LoginPage extends Component {
                 <Text style={styles.loginFooter, {color: 'blue', textDecorationLine: 'underline'}}
                 onPress={()=>this.props.navigation.navigate('Registration')}>Create new account</Text>
             </View>
-            </KeyboardAvoidingView>
+            </Animated.View>
         );
     }
+
+
+    handleKeyboardDidShow = (event) => {
+        const { height: windowHeight } = Dimensions.get('window');
+        const keyboardHeight = event.endCoordinates.height;
+        const currentlyFocusedField = TextInputState.currentlyFocusedField();
+        UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+          const fieldHeight = height;
+          const fieldTop = pageY;
+          const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+          if (gap >= 0) {
+            return;
+          }
+          Animated.timing(
+            this.state.shift,
+            {
+              toValue: gap,
+              duration: 200,
+              useNativeDriver: true,
+            }
+          ).start();
+        });
+      }
+    
+      handleKeyboardDidHide = () => {
+        Animated.timing(
+          this.state.shift,
+          {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }
+        ).start();
+      }
 }

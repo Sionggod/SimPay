@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, TouchableOpacity, Button, KeyboardAvoidingView } from 'react-native';
+import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, TouchableOpacity, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 
 const styles = StyleSheet.create({
@@ -44,18 +44,32 @@ const styles = StyleSheet.create({
        width: '60%'
      }
 });
-
+const { State: TextInputState } = TextInput;
 export default class AddCardToWallet extends Component {
     constructor(props) {
         super(props);
+        const {navigation} = this.props;
         this.state = {
+            email: null,
             name: null,
             cardnumber: null,
             expiry: null,
             cvc: null,
+            shift: new Animated.Value(0),
         };
+        this.state.email=(navigation.getParam('email'));
         
     }   
+
+    componentWillMount() {
+      this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
+      this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
+    }
+  
+    componentWillUnmount() {
+      this.keyboardDidShowSub.remove();
+      this.keyboardDidHideSub.remove();
+    }
 
     remove_character(str_to_remove, str) {
         let reg = new RegExp(str_to_remove)
@@ -63,7 +77,9 @@ export default class AddCardToWallet extends Component {
     }
 
     handleUpdate = () => {
-
+      var temp = this.remove_character('@',this.state.email);
+      var userEmail = temp.replace(/\./g, ''); 
+      console.log("userEmail is  " + userEmail);
         var Valid = true;
         if(this.state.name == null|| this.state.cardnumber == null || 
           this.state.expiry == null|| this.state.cvc == null ){
@@ -123,6 +139,22 @@ export default class AddCardToWallet extends Component {
        
         if(Valid)
         {
+
+          firebase.database().ref('users/'+ userEmail+ '/Card/'+this.state.cardnumber).set(
+            {
+               name: this.state.name,
+               cardno: this.state.cardnumber,
+               cvc: this.state.cvc,
+               expiry: this.state.expiry,
+           }
+          ).then(()=> {
+            this.props.navigation.navigate('WalletMain',{email: this.state.email});
+            console.log(this.state.name ,'Card inserted');
+         
+          
+        }).catch((error) => {
+    
+        });
           missingfields = "";
           missingfields +=this.state.name;
           missingfields +="\n";
@@ -173,8 +205,9 @@ export default class AddCardToWallet extends Component {
       }
 
     render() {
+      const { shift } = this.state;
         return(
-          <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
+          <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
             <View style={styles.container}>
                 <Text style={{fontSize: 28, marginBottom: 25}}>Card Input Form</Text>   
 
@@ -209,7 +242,7 @@ export default class AddCardToWallet extends Component {
                 onPress={this.handleUpdate} />
 
             </View>
-          </KeyboardAvoidingView>
+            </Animated.View>
         );
     }
 }

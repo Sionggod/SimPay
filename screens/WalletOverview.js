@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {FlatList, StyleSheet, Text, View, Alert, Button, TouchableOpacity } from 'react-native';  
+import firebase from 'firebase';
 
 const styles = StyleSheet.create({
     container: {
@@ -45,21 +46,22 @@ const styles = StyleSheet.create({
     },
 });
 
-const DATA = [  
-    {key:'A',name:'Finnian Koch',cardNum:'1234567890123456',expiry:'11/11',cvc:'111'},
-    {key:'B',name:'Adrian Russell',cardNum:'1234567890123456',expiry:'22/22',cvc:'222'},
-    {key:'C',name:'Tylor Emerson',cardNum:'1234567890123456',expiry:'33/33',cvc:'333'},
-    {key:'D',name:' Edie Moreno',cardNum:'1234567890123456',expiry:'44/44',cvc:'444'},
-    {key:'E',name:'Ricardo Hester',cardNum:'1234567890123456',expiry:'55/55',cvc:'555'},
-    {key:'F',name:'Tanya Cooper',cardNum:'1234567890123456',expiry:'66/66',cvc:'666'},
-    {key:'G',name:'Kieren Knowles',cardNum:'1234567890123456',expiry:'44/44',cvc:'444'},
-    {key:'H',name:'Siana Howells',cardNum:'1234567890123456',expiry:'55/55',cvc:'555'},
-    {key:'I',name:'Nazia Rasmussen',cardNum:'1234567890123456',expiry:'66/66',cvc:'666'},
-];
 
+DATA = [];
 
 
 export default class WalletOverview extends Component {
+
+    constructor(props) {
+        super(props);
+        const {navigation} = this.props;
+        this.state = {
+            email: null,
+            loading: true,
+        };
+        this.state.email=(navigation.getParam('email'));
+        console.log('overview' + this.state.email);
+    }   
 
     //handling onPress action  
     getListViewItem = (item) => {  
@@ -81,14 +83,76 @@ export default class WalletOverview extends Component {
         });
     };
 
-    rerender
+    remove_character(str_to_remove, str) {
+        let reg = new RegExp(str_to_remove)
+        return str.replace(reg, '')
+    }
+
+    handleCards = (event) => {
+        DATA = [];
+        var temp = this.remove_character('@',this.state.email);
+        var userEmail = temp.replace(/\./g, '');
+        firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
+           data = {key:'',name:'',cardNum:'',expiry:'',cvc:''}
+            snapshot.forEach(function(child) {
+                
+                child.forEach(function(stuff) {
+                    if(stuff.key == 'cardno')
+                    {
+                        data.cardNum = stuff.val();
+                    }
+                    else if(stuff.key == 'cvc')
+                    {
+                        data.cvc = stuff.val();
+                    }
+                    else if(stuff.key == 'expiry')
+                    {
+                        data.expiry = stuff.val();
+                    }
+                    else if(stuff.key == 'name')
+                    {
+                        data.name = stuff.val();
+                        
+                        
+                    }
+                    
+                    
+                })
+                DATA.push(data);
+                data = {name:'',cardNum:'',expiry:'',cvc:''}
+              });
+              //getting card info
+            console.log(DATA[0].cardNum);
+            //console.log(DATA[1].name);
+            
+        }.bind(this));
+    }
+
+
+    UNSAFE_componentWillMount() {
+        var config = {
+          apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
+          authDomain: "aspdatabase-7458c.firebaseapp.com",
+          databaseURL: "https://aspdatabase-7458c.firebaseio.com",
+          projectId: "aspdatabase-7458c",
+          storageBucket: "aspdatabase-7458c.appspot.com",
+          messagingSenderId: "974951413468",
+          appId: "1:974951413468:web:a0d27cbba22d508f51e619",
+          measurementId: "G-W02TZC7QT6"
+        };
+        if(!firebase.apps.length) {
+          firebase.initializeApp(config);
+        }
+      }
+
+     
 
     render() {
+        this.handleCards();
         return(
             <View style={styles.container}>  
-               
                <View>
-                   <Text style={{fontSize:25,justifyContent: 'flex-end' }}> 
+                   <Text style={{fontSize:25,justifyContent: 'flex-end'}}> 
                       { 'Existing Card'}
                    </Text>
                    <Text style={{fontSize:15,justifyContent: 'flex-end' }}> 
@@ -108,13 +172,14 @@ export default class WalletOverview extends Component {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                    } 
+                    }keyExtractor={(item => item.cardNum)} 
                />  
                 <Button
                     title={'Add Card'}
                     style={styles.input}
-                    onPress={()=>this.props.navigation.navigate('AddCard')} />
+                    onPress={()=>this.props.navigation.navigate('AddCard',{email: this.state.email})} />
             </View>
         );
+             
     }
 }
