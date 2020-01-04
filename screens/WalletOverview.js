@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {FlatList, StyleSheet, Text, View, Alert, Button, TouchableOpacity } from 'react-native';  
 import firebase from 'firebase';
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -47,8 +48,6 @@ const styles = StyleSheet.create({
 });
 
 
-DATA = [];
-
 
 export default class WalletOverview extends Component {
 
@@ -58,7 +57,8 @@ export default class WalletOverview extends Component {
         this.state = {
             email: null,
             loading: true,
-        };
+            
+        }
         this.state.email=(navigation.getParam('email'));
         console.log('overview' + this.state.email);
     }   
@@ -88,48 +88,10 @@ export default class WalletOverview extends Component {
         return str.replace(reg, '')
     }
 
-    handleCards = (event) => {
-        DATA = [];
-        var temp = this.remove_character('@',this.state.email);
-        var userEmail = temp.replace(/\./g, '');
-        firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
-           data = {key:'',name:'',cardNum:'',expiry:'',cvc:''}
-            snapshot.forEach(function(child) {
-                
-                child.forEach(function(stuff) {
-                    if(stuff.key == 'cardno')
-                    {
-                        data.cardNum = stuff.val();
-                    }
-                    else if(stuff.key == 'cvc')
-                    {
-                        data.cvc = stuff.val();
-                    }
-                    else if(stuff.key == 'expiry')
-                    {
-                        data.expiry = stuff.val();
-                    }
-                    else if(stuff.key == 'name')
-                    {
-                        data.name = stuff.val();
-                        
-                        
-                    }
-                    
-                    
-                })
-                DATA.push(data);
-                data = {name:'',cardNum:'',expiry:'',cvc:''}
-              });
-              //getting card info
-            //console.log(DATA[0].cardNum);
-            //console.log(DATA[1].name);
-            
-        }.bind(this));
-    }
+    
 
 
-    UNSAFE_componentWillMount() {
+    componentWillMount() {
         var config = {
           apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
           authDomain: "aspdatabase-7458c.firebaseapp.com",
@@ -144,11 +106,62 @@ export default class WalletOverview extends Component {
           firebase.initializeApp(config);
         }
       }
-
+      DATA = [];
+      componentWillMount() {
+          
+         
+        DATA = [];
+        var temp = this.remove_character('@',this.state.email);
+        var userEmail = temp.replace(/\./g, '');
+        firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
+            data = {key:'',name:'',cardNum:'',expiry:'',cvc:''}
+             snapshot.forEach(function(child) {
+                 
+                 child.forEach(function(stuff) {
+                     if(stuff.key == 'cardno')
+                     {
+                         data.cardNum = stuff.val();
+                     }
+                     else if(stuff.key == 'cvc')
+                     {
+                         data.cvc = stuff.val();
+                     }
+                     else if(stuff.key == 'expiry')
+                     {
+                         data.expiry = stuff.val();
+                     }
+                     else if(stuff.key == 'name')
+                     {
+                         data.name = stuff.val();
+                         
+                         
+                     }
+                     
+                     
+                 })
+                 DATA.push(data);
+                 
+                 data = {name:'',cardNum:'',expiry:'',cvc:''}
+               });
+               //getting card info
+             //console.log('Lenght of Data is '+DATA.length);
+             //console.log(DATA[1].name);
+             
+         }.bind(this)).then(() => {
+            this.setState({loading: false})
+         });
+     }
      
-
+    
+     
     render() {
-        this.handleCards();
+
+         if(this.state.loading) {
+             console.log('im called');
+             return null;
+         }
+         
+
         return(
             <View style={styles.container}>  
                <View>
@@ -177,9 +190,11 @@ export default class WalletOverview extends Component {
                 <Button
                     title={'Add Card'}
                     style={styles.input}
-                    onPress={()=>this.props.navigation.navigate('AddCard',{email: this.state.email})} />
+                    onPress={this.state.loading = true, this.componentWillMount(), ()=>this.props.navigation.navigate('AddCard',{email: this.state.email})} />
             </View>
         );
              
     }
+    
+
 }

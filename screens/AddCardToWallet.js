@@ -203,7 +203,7 @@ export default class AddCardToWallet extends Component {
           firebase.initializeApp(config);
         }
       }
-
+     
     render() {
       const { shift } = this.state;
         return(
@@ -244,5 +244,38 @@ export default class AddCardToWallet extends Component {
             </View>
             </Animated.View>
         );
+    }
+
+    handleKeyboardDidShow = (event) => {
+      const { height: windowHeight } = Dimensions.get('window');
+      const keyboardHeight = event.endCoordinates.height;
+      const currentlyFocusedField = TextInputState.currentlyFocusedField();
+      UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+        const fieldHeight = height;
+        const fieldTop = pageY;
+        const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+        if (gap >= 0) {
+          return;
+        }
+        Animated.timing(
+          this.state.shift,
+          {
+            toValue: gap,
+            duration: 200,
+            useNativeDriver: true,
+          }
+        ).start();
+      });
+    }
+  
+    handleKeyboardDidHide = () => {
+      Animated.timing(
+        this.state.shift,
+        {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }
+      ).start();
     }
 }
