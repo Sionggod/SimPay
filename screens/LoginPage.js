@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
+import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 import { sha256, sha224 } from 'js-sha256';
 
@@ -19,18 +19,25 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     logo: {
-        width: 160,
-        height: 150
+        marginBottom: 15,
     },
     forget: {
         marginBottom: 15,
         color: 'blue',
         textDecorationLine: 'underline',
         textAlign: 'right',
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
+        width: 200
     },
     loginFooter: {
         marginTop: 25
+    },
+    button: {
+        width: 85,
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        backgroundColor: '#99ccff'
     }
     });
 
@@ -94,14 +101,14 @@ export default class LoginPage extends Component {
                     
               }
               if(!validLogin) 
-                alert('invalid username and/or password'); 
+                alert('Invalid Input', 'Invalid Username and/or Password'); 
               
 
             }.bind(this));
             
         }
         else
-            alert('Key in a Username and Password');
+            Alert.alert('Invalid Input', 'Key in a Username and Password');
 
     }
 
@@ -128,7 +135,7 @@ export default class LoginPage extends Component {
             <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
             <View style={styles.container}>
                 <Image
-                source={require('../assets/images/credit-card.png')}
+                source={require('../assets/images/smartphone.png')}
                 style={styles.logo} />
                 <Text style={{fontSize: 28, marginBottom: 25}}>WELCOME</Text>
                 <TextInput
@@ -143,10 +150,9 @@ export default class LoginPage extends Component {
                 secureTextEntry={true}
                 style={styles.input} />
                 <Text style={styles.forget} >Forget Password?</Text>
-                <Button
-                title={'Login'}
-                style={styles.input}
-                onPress={this.handleLogin} />
+                <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
+                    <Text>Login</Text>
+                </TouchableOpacity>
                 <Text style={styles.loginFooter} >Don't have an account yet?</Text>
                 <Text style={styles.loginFooter, {color: 'blue', textDecorationLine: 'underline'}}
                 onPress={()=>this.props.navigation.navigate('Registration')}>Create new account</Text>

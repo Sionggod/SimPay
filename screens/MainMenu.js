@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, Button, ScrollView } from 'react-native';
+import { Alert, StyleSheet, TextInput, Text, View, Image, Button, ScrollView, TouchableOpacity } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -24,10 +24,10 @@ export default class MainMenu extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text>This is the main page</Text>
-                <Button
-                title={'Start Scanning'}
-                onPress={()=>this.props.navigation.navigate('QRScan')} />
+                <TouchableOpacity onPress={()=>this.props.navigation.navigate('QRScan')}>
+                    <Image source={require('../assets/images/camera.png')} style={{width: 200, height: 200}}/>
+                </TouchableOpacity>
+                <Text>Scan to Pay</Text>
             </View>
         );
     }

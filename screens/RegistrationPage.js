@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
+import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 import { sha256, sha224 } from 'js-sha256';
 
@@ -20,9 +20,16 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     logo: {
-        width: 140,
-        height: 130,
+        marginBottom: 15,
     },
+    button: {
+        width: 100,
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        backgroundColor: '#99ccff',
+        marginBottom: 15,
+    }
 });
 const { State: TextInputState } = TextInput;
 export default class RegistrationPage extends Component {
@@ -102,7 +109,7 @@ export default class RegistrationPage extends Component {
           if(this.state.Hp == null || this.state.Hp == '')
           sentence +="Phone Number not filled\n";
           if(this.state.email == null || this.state.email == '')
-          sentence +="email not filled\n";
+          sentence +="Email not filled\n";
           if(this.state.Pw == null || this.state.VerifyPw ==null 
             || this.state.Pw == '' || this.state.VerifyPw == '')
           sentence +="Password not filled\n";
@@ -142,7 +149,7 @@ export default class RegistrationPage extends Component {
           firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
             var exists = (snapshot.val() !== null);
             if (exists) {
-                alert('Email : ' + this.state.email + ' already exists');
+                Alert.alert('Account Exists', 'Email: ' + this.state.email + ' already exists');
             }
             else{
               firebase.database().ref('users/'+ userEmail).set(
@@ -152,8 +159,9 @@ export default class RegistrationPage extends Component {
                     phone: this.state.Hp,
                     password: sha256(this.state.Pw),
                 }
-              ).then(()=> {
-                this.props.navigation.navigate('Login');
+              ).then(()=> { Alert.alert('Account Created', 'Your account has been created successfully', [
+                  {text: 'OK', onPress: ()=> this.props.navigation.navigate('Login')}
+                ]);
                 console.log(this.state.name ,'inserted');
               // code to retrieve data from DB
               // let users = firebase.database().ref('users/' + 777).once('value').then(function(snapshot) {
@@ -172,7 +180,7 @@ export default class RegistrationPage extends Component {
           
         }
         else
-        alert(sentence);
+          Alert.alert('Invalid Input', sentence);
 
     }
 
@@ -199,7 +207,7 @@ export default class RegistrationPage extends Component {
           <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
             <View style={styles.container}>
                 <Image
-                source={require('../assets/images/credit-card.png')}
+                source={require('../assets/images/smartphone.png')}
                 style={styles.logo} />
                 <Text style={{fontSize: 30, marginBottom: 15}}>Create New Account</Text>
                 <TextInput style={styles.input} placeholder={'Full Name'} 
@@ -207,15 +215,17 @@ export default class RegistrationPage extends Component {
                 <TextInput style={styles.input} placeholder={'E-mail'}
                 onChangeText={this.handleEmailText}  value={this.state.email}></TextInput>
                 <TextInput style={styles.input} placeholder={'Phone Number'}
-                onChangeText={this.handleHpText}  value={this.state.Hp}></TextInput>
+                onChangeText={this.handleHpText}  value={this.state.Hp} keyboardType={'numeric'}></TextInput>
                 <TextInput style={styles.input} placeholder={'Password'} secureTextEntry={true} 
                 onChangeText={this.handlePwText}  value={this.state.Pw}/>
                 <TextInput style={styles.input} placeholder={'Verify Password'} secureTextEntry={true}
                 onChangeText={this.handleVerifyPwText}  value={this.state.VerifyPw}/>
-                <Button
-                title='Sign Up'
-                onPress={this.handleSubmit}/>
-                <Button title={'Back'} style={styles.input} onPress={()=>this.props.navigation.navigate('Login')} />
+                <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
+                    <Text>Sign Up</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={()=>this.props.navigation.navigate('Login')}>
+                    <Text>Back</Text>
+                </TouchableOpacity>
             </View>
             </Animated.View>
         );

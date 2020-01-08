@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Text, Button } from 'react-native';
+import { View, StyleSheet, Image, Text, Button, TouchableOpacity } from 'react-native';
 
 const styles = StyleSheet.create({
     sideMenuContainer: {
@@ -17,6 +17,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderRadius: 150 / 2,
     },
+    button: {
+        width: 100,
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        backgroundColor: '#99ccff'
+    }
 });
 
 export default class SidebarMenu extends Component {
@@ -78,7 +85,9 @@ export default class SidebarMenu extends Component {
                 ))}
               </View>
               <View>
-                <Button title={'Logout'} onPress={this.logout} /> 
+                <TouchableOpacity style={styles.button} onPress={this.logout}>
+                  <Text>Logout</Text>
+                </TouchableOpacity>
               </View>
           </View>
         )

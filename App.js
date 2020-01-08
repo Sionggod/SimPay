@@ -21,17 +21,6 @@ import ProfilePage from './screens/ProfilePage.js';
 
 // import custom sidebar for drawer navigation
 import SidebarMenu from './screens/SidebarMenu.js';
-/*
-// declare and initialise firebase
-var firebase = require("firebase");
-
-var config = {
-    databaseURL: "https://simpay-8bc6c.firebaseio.com",
-    projectId: "simpay-8bc6c"
-};
-
-firebase.initializeApp(config);
-*/
 
 global.currentScreenIndex = 0;
 

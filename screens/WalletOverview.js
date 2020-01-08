@@ -34,16 +34,13 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1
     },
-    input: {
-        paddingBottom: 20,
-        paddingTop: 20,
+    button: {
         alignItems: 'center',
-        width: 200,
-        height: 40,
+        width: 150,
         padding: 10,
-        borderWidth: 1,
         borderRadius: 5,
-        marginBottom: 15
+        marginBottom: 15,
+        backgroundColor: '#99ccff',
     },
 });
 
@@ -100,7 +97,7 @@ export default class WalletOverview extends Component {
                     'Card Holder : ' + item.name,
                     'Card number : ' + item.cardNum,
                     [
-                      {text: 'Remove card', onPress: () => this.AlertRemoveCard(item)},
+                      {text: 'Confirm', onPress: () => this.AlertRemoveCard(item)},
                       {
                         text: 'Cancel',
                         onPress: () => console.log('Cancel Pressed'),
@@ -167,11 +164,7 @@ export default class WalletOverview extends Component {
                      else if(stuff.key == 'name')
                      {
                          data.name = stuff.val();
-                         
-                         
                      }
-                     
-                     
                  })
                  DATA.push(data);
                  
@@ -186,11 +179,6 @@ export default class WalletOverview extends Component {
          });
 
       }
-      
-    
-
-     
-    
      
     render() {
 
@@ -225,10 +213,10 @@ export default class WalletOverview extends Component {
                         </View>
                     }keyExtractor={(item => item.cardNum)} 
                />  
-                <Button
-                    title={'Add Card'}
-                    style={styles.input}
-                    onPress={this.state.loading = true,this.componentWillMount(), ()=>this.props.navigation.navigate('AddCard',{email: this.state.email})} />
+                <TouchableOpacity style={styles.button} 
+                onPress={this.state.loading = true,this.componentWillMount(), ()=>this.props.navigation.navigate('AddCard',{email: this.state.email})}>
+                    <Text>Add Card</Text>
+                </TouchableOpacity>
             </View>
         );
              

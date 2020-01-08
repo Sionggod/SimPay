@@ -35,14 +35,13 @@ const styles = StyleSheet.create({
      loginFooter: {
          marginTop: 25
      },
-     buttonContainer: {
-       flexDirection: 'row',
-       justifyContent: 'space-around',
-       width: '60%'
-     },
-     buttonview: {
-       width: '60%'
-     }
+     button: {
+      width: 100,
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+      backgroundColor: '#99ccff',
+  }
 });
 const { State: TextInputState } = TextInput;
 export default class AddCardToWallet extends Component {
@@ -135,7 +134,7 @@ export default class AddCardToWallet extends Component {
             }
           }
           if(!Valid)
-            alert(error);
+            Alert.alert('Invalid Input', error);
         }
        
         if(Valid)
@@ -236,12 +235,9 @@ export default class AddCardToWallet extends Component {
                 value={this.state.cvc}
                 onChangeText={(cvc)=>this.setState({cvc})}
                 style={styles.input} />
-                
-                <Button
-                title={'Update'}
-                style={styles.input}
-                onPress={this.handleUpdate} />
-
+                <TouchableOpacity onPress={this.handleUpdate} style={styles.button}>
+                    <Text>Update</Text>
+                </TouchableOpacity>
             </View>
             </Animated.View>
         );

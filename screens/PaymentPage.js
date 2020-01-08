@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
+import { Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -16,6 +16,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 15
     },
+    button: {
+        width: 120,
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        backgroundColor: '#99ccff',
+    }
 });
 
 export default class PaymentPage extends Component {
@@ -36,8 +43,9 @@ export default class PaymentPage extends Component {
                 <Text>Merchant ID = {merchantID}</Text>
                 <Text>Input amount (S$):</Text>
                 <TextInput style={styles.input} keyboardType={'numeric'} value={this.state.amount} onChangeText={(amount)=>this.setState({amount})} />
-                <Button title={'Next'}
-                onPress={()=>this.props.navigation.navigate('ConfirmPayment', {merchantID: merchantID, amountPayable: this.state.amount})} />
+                <TouchableOpacity style={styles.button} onPress={()=>this.props.navigation.navigate('ConfirmPayment', {merchantID: merchantID, amountPayable: this.state.amount})}>
+                    <Text>Next</Text>
+                </TouchableOpacity> 
             </View>
             </KeyboardAvoidingView>
         );
