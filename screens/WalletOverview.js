@@ -89,7 +89,7 @@ export default class WalletOverview extends Component {
     }
 
     
-
+    DATA = [];
 
     componentWillMount() {
         var config = {
@@ -105,11 +105,7 @@ export default class WalletOverview extends Component {
         if(!firebase.apps.length) {
           firebase.initializeApp(config);
         }
-      }
-      DATA = [];
-      componentWillMount() {
-          
-         
+
         DATA = [];
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, '');
@@ -150,7 +146,11 @@ export default class WalletOverview extends Component {
          }.bind(this)).then(() => {
             this.setState({loading: false})
          });
-     }
+
+      }
+      
+    
+
      
     
      
@@ -190,7 +190,7 @@ export default class WalletOverview extends Component {
                 <Button
                     title={'Add Card'}
                     style={styles.input}
-                    onPress={this.state.loading = true, this.componentWillMount(), ()=>this.props.navigation.navigate('AddCard',{email: this.state.email})} />
+                    onPress={this.state.loading = true,this.componentWillMount(), ()=>this.props.navigation.navigate('AddCard',{email: this.state.email})} />
             </View>
         );
              

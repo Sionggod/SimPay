@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
+import { sha256, sha224 } from 'js-sha256';
 
 
 const styles = StyleSheet.create({
@@ -79,9 +80,14 @@ export default class RegistrationPage extends Component {
       return str.replace(reg, '')
     }
 
-    handleSubmit = (event) => {
-      // do something after submit
 
+      
+
+    handleSubmit = (event) => {
+  
+     
+    
+    //runCrypto();
       // boolean to check if all fields are valid
       var Valid = true;
 
@@ -138,7 +144,7 @@ export default class RegistrationPage extends Component {
                     name: this.state.name,
                     email: this.state.email,
                     phone: this.state.Hp,
-                    password: this.state.Pw,
+                    password: sha256(this.state.Pw),
                 }
               ).then(()=> {
                 this.props.navigation.navigate('Login');

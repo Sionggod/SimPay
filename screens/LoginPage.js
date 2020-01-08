@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
+import { sha256, sha224 } from 'js-sha256';
 
 const styles = StyleSheet.create({
     container: {
@@ -73,7 +74,7 @@ export default class LoginPage extends Component {
         console.log(this.state.email  + ' ' + this.state.password); 
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
-        var pw = this.state.password;
+        var pw = sha256(this.state.password);
         console.log("userEmail is  " + userEmail);
         var validLogin = false;
         //code to retrieve data from DB
