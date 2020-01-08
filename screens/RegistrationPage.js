@@ -30,10 +30,10 @@ export default class RegistrationPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          name: '',
-          email: '',
-          Hp: '',
-          Pw: '',
+          name: null,
+          email: null,
+          Hp: null,
+          Pw: null,
           VerifyPw: null,
           shift: new Animated.Value(0),
         };
@@ -90,20 +90,23 @@ export default class RegistrationPage extends Component {
     //runCrypto();
       // boolean to check if all fields are valid
       var Valid = true;
-
+      var sentence = "";
       if(this.state.name == null|| this.state.Hp == null || this.state.email == null
-        || this.state.Pw == null || this.state.VerifyPw == null){
+        || this.state.Pw == null || this.state.VerifyPw == null || this.state.name == ''
+        || this.state.Hp == '' || this.state.email == '' || this.state.Pw == ''
+        || this.state.VerifyPw == ''){
           console.log("not all fields are filled");
-          var sentence = "";
-          if(this.state.name == null)
+          
+          if(this.state.name == null || this.state.name == '')
             sentence += "Name not filled\n";
-          if(this.state.Hp == null)
+          if(this.state.Hp == null || this.state.Hp == '')
           sentence +="Phone Number not filled\n";
-          if(this.state.email == null)
+          if(this.state.email == null || this.state.email == '')
           sentence +="email not filled\n";
-          if(this.state.Pw == null || this.state.VerifyPw ==null)
+          if(this.state.Pw == null || this.state.VerifyPw ==null 
+            || this.state.Pw == '' || this.state.VerifyPw == '')
           sentence +="Password not filled\n";
-          alert(sentence);
+          
           Valid = false;
         }
         if(this.state.Hp != null)
@@ -112,17 +115,20 @@ export default class RegistrationPage extends Component {
           if(!numbers)
           {
             Valid = false;
-            alert('Please Input a valid phone number!');
+            sentence += 'Please Input a valid phone number!\n';
+            //alert('Please Input a valid phone number!');
           }
         }
         if(this.state.Pw != null && this.state.VerifyPw != null && this.state.Pw != this.state.VerifyPw)
         {
-          alert('Password Mismatch!');
+          sentence += 'Password Mismatch!\n';
+          //alert('Password Mismatch!');
           Valid = false;
         }
         else if(this.state.Pw != null &&this.state.Pw.length < 6)
         {
-          alert('Password length must be a minimum of 6');
+          sentence += 'Password length must be a minimum of 6\n';
+          //alert('Password length must be a minimum of 6');
           Valid = false;
         }
 
@@ -136,7 +142,7 @@ export default class RegistrationPage extends Component {
           firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
             var exists = (snapshot.val() !== null);
             if (exists) {
-              alert('Email : ' + this.state.email + ' already exists');
+                alert('Email : ' + this.state.email + ' already exists');
             }
             else{
               firebase.database().ref('users/'+ userEmail).set(
@@ -165,6 +171,8 @@ export default class RegistrationPage extends Component {
 
           
         }
+        else
+        alert(sentence);
 
     }
 
