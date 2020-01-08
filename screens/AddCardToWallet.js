@@ -134,7 +134,8 @@ export default class AddCardToWallet extends Component {
               error +='Please Input only numerical for CVC!\n';
             }
           }
-         alert(error);
+          if(!Valid)
+            alert(error);
         }
        
         if(Valid)

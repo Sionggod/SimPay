@@ -63,16 +63,54 @@ export default class WalletOverview extends Component {
         console.log('overview' + this.state.email);
     }   
 
+    ConfirmRemoveCard = (item) => {
+        var temp = this.remove_character('@',this.state.email);
+        var userEmail = temp.replace(/\./g, '');
+        firebase.database().ref('users/'+ userEmail + '/Card/'+item.cardNum).remove();
+          
+    }
+
+    AlertRemoveCard = (item) => {
+        Alert.alert(
+            'Remove\n',
+            'Card number : ' + item.cardNum,
+            [
+              {text: 'Yes', onPress: () => this.ConfirmRemoveCard(item)},
+              {
+                text: 'No',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              
+            ],
+            {cancelable: false},
+          );
+    }
+
     //handling onPress action  
     getListViewItem = (item) => {  
 
-        var it = item.key + "\n" +
+        var it = //item.key + "\n" +
                  item.name + '\n' +
                  item.cardNum + '\n' +
                  item.expiry + '\n' +
                  item.cvc;
 
-        alert(it);  
+                 Alert.alert(
+                    'Card Holder : ' + item.name,
+                    'Card number : ' + item.cardNum,
+                    [
+                      {text: 'Remove card', onPress: () => this.AlertRemoveCard(item)},
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      
+                    ],
+                    {cancelable: false},
+                  );
+        //alert(it);  
         //find item and delete in db
         //rerender the view
     }  
