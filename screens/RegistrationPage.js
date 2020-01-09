@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { ScrollView,Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 import { sha256, sha224 } from 'js-sha256';
 
@@ -205,6 +205,7 @@ export default class RegistrationPage extends Component {
       const { shift } = this.state;
       return (
           <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
+            <ScrollView>
             <View style={styles.container}>
                 <Image
                 source={require('../assets/images/smartphone.png')}
@@ -215,7 +216,7 @@ export default class RegistrationPage extends Component {
                 <TextInput style={styles.input} placeholder={'E-mail'}
                 onChangeText={this.handleEmailText}  value={this.state.email}></TextInput>
                 <TextInput style={styles.input} placeholder={'Phone Number'}
-                onChangeText={this.handleHpText}  value={this.state.Hp} keyboardType={'numeric'}></TextInput>
+                onChangeText={this.handleHpText}  value={this.state.Hp} returnKeyType='done' keyboardType={'numeric'}></TextInput>
                 <TextInput style={styles.input} placeholder={'Password'} secureTextEntry={true} 
                 onChangeText={this.handlePwText}  value={this.state.Pw}/>
                 <TextInput style={styles.input} placeholder={'Verify Password'} secureTextEntry={true}
@@ -227,6 +228,7 @@ export default class RegistrationPage extends Component {
                     <Text>Back</Text>
                 </TouchableOpacity>
             </View>
+            </ScrollView>
             </Animated.View>
         );
     }
