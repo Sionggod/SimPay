@@ -25,9 +25,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         color: 'blue',
         textDecorationLine: 'underline',
-        textAlign: 'right',
-        alignItems: 'flex-end',
-        width: 200
+        alignItems: 'center',
     },
     loginFooter: {
         marginTop: 25

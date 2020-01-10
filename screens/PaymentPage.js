@@ -58,7 +58,7 @@ export default class PaymentPage extends Component {
                 <TextInput style={styles.input} returnKeyType='done' keyboardType={'numeric'} value={this.state.amount} onChangeText={(amount)=>this.setState({amount})} />
                 <TouchableOpacity style={styles.button} onPress={()=>this.props.navigation.navigate('ConfirmPayment', {merchantID: merchantID, amountPayable: this.state.amount})}>
                     <Text>Next</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
             </View>
             </Animated.View>
         );
