@@ -24,7 +24,7 @@ export default class MainMenu extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate('QRScan')}>
+                <TouchableOpacity onPress={()=>this.props.navigation.navigate('QRScan',{email: this.state.email})}>
                     <Image source={require('../assets/images/camera.png')} style={{width: 200, height: 200}}/>
                 </TouchableOpacity>
                 <Text>Scan to Pay</Text>

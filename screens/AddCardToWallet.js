@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, TouchableOpacity, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -76,9 +77,7 @@ export default class AddCardToWallet extends Component {
     }
 
     handleUpdate = () => {
-      var temp = this.remove_character('@',this.state.email);
-      var userEmail = temp.replace(/\./g, ''); 
-      console.log("userEmail is  " + userEmail);
+     
         var Valid = true;
         if(this.state.name == null|| this.state.cardnumber == null || 
           this.state.expiry == null|| this.state.cvc == null ){
@@ -137,35 +136,40 @@ export default class AddCardToWallet extends Component {
             Alert.alert('Invalid Input', error);
         }
        
+       
         if(Valid)
         {
 
-          firebase.database().ref('users/'+ userEmail+ '/Card/'+this.state.cardnumber).set(
-            {
-               name: this.state.name,
-               cardno: this.state.cardnumber,
-               cvc: this.state.cvc,
-               expiry: this.state.expiry,
-           }
-          ).then(()=> {
-            this.props.navigation.navigate('WalletMain',{email: this.state.email});
-            console.log(this.state.name ,'Card inserted');
-         
-          
-        }).catch((error) => {
-    
-        });
-          missingfields = "";
-          missingfields +=this.state.name;
-          missingfields +="\n";
-          missingfields +=this.state.cardnumber;
-          missingfields +="\n";
-          missingfields +=this.state.expiry;
-          missingfields +="\n";
-          missingfields +=this.state.cvc;
-          missingfields +="\n";
-          missingfields +=Valid;
-          alert(missingfields);
+          var temp = this.remove_character('@',this.state.email);
+        var userEmail = temp.replace(/\./g, ''); 
+      
+        firebase.database().ref('users/'+ userEmail+ '/Card/'+this.state.cardnumber).set(
+          {
+             name: this.state.name,
+             cardno: this.state.cardnumber,
+             cvc: this.state.cvc,
+             expiry: this.state.expiry,
+         }
+        ).then(()=> {
+          this.props.navigation.navigate('WalletMain',{email: this.state.email});
+          console.log(this.state.name ,'Card inserted');
+       
+        
+      }).catch((error) => {
+  
+      });
+
+          // missingfields = "";
+          // missingfields +=this.state.name;
+          // missingfields +="\n";
+          // missingfields +=this.state.cardnumber;
+          // missingfields +="\n";
+          // missingfields +=this.state.expiry;
+          // missingfields +="\n";
+          // missingfields +=this.state.cvc;
+          // missingfields +="\n";
+          // missingfields +=Valid;
+          // alert(missingfields);
       
           
     
@@ -203,6 +207,8 @@ export default class AddCardToWallet extends Component {
           firebase.initializeApp(config);
         }
       }
+
+      
      
     render() {
       const { shift } = this.state;

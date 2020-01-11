@@ -3,6 +3,7 @@ import {FlatList, StyleSheet, Text, View, Alert, Button, TouchableOpacity } from
 import firebase from 'firebase';
 
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -48,17 +49,21 @@ const styles = StyleSheet.create({
 
 export default class WalletOverview extends Component {
 
+    
+
     constructor(props) {
         super(props);
         const {navigation} = this.props;
         this.state = {
             email: null,
             loading: true,
-            
+            token: '',
         }
         this.state.email=(navigation.getParam('email'));
         console.log('overview' + this.state.email);
-    }   
+    }  
+
+   
 
     ConfirmRemoveCard = (item) => {
         var temp = this.remove_character('@',this.state.email);

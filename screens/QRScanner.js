@@ -4,12 +4,18 @@ import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 export default class QRScanner extends Component {
-   state = {
-    hasCameraPermission: null,
-    scanned: false,
-    cameraState: null,
-  };
 
+  constructor(props) {
+    super(props);
+    const {navigation} = this.props;
+    this.state = {
+      hasCameraPermission: null,
+      scanned: false,
+      cameraState: null,
+      email: null
+    };
+    this.state.email=(navigation.getParam('email'));
+  }
   async componentDidMount() {
     this.props.navigation.addListener('willFocus', ()=> {
       this.getPermissionsAsync();
@@ -68,7 +74,7 @@ export default class QRScanner extends Component {
     if (MerchantList.includes(`${data}`) == true)
     {
       this.setState({ cameraState: false });
-      this.props.navigation.navigate('Payment', {merchantID: `${data}`});
+      this.props.navigation.navigate('Payment',{merchantID: `${data}`,email: this.state.email});
     }
   };
 }

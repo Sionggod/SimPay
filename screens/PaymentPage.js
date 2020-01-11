@@ -26,16 +26,21 @@ const styles = StyleSheet.create({
 });
 const { State: TextInputState } = TextInput;
 export default class PaymentPage extends Component {
+
     constructor(props) {
         super(props);
-
         this.state = {
             amount: '',
+            email: this.props.navigation.getParam('email'),
             shift: new Animated.Value(0),
+            merchantID: this.props.navigation.getParam('merchantID'),
         }
+    
     }
 
+
     componentWillMount() {
+
         this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
         this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
       }
@@ -48,15 +53,16 @@ export default class PaymentPage extends Component {
     render () {
         const { shift } = this.state;
         // get merchant ID from previous screen
-        const merchantID = this.props.navigation.getParam('merchantID');
+       
+
         return (
             <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
             <View style={styles.container}>
                 <Text>Vendor Name:</Text>
-                <Text>Merchant ID = {merchantID}</Text>
+                <Text>Merchant ID = {this.state.merchantID}</Text>
                 <Text>Input amount (S$):</Text>
                 <TextInput style={styles.input} returnKeyType='done' keyboardType={'numeric'} value={this.state.amount} onChangeText={(amount)=>this.setState({amount})} />
-                <TouchableOpacity style={styles.button} onPress={()=>this.props.navigation.navigate('ConfirmPayment', {merchantID: merchantID, amountPayable: this.state.amount})}>
+                <TouchableOpacity style={styles.button} onPress={()=>this.props.navigation.navigate('ConfirmPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount})}>
                     <Text>Next</Text>
                 </TouchableOpacity>
             </View>
