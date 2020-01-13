@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { FlatList,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import firebase from 'firebase';
-var stripe = require('stripe-client')('pk_test_SPHbwqDlkzVxe0KqxFRQTWTs00DvUUPrqU');
+var stripe = require('stripe-client')('pk_test_gA0EY3yvEnOSzsVZaWj3fAVb004i1hK2K9');
 
 const styles = StyleSheet.create({
     container: {
@@ -60,11 +60,16 @@ export default class CheckPayment extends Component {
             merchantAccount: null,
             DATA: [],
             loading: true,
-            
+            cardUsed: 'Please select a card',
+            Cardnumber: null,
+            exp_month: '02',
+            exp_year: '21',
+            cvc: null,
+            Cardname: null,
         };
-        console.log('Merchant id : ' + this.state.merchantID);
-         console.log('amt : '+ this.state.amt);
-         console.log('email : ' + this.state.email);
+        // console.log('Merchant id : ' + this.state.merchantID);
+        //  console.log('amt : '+ this.state.amt);
+        //  console.log('email : ' + this.state.email);
 
          
 
@@ -74,10 +79,24 @@ export default class CheckPayment extends Component {
         return str.replace(reg, '')
     }
 
-    
 
     onPayment = async () =>  {
-        console.log('token is ' + this.state.token);
+        
+        var information = {
+            card: {
+                number: this.state.Cardnumber,
+                exp_month: '02',
+                exp_year: '21',
+                cvc: this.state.cvc,
+                name: this.state.Cardname,
+            }
+        }
+        // code below is to get token from stripe api
+            var card = await stripe.createToken(information);
+            this.state.token = card.id;
+            //console.log('token is ' + this.state.token);
+        if(this.state.token != null){
+            //Code below transfers amount to merchant registered under our stripe accounts
         axios({
             method: 'POST',
             url:'https://us-central1-aspdatabase-7458c.cloudfunctions.net/payWithStripe',
@@ -86,31 +105,28 @@ export default class CheckPayment extends Component {
                 currency: 'sgd',
                 token: this.state.token,
                 destination: this.state.merchantAccount,
-                cardUsed: null,
+                
             },
         }).then(response => {
             console.log(response);
         });
+         }
+         else{
+             alert('Something went wrong with your card');
+         }
         
       };
+    
 
       getListViewItem = (item) => {  
 
-        var information = {
-            card: {
-              number: item.cardNum,
-              exp_month: '02',
-              exp_year: '21',
-              cvc: item.cvc,
-              name: item.name
-            }
-          }
+    
           console.log(item.cardNum);
                  Alert.alert(
                     'Card Holder : ' + item.name,
                     'Card number : ' + item.cardNum,
                     [
-                      {text: 'Confirm', onPress: () => this.getToken(information)},
+                      {text: 'Confirm', onPress: () => this.ShowCardUsed(item)},
                       {
                         text: 'Cancel',
                         onPress: () => console.log('Cancel Pressed'),
@@ -123,13 +139,13 @@ export default class CheckPayment extends Component {
 
     }  
 
-      getToken = async (information) => {
+    ShowCardUsed(item){
+        this.setState({cardUsed: item.cardNum,Cardnumber: item.cardNum,Cardname: item.name,cvc: item.cvc});
+        // console.log(this.state.Cardnumber);
+        // console.log(this.state.Cardname);
+        // console.log(this.state.cvc);
+    }
 
-        var card = await stripe.createToken(information);
-        this.state.token = card.id;
-        this.setState({cardUsed: information.card.number});
-    
-      }
       
 
       DATA2 = [];
