@@ -58,6 +58,7 @@ export default class WalletOverview extends Component {
             email: null,
             loading: true,
             token: '',
+            called: false,
         }
         this.state.email=(navigation.getParam('email'));
         console.log('overview' + this.state.email);
@@ -69,6 +70,7 @@ export default class WalletOverview extends Component {
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, '');
         firebase.database().ref('users/'+ userEmail + '/Card/'+item.cardNum).remove();
+        this.componentWillMount();
           
     }
 
@@ -128,10 +130,21 @@ export default class WalletOverview extends Component {
         return str.replace(reg, '')
     }
 
-    
+    componentWillUpdate() {
+        console.log('im loading');
+        if(this.state.loading == false && this.state.called == false)
+        {
+            this.setState({loading: true});
+            this.componentWillMount();
+        }
+    }
+
     DATA = [];
+    
+    
 
     componentWillMount() {
+        this.state.called = true;
         var config = {
           apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
           authDomain: "aspdatabase-7458c.firebaseapp.com",
@@ -145,7 +158,6 @@ export default class WalletOverview extends Component {
         if(!firebase.apps.length) {
           firebase.initializeApp(config);
         }
-
         DATA = [];
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, '');
@@ -180,7 +192,8 @@ export default class WalletOverview extends Component {
              //console.log(DATA[1].name);
              
          }.bind(this)).then(() => {
-            this.setState({loading: false})
+            this.setState({loading: false, called: false})
+
          });
 
       }
@@ -188,10 +201,10 @@ export default class WalletOverview extends Component {
     render() {
 
          if(this.state.loading) {
-             console.log('im called');
+             console.log('im called'); 
              return null;
-         }
-         
+          }
+        
 
         return(
             <View style={styles.container}>  
@@ -219,7 +232,7 @@ export default class WalletOverview extends Component {
                     }keyExtractor={(item => item.cardNum)} 
                />  
                 <TouchableOpacity style={styles.button} 
-                onPress={this.state.loading = true,this.componentWillMount(), ()=>this.props.navigation.navigate('AddCard',{email: this.state.email})}>
+                onPress={()=>this.props.navigation.navigate('AddCard',{email: this.state.email})}>
                     <Text>Add Card</Text>
                 </TouchableOpacity>
             </View>

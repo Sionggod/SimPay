@@ -142,32 +142,44 @@ export default class RegistrationPage extends Component {
         
         if(Valid)
         {
+          var tempEmail = this.state.email;
+          var name = this.state.name;
+          firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.Pw).then(function(result){
+            return result.user.updateProfile({
+              displayName: name
+            })
+
+          }).catch(function(error) {
+            
+            
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+            if(errorMessage == 'The email address is already in use by another account.')
+            {
+              Alert.alert('Account Exists', 'Email: ' + tempEmail + ' already exists');
+            }
+           
+
+          });
 
           var temp = this.remove_character('@',this.state.email);
-          var userEmail = temp.replace(/\./g, ''); 
-          console.log("userEmail is  " + userEmail);
-          firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
-            var exists = (snapshot.val() !== null);
-            if (exists) {
-                Alert.alert('Account Exists', 'Email: ' + this.state.email + ' already exists');
-            }
-            else{
+           var userEmail = temp.replace(/\./g, ''); 
+           console.log("userEmail is  " + userEmail);
+           firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
+             var exists = (snapshot.val() !== null);
+            if (!exists) {
               firebase.database().ref('users/'+ userEmail).set(
                 {
-                    name: this.state.name,
-                    email: this.state.email,
                     phone: this.state.Hp,
-                    password: sha256(this.state.Pw),
                 }
               ).then(()=> { Alert.alert('Account Created', 'Your account has been created successfully', [
                   {text: 'OK', onPress: ()=> this.props.navigation.navigate('Login')}
                 ]);
                 console.log(this.state.name ,'inserted');
-              // code to retrieve data from DB
-              // let users = firebase.database().ref('users/' + 777).once('value').then(function(snapshot) {
-              //   var username = snapshot.val() || 'Anonymous';
-              //   console.log(username.email);
-              // });
+            
               
             }).catch((error) => {
   
@@ -177,7 +189,6 @@ export default class RegistrationPage extends Component {
 
           }.bind(this));
 
-          
         }
         else
           Alert.alert('Invalid Input', sentence);

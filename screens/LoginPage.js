@@ -73,37 +73,38 @@ export default class LoginPage extends Component {
     }
 
     handleLogin = (event) => {
-
         if(this.state.email != null && this.state.password != null){
+          console.log(this.state.email + " " + this.state.password);
+          firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(function(){
 
-        console.log(this.state.email  + ' ' + this.state.password); 
-        var temp = this.remove_character('@',this.state.email);
-        var userEmail = temp.replace(/\./g, ''); 
-        var pw = sha256(this.state.password);
-        console.log("userEmail is  " + userEmail);
-        var validLogin = false;
-        //code to retrieve data from DB
-        firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
-               var exists = (snapshot.val() !== null);
-               if (exists) {
-                var userDetails = snapshot.val();
-                if(pw == userDetails.password)
-                {
-                    validLogin = true;
-                    console.log('yea its true');
-                    this.props.navigation.navigate('WalletMain',{email: this.state.email});
-                    this.props.navigation.navigate('ProfileMain',{email: this.state.email});
-                    this.props.navigation.navigate('QRMain',{email: this.state.email});
-                }
-                
-                    
-              }
-              if(!validLogin) 
-                alert('Invalid Input', 'Invalid Username and/or Password'); 
+              this.props.navigation.navigate('WalletMain',{email: this.state.email});
+              this.props.navigation.navigate('ProfileMain',{email: this.state.email});
+              this.props.navigation.navigate('QRMain',{email: this.state.email});
               
+           
 
-            }.bind(this));
-            
+          }.bind(this)).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorMessage);
+            if(errorMessage == 'The password is invalid or the user does not have a password.')
+            {
+              Alert.alert('Invalid Input', 'Invalid Username and/or Password');
+            }
+            else if(errorMessage == 'Too many unsuccessful login attempts. Please try again later.')
+            {
+              Alert.alert('Too many unsuccessful login attempts.','Please try again later.');
+            }
+            else{
+              Alert.alert('Invalid Input', 'Invalid Username and/or Password');
+            }
+           
+           
+          });
+         
+          
+
         }
         else
             Alert.alert('Invalid Input', 'Key in a Username and Password');

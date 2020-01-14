@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, Text, Button, TouchableOpacity } from 'react-native';
+import firebase from 'firebase';
 
 const styles = StyleSheet.create({
     sideMenuContainer: {
@@ -51,8 +52,32 @@ export default class SidebarMenu extends Component {
 
     // logout function
     logout = () => {
+      var user = firebase.auth().currentUser;
+      console.log('current user is ' + user.email);
+      firebase.auth().signOut().then(function() {
+        console.log('Signed Out');
+      }, function(error) {
+        console.error('Sign Out Error', error);
+      });
       this.props.navigation.navigate('Login');
     }
+
+    UNSAFE_componentWillMount() {
+      var config = {
+        apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
+        authDomain: "aspdatabase-7458c.firebaseapp.com",
+        databaseURL: "https://aspdatabase-7458c.firebaseio.com",
+        projectId: "aspdatabase-7458c",
+        storageBucket: "aspdatabase-7458c.appspot.com",
+        messagingSenderId: "974951413468",
+        appId: "1:974951413468:web:a0d27cbba22d508f51e619",
+        measurementId: "G-W02TZC7QT6"
+      };
+      if(!firebase.apps.length) {
+        firebase.initializeApp(config);
+      }
+
+  }
 
     render() {
       const {navigation} = this.props;
