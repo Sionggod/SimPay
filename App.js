@@ -5,8 +5,11 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 
 // import SwitchNavigation pages
-import LoginPage from './screens/LoginPage';
-import RegistrationPage from './screens/RegistrationPage';
+import LoginPage from './screens/LoginPage.js';
+import RegistrationPage from './screens/RegistrationPage.js';
+import ForgotPassword from './screens/ForgotPassword.js'
+
+// import QRStackNavigation pages
 import MainMenu from './screens/MainMenu.js';
 import QRScanner from './screens/QRScanner.js';
 import PaymentPage from './screens/PaymentPage.js';
@@ -143,14 +146,13 @@ const DrawerNavigation = createDrawerNavigator(
     }
 );
 
-
-
 // switch navigation
 const SwitchNavigation = createSwitchNavigator(
     {
         Login: { screen: LoginPage },
         Registration: { screen: RegistrationPage },
         Landing: { screen: DrawerNavigation},
+        Forgot: { screen: ForgotPassword },
     },
     {
         // starting route
