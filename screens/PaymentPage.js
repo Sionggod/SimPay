@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import firebase from 'firebase';
 
 const styles = StyleSheet.create({
     container: {
@@ -34,26 +35,74 @@ export default class PaymentPage extends Component {
             email: this.props.navigation.getParam('email'),
             shift: new Animated.Value(0),
             merchantID: this.props.navigation.getParam('merchantID'),
+            cardCounter: 0,
+            loading: true,
         }
     
     }
+
+    remove_character(str_to_remove, str) {
+      let reg = new RegExp(str_to_remove)
+      return str.replace(reg, '')
+  }
+
+   // Check if there is at least 1 card
+   CheckCards = () =>{
+
+    var temp = this.remove_character('@',this.state.email);
+    var userEmail = temp.replace(/\./g, '');
+    counter = 0;
+    firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
+       
+         snapshot.forEach(function(child) {
+                      counter++;
+                
+           });
+          console.log('cards : ' + counter);
+         
+     }.bind(this)).then(()=> {
+      if(counter > 0)
+      this.props.navigation.navigate('ConfirmPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount})
+      else
+      this.props.navigation.navigate('AddCardPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount})
+     });
+     
+    
+  
+  }
 
 
     componentWillMount() {
 
         this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
         this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
+        var config = {
+          apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
+          authDomain: "aspdatabase-7458c.firebaseapp.com",
+          databaseURL: "https://aspdatabase-7458c.firebaseio.com",
+          projectId: "aspdatabase-7458c",
+          storageBucket: "aspdatabase-7458c.appspot.com",
+          messagingSenderId: "974951413468",
+          appId: "1:974951413468:web:a0d27cbba22d508f51e619",
+          measurementId: "G-W02TZC7QT6"
+        };
+        if(!firebase.apps.length) {
+          firebase.initializeApp(config);
+        }
+
+        
       }
     
       componentWillUnmount() {
         this.keyboardDidShowSub.remove();
         this.keyboardDidHideSub.remove();
       }
+     
+
 
     render () {
         const { shift } = this.state;
         // get merchant ID from previous screen
-       
 
         return (
             <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
@@ -62,9 +111,9 @@ export default class PaymentPage extends Component {
                 <Text>Merchant ID = {this.state.merchantID}</Text>
                 <Text>Input amount (S$):</Text>
                 <TextInput style={styles.input} returnKeyType='done' keyboardType={'numeric'} value={this.state.amount} onChangeText={(amount)=>this.setState({amount})} />
-                <TouchableOpacity style={styles.button} onPress={()=>this.props.navigation.navigate('ConfirmPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount})}>
+                <TouchableOpacity style={styles.button} onPress={this.CheckCards}>
                     <Text>Next</Text>
-                </TouchableOpacity>
+                </TouchableOpacity >
             </View>
             </Animated.View>
         );

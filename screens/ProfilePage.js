@@ -3,6 +3,11 @@ import { Animated, StatusBar, Alert, StyleSheet, TextInput, Text, View, Image, B
 import firebase from 'firebase';
 
 const styles = StyleSheet.create({
+    contentContainer: {
+        width: "100%",
+        aspectRatio: 2/1
+    },
+
     container: {
         flex: 1,
         alignItems: 'flex-start',
@@ -43,6 +48,8 @@ const styles = StyleSheet.create({
 });
 
 class FloatingLabelInput extends Component {
+   
+    
     state = {
         isFocused: false,
     };
@@ -61,6 +68,7 @@ class FloatingLabelInput extends Component {
         duration: 200,
     }).start();
     }
+
 
     render() {
         const { label, ...props } = this.props;
@@ -98,6 +106,7 @@ export default class ProfilePage extends Component {
         this.state = {
             email: null,
             phone: null,
+            name: null,
             value: '',
             nameText: '',
             emailText: '',
@@ -107,13 +116,49 @@ export default class ProfilePage extends Component {
         handleTextChange = (newText) => this.setState({ value:newText});
         this.state.email=(navigation.getParam('email'));
     }
+
+    remove_character(str_to_remove, str) {
+        let reg = new RegExp(str_to_remove)
+        return str.replace(reg, '')
+      }
+
+     
+    componentWillMount() {
+        var config = {
+          apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
+          authDomain: "aspdatabase-7458c.firebaseapp.com",
+          databaseURL: "https://aspdatabase-7458c.firebaseio.com",
+          projectId: "aspdatabase-7458c",
+          storageBucket: "aspdatabase-7458c.appspot.com",
+          messagingSenderId: "974951413468",
+          appId: "1:974951413468:web:a0d27cbba22d508f51e619",
+          measurementId: "G-W02TZC7QT6"
+        };
+        if(!firebase.apps.length) {
+          firebase.initializeApp(config);
+        }
+
+        var temp = this.remove_character('@',this.state.email);
+           var userEmail = temp.replace(/\./g, ''); 
+           console.log("userEmail is  " + userEmail);
+           firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
+            this.setState({phone: snapshot.val().phone});
+        
+
+          }.bind(this));
+
+          var user = firebase.auth().currentUser;
+          this.setState({name: user.displayName});
+
+    }
+
     render() {
         return(
-            <View style={styles.container}>
+            <View style={styles.contentContainer}>
                 <Text style ={styles.header}>Profile Details </Text>
                 <Text style = {styles.header2}>Name: </Text>
                 <StatusBar hidden/>
-                <FloatingLabelInput label = "Bryan Cheng" value ={this.state.nameText} onChangeText={(nameText)=>this.setState({nameText})} />
+                <FloatingLabelInput label = {this.state.name}  value ={this.state.nameText} onChangeText={(nameText)=>this.setState({nameText})} />
                 <Text style = {styles.header2}>Email: </Text>
                 <FloatingLabelInput label = {this.state.email} value ={this.state.emailText} onChangeText={(emailText)=>this.setState({emailText})} />
                 <Text style = {styles.header2}>Mobile Number:</Text>

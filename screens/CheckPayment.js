@@ -109,6 +109,8 @@ export default class CheckPayment extends Component {
             },
         }).then(response => {
             console.log(response);
+            this.props.navigation.navigate('PaymentSummary',
+            {merchantID: this.state.merchantID,amountPayable: this.state.amt,email: this.state.email,card: this.state.cardUsed});
         });
          }
          else{
@@ -148,7 +150,7 @@ export default class CheckPayment extends Component {
 
       
 
-      DATA2 = [];
+    DATA2 = [];
 
       componentWillMount() {
         var config = {

@@ -11,6 +11,8 @@ import MainMenu from './screens/MainMenu.js';
 import QRScanner from './screens/QRScanner.js';
 import PaymentPage from './screens/PaymentPage.js';
 import CheckPayment from './screens/CheckPayment.js';
+import ReceiptPage from './screens/ReceiptPage.js';
+import AddCardPayment from './screens/AddCardForPayment.js';
 
 // import WalletStackNavigation pages
 import WalletOverview from './screens/WalletOverview.js';
@@ -110,6 +112,23 @@ const QRStackNavigation = createStackNavigator(
             navigationOptions:
             {
                 headerTitle: 'Confirm Payment Details',
+            },
+        },
+        PaymentSummary:
+        {
+            screen: ReceiptPage,
+            navigationOptions:
+            {
+                headerTitle: 'Payment Summary',
+            },
+
+        },
+        AddCardPayment:
+        {
+            screen: AddCardPayment,
+            navigationOptions:
+            {
+                headerTitle: 'Add card Payment',
             },
         },
     },

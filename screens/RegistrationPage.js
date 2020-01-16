@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView,Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
-import { sha256, sha224 } from 'js-sha256';
 
 
 const styles = StyleSheet.create({
@@ -195,7 +194,7 @@ export default class RegistrationPage extends Component {
 
     }
 
-    UNSAFE_componentWillMount() {
+    componentWillMount() {
         var config = {
           apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
           authDomain: "aspdatabase-7458c.firebaseapp.com",
