@@ -249,8 +249,7 @@ export default class CheckPayment extends Component {
                 <Text>Card used : {this.state.cardUsed}</Text>
                 <Text>Vendor Name:</Text>
                 <Text>Merchant ID = {this.state.merchantID}</Text>
-                <Text>Input amount (S$):</Text>
-                <Text>{this.state.amt}</Text>
+                <Text>Input amount (S$): {this.state.amt}</Text>
                 <TouchableOpacity style={styles.button} 
                 onPress={this.onPayment}>
                     <Text>confirm payment</Text>

@@ -138,6 +138,23 @@ export default class ProfilePage extends Component {
           this.setState({name: user.displayName});
     }
 
+    EditDetails = ()=> {
+        if(this.state.nameText != '' && this.state.nameText != null && this.state.name != this.state.nameText)
+        {
+            this.setState({name: this.state.nameText});
+        }
+        if(this.state.phoneText != '' && this.state.phoneText != null && this.state.phone != this.state.phoneText)
+        {
+            this.setState({phone: this.state.phoneText});
+        }
+        
+        
+        
+        console.log('name: ' + this.state.name);
+        console.log('phone: '+this.state.phone);
+
+    }
+
     render() {
         return(
             <View style={styles.contentContainer}>
@@ -146,11 +163,11 @@ export default class ProfilePage extends Component {
                 <Text style = {styles.header2}>Email: </Text>
                 <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}> {this.state.email}</Text>
                 <Text style = {styles.header2}>Mobile Number:</Text>
-                <FloatingLabelInput label = {this.state.phone} value ={this.state.phoneText} onChangeText={(phoneText)=>this.setState({phoneText})} />
+                <FloatingLabelInput label = {this.state.phone} returnKeyType='done' keyboardType={'numeric'} value ={this.state.phoneText} onChangeText={(phoneText)=>this.setState({phoneText})} />
                 <Text style = {styles.header2}>Name: </Text>
                 <FloatingLabelInput label = {this.state.name}  value ={this.state.nameText} onChangeText={(nameText)=>this.setState({nameText})} />
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={this.EditDetails}>
                     <Text>Edit Details</Text>
                 </TouchableOpacity>
             </View>

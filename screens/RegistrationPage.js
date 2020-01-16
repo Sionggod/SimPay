@@ -194,7 +194,7 @@ export default class RegistrationPage extends Component {
 
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         var config = {
           apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
           authDomain: "aspdatabase-7458c.firebaseapp.com",
@@ -214,7 +214,7 @@ export default class RegistrationPage extends Component {
     render() {
       const { shift } = this.state;
       return (
-          <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
+        <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
             <ScrollView>
             <View style={styles.container}>
                 <Image
@@ -246,7 +246,7 @@ export default class RegistrationPage extends Component {
       const { height: windowHeight } = Dimensions.get('window');
       const keyboardHeight = event.endCoordinates.height;
       const currentlyFocusedField = TextInputState.currentlyFocusedField();
-      UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+      UIManager.measure(currentlyFocusedField, (_originX, _originY, _width, height, _pageX, pageY) => {
         const fieldHeight = height;
         const fieldTop = pageY;
         const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
