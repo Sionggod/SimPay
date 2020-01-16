@@ -5,18 +5,7 @@ import firebase from 'firebase';
 const styles = StyleSheet.create({
     contentContainer: {
         width: "100%",
-        aspectRatio: 2/1
-    },
-
-    container: {
-        flex: 1,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        backgroundColor: 'white',
-        width: 375,
-        height: 45,
-        padding: 24,
-        marginBottom: 15
+        aspectRatio: 1
     },
     header: {
         fontWeight:'bold',
@@ -48,8 +37,8 @@ const styles = StyleSheet.create({
 });
 
 class FloatingLabelInput extends Component {
-   
-    
+
+
     state = {
         isFocused: false,
     };
@@ -143,26 +132,24 @@ export default class ProfilePage extends Component {
            console.log("userEmail is  " + userEmail);
            firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
             this.setState({phone: snapshot.val().phone});
-        
-
           }.bind(this));
 
           var user = firebase.auth().currentUser;
           this.setState({name: user.displayName});
-
     }
 
     render() {
         return(
             <View style={styles.contentContainer}>
                 <Text style ={styles.header}>Profile Details </Text>
-                <Text style = {styles.header2}>Name: </Text>
                 <StatusBar hidden/>
-                <FloatingLabelInput label = {this.state.name}  value ={this.state.nameText} onChangeText={(nameText)=>this.setState({nameText})} />
                 <Text style = {styles.header2}>Email: </Text>
-                <FloatingLabelInput label = {this.state.email} value ={this.state.emailText} onChangeText={(emailText)=>this.setState({emailText})} />
+                <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}> {this.state.email}</Text>
                 <Text style = {styles.header2}>Mobile Number:</Text>
                 <FloatingLabelInput label = {this.state.phone} value ={this.state.phoneText} onChangeText={(phoneText)=>this.setState({phoneText})} />
+                <Text style = {styles.header2}>Name: </Text>
+                <FloatingLabelInput label = {this.state.name}  value ={this.state.nameText} onChangeText={(nameText)=>this.setState({nameText})} />
+
                 <TouchableOpacity style={styles.button}>
                     <Text>Edit Details</Text>
                 </TouchableOpacity>
