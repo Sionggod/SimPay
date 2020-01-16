@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {FlatList, StyleSheet, Text, View, Alert, Button, TouchableOpacity } from 'react-native';  
+import {FlatList, StyleSheet, Text, View, Alert, Button, TouchableOpacity, ImageBackground } from 'react-native';  
 import firebase from 'firebase';
 
 
@@ -17,15 +17,10 @@ const styles = StyleSheet.create({
     },
     item: {  
         alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 18,  
-        height: 70,  
-        width: 280,
-        backgroundColor: '#ccc',
-        borderColor: 'black',
-        borderWidth: 1,
+        justifyContent: 'center', 
+        height: 180,  
+        width: 300,
         marginVertical: 10,
-        borderRadius: 10,
         
     },  
     listItem: {
@@ -97,7 +92,7 @@ export default class WalletOverview extends Component {
         var it = //item.key + "\n" +
                  item.name + '\n' +
                  item.cardNum + '\n' +
-                 item.expiry + '\n' +
+                 item.expirymonth + '/'+ item.expiryyear + '\n' +
                  item.cvc;
 
                  Alert.alert(
@@ -162,7 +157,7 @@ export default class WalletOverview extends Component {
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, '');
         firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
-            data = {key:'',name:'',cardNum:'',expiry:'',cvc:''}
+            data = {key:'',name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:''}
              snapshot.forEach(function(child) {
                  
                  child.forEach(function(stuff) {
@@ -174,9 +169,13 @@ export default class WalletOverview extends Component {
                      {
                          data.cvc = stuff.val();
                      }
-                     else if(stuff.key == 'expiry')
+                     else if(stuff.key == 'expirymonth')
                      {
-                         data.expiry = stuff.val();
+                         data.expirymonth = stuff.val();
+                     }
+                     else if(stuff.key == 'expiryyear')
+                     {
+                         data.expiryyear = stuff.val();
                      }
                      else if(stuff.key == 'name')
                      {
@@ -185,7 +184,7 @@ export default class WalletOverview extends Component {
                  })
                  DATA.push(data);
                  
-                 data = {name:'',cardNum:'',expiry:'',cvc:''}
+                 data = {name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:''}
                });
                //getting card info
              //console.log('Lenght of Data is '+DATA.length);
@@ -220,13 +219,30 @@ export default class WalletOverview extends Component {
                     data={DATA}  
                     renderItem={({item}) =>  
                         <View style={styles.flat}>
-                             <TouchableOpacity style={styles.item} 
+                            {/* var type = "";
+                            if(item.cardtype == 'master'){
+                                type = '../assets/images/cardmaster.jpg';
+                            } else if (item.cardtype == 'visa'){
+                                type = '../assets/images/cardvisa.jpg';
+                            } */}
+                            <TouchableOpacity style={styles.item} 
                              onPress={this.getListViewItem.bind(this, item)}>
-                                <Text>
-                                    {'Card No: '+item.cardNum+'\n'+
-                                    'Card Name:'+item.name+'\n'+
-                                    'Card Expiry Date: ' +item.expiry+'            cvc: '+item.cvc}
+                            
+                            <ImageBackground source={require('../assets/images/cardmaster.jpg')} style={{width: '100%', height: '100%'}}>
+                                <Text style={{fontSize:18, fontWeight: 'bold', color:'white',paddingTop: '30%', paddingLeft: '10%'}}>
+                                    {'****   ****   ****   '+item.cardNum.substring(item.cardNum.length-4,item.cardNum.length)}
                                 </Text>
+                                <Text style={{fontSize:18, fontWeight: 'bold', color:'white',paddingTop: '1%',paddingLeft:'10%'}}>  
+                                    <Text style={{fontSize: 10}}>
+                                    {
+                                      item.name +   '                Good thru '
+                                    }
+                                    </Text>
+                                    {
+                                      item.expirymonth+'/'+item.expiryyear
+                                    }
+                                </Text>
+                            </ImageBackground>
                             </TouchableOpacity>
                         </View>
                     }keyExtractor={(item => item.cardNum)} 

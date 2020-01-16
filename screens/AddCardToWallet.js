@@ -77,12 +77,13 @@ export default class AddCardToWallet extends Component {
     }
 
     handleUpdate = () => {
-     
         var Valid = true;
+
         if(this.state.name == null|| this.state.cardnumber == null || 
           this.state.expiry == null|| this.state.cvc == null ){
           console.log("missing fields");
           var missingfields = "";
+
           if(this.state.name == null){
             missingfields += "Name not filled\n";
             Valid = false;
@@ -102,26 +103,30 @@ export default class AddCardToWallet extends Component {
             missingfields +="Security Code not filled\n";
             Valid = false;
           }
+          
           alert(missingfields);
         }
         else {
           var error = "";
+
           if(this.state.cardnumber.length < 12 || this.state.cardnumber.length > 19 ){
             Valid = false;
             error +='Card Number has invalid length\n';
     
-            if(isNaN(this.state.cardnumber))
-            {
+            if(isNaN(this.state.cardnumber)){
               Valid = false;
               error +='Please Input only numerical for card number!\n';
             }
-           }
+          }
     
           if(this.state.expiry != null){
-            if(isNaN(this.state.expiry))
-            {
+            if(isNaN(this.state.expiry)){
               Valid = false;
               error +='Please Input only numerical for expiry date!\n';
+            }
+            if(this.state.expiry.length != 4){
+              Valid = false;
+              error +='Expiry Date length invalid, Format is (MMYY)\n';
             }
           }
     
@@ -132,6 +137,7 @@ export default class AddCardToWallet extends Component {
               error +='Please Input only numerical for CVC!\n';
             }
           }
+
           if(!Valid)
             Alert.alert('Invalid Input', error);
         }
@@ -139,16 +145,17 @@ export default class AddCardToWallet extends Component {
        
         if(Valid)
         {
-
+          var str = this.state.expiry
           var temp = this.remove_character('@',this.state.email);
-        var userEmail = temp.replace(/\./g, ''); 
+          var userEmail = temp.replace(/\./g, ''); 
       
         firebase.database().ref('users/'+ userEmail+ '/Card/'+this.state.cardnumber).set(
           {
              name: this.state.name,
              cardno: this.state.cardnumber,
              cvc: this.state.cvc,
-             expiry: this.state.expiry,
+             expirymonth: str.substring(0,2),
+             expiryyear: str.substring(2,4),
          }
         ).then(()=> {
           this.props.navigation.navigate('WalletMain',{email: this.state.email});
