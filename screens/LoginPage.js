@@ -148,7 +148,7 @@ export default class LoginPage extends Component {
                 placeholder={'Password'}
                 secureTextEntry={true}
                 style={styles.input} />
-                <Text style={styles.forget} >Forget Password?</Text>
+                <Text style={styles.forget} onPress={()=>this.props.navigation.navigate('Forgot')}>Forget Password?</Text>
                 <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
                     <Text>Login</Text>
                 </TouchableOpacity>
