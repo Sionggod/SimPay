@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity} from 'react-native';
+import { FlatList,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity,ImageBackground } from 'react-native';
 import axios from 'axios';
 import firebase from 'firebase';
 var stripe = require('stripe-client')('pk_test_gA0EY3yvEnOSzsVZaWj3fAVb004i1hK2K9');
@@ -10,14 +10,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white'
+    },  
+    flat:{
+        flex: 1,
+          
     },
-    input: {
-        width: 200,
-        height: 45,
+    item: {  
+        alignItems: 'center',
+        justifyContent: 'center', 
+        height: 180,  
+        width: 300,
+        marginVertical: 10,
+        
+    },  
+    listItem: {
         padding: 10,
-        borderWidth: 1,
-        borderRadius: 5,
-        marginBottom: 15
+        marginVertical: 10,
+        backgroundColor: '#ccc',
+        borderColor: 'black',
+        borderWidth: 1
     },
     button: {
         alignItems: 'center',
@@ -26,23 +37,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 15,
         backgroundColor: '#99ccff',
-    },
-    flat:{
-        flex: 1,
-          
-    },
-    item: {  
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 18,  
-        height: 70,  
-        width: 280,
-        backgroundColor: '#ccc',
-        borderColor: 'black',
-        borderWidth: 1,
-        marginVertical: 10,
-        borderRadius: 10,
-        
     },
 });
 
@@ -85,8 +79,8 @@ export default class CheckPayment extends Component {
         var information = {
             card: {
                 number: this.state.Cardnumber,
-                exp_month: '02',
-                exp_year: '21',
+                exp_month: this.state.exp_month,
+                exp_year: this.state.exp_year,
                 cvc: this.state.cvc,
                 name: this.state.Cardname,
             }
@@ -142,7 +136,9 @@ export default class CheckPayment extends Component {
     }  
 
     ShowCardUsed(item){
-        this.setState({cardUsed: item.cardNum,Cardnumber: item.cardNum,Cardname: item.name,cvc: item.cvc});
+        this.setState({cardUsed: item.cardNum,Cardnumber: item.cardNum
+            ,Cardname: item.name,cvc: item.cvc,exp_month: item.expirymonth,
+            exp_year: item.expiryyear});
         // console.log(this.state.Cardnumber);
         // console.log(this.state.Cardname);
         // console.log(this.state.cvc);
@@ -186,26 +182,30 @@ export default class CheckPayment extends Component {
               snapshot.forEach(function(child) {
                
                   child.forEach(function(stuff) {
-                      if(stuff.key == 'cardno')
-                   {
-                       data.cardNum = stuff.val();
-                   }
-                   else if(stuff.key == 'cvc')
-                   {
-                       data.cvc = stuff.val();
-                   }
-                   else if(stuff.key == 'expiry')
-                   {
-                       data.expiry = stuff.val();
-                   }
-                   else if(stuff.key == 'name')
-                   {
-                       data.name = stuff.val();
-                   }
+                    if(stuff.key == 'cardno')
+                    {
+                        data.cardNum = stuff.val();
+                    }
+                    else if(stuff.key == 'cvc')
+                    {
+                        data.cvc = stuff.val();
+                    }
+                    else if(stuff.key == 'expirymonth')
+                    {
+                        data.expirymonth = stuff.val();
+                    }
+                    else if(stuff.key == 'expiryyear')
+                    {
+                        data.expiryyear = stuff.val();
+                    }
+                    else if(stuff.key == 'name')
+                    {
+                        data.name = stuff.val();
+                    }
                   })
                   DATA2.push(data);
                
-                  data = {name:'',cardNum:'',expiry:'',cvc:''}
+                  data = {name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:''}
               });
 
           
@@ -230,18 +230,34 @@ export default class CheckPayment extends Component {
         return (
             <View style={styles.container}>
 
-            <FlatList  
-            
+<FlatList  
                     data={DATA2}  
                     renderItem={({item}) =>  
                         <View style={styles.flat}>
-                             <TouchableOpacity style={styles.item} 
+                            {/* var type = "";
+                            if(item.cardtype == 'master'){
+                                type = '../assets/images/cardmaster.jpg';
+                            } else if (item.cardtype == 'visa'){
+                                type = '../assets/images/cardvisa.jpg';
+                            } */}
+                            <TouchableOpacity style={styles.item} 
                              onPress={this.getListViewItem.bind(this, item)}>
-                                <Text>
-                                    {'Card No: '+item.cardNum+'\n'+
-                                    'Card Name:'+item.name+'\n'+
-                                    'Card Expiry Date: ' +item.expiry+'            cvc: '+item.cvc}
+                            
+                            <ImageBackground source={require('../assets/images/cardmaster.jpg')} style={{width: '100%', height: '100%'}}>
+                                <Text style={{fontSize:18, fontWeight: 'bold', color:'white',paddingTop: '30%', paddingLeft: '10%'}}>
+                                    {'****   ****   ****   '+item.cardNum.substring(item.cardNum.length-4,item.cardNum.length)}
                                 </Text>
+                                <Text style={{fontSize:18, fontWeight: 'bold', color:'white',paddingTop: '1%',paddingLeft:'10%'}}>  
+                                    <Text style={{fontSize: 10}}>
+                                    {
+                                      item.name +   '                Good thru '
+                                    }
+                                    </Text>
+                                    {
+                                      item.expirymonth+'/'+item.expiryyear
+                                    }
+                                </Text>
+                            </ImageBackground>
                             </TouchableOpacity>
                         </View>
                     }keyExtractor={(item => item.cardNum)} 

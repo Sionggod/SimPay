@@ -117,9 +117,11 @@ export default class AddCardToWallet extends Component {
               Valid = false;
               error +='Please Input only numerical for card number!\n';
             }
+          
           }
     
           if(this.state.expiry != null){
+            var str = this.state.expiry;
             if(isNaN(this.state.expiry)){
               Valid = false;
               error +='Please Input only numerical for expiry date!\n';
@@ -128,6 +130,17 @@ export default class AddCardToWallet extends Component {
               Valid = false;
               error +='Expiry Date length invalid, Format is (MMYY)\n';
             }
+            if(str.substring(0,2) > 12 || str.substring(0,2) < 1)
+            {
+              Valid = false;
+              error +='Please Key in a Valid month\n';
+            }
+            if(str.substring(2,4) > 99 || str.substring(2,4) < 1)
+            {
+              Valid = false;
+              error +='Please Key in a valid Year\n';
+            }
+            
           }
     
           if(this.state.cvc != null){
@@ -241,7 +254,8 @@ export default class AddCardToWallet extends Component {
                 value={this.state.expiry}
                 onChangeText={(expiry)=>this.setState({expiry})}
                 placeholder={'MM/YY'}
-                style={styles.input} />
+                style={styles.input} 
+                maxLength = {4}/>
 
                 <Text style={styles.inputtext}>Security Code(CVC/CVV)</Text>  
                 <TextInput

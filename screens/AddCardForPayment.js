@@ -121,10 +121,25 @@ export default class AddCardForPayment extends Component {
            }
     
           if(this.state.expiry != null){
+            var str = this.state.expiry;
             if(isNaN(this.state.expiry))
             {
               Valid = false;
               error +='Please Input only numerical for expiry date!\n';
+            }
+            if(this.state.expiry.length != 4){
+              Valid = false;
+              error +='Expiry Date length invalid, Format is (MMYY)\n';
+            }
+            if(str.substring(0,2) > 12 || str.substring(0,2) < 1)
+            {
+              Valid = false;
+              error +='Please Key in a Valid month\n';
+            }
+            if(str.substring(2,4) > 99 || str.substring(2,4) < 1)
+            {
+              Valid = false;
+              error +='Please Key in a valid Year\n';
             }
           }
     
@@ -142,7 +157,7 @@ export default class AddCardForPayment extends Component {
        
         if(Valid)
         {
-
+          var str = this.state.expiry
           var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
       
@@ -151,7 +166,8 @@ export default class AddCardForPayment extends Component {
              name: this.state.name,
              cardno: this.state.cardnumber,
              cvc: this.state.cvc,
-             expiry: this.state.expiry,
+             expirymonth: str.substring(0,2),
+             expiryyear: str.substring(2,4),
          }
         ).then(()=> {
           this.props.navigation.navigate('ConfirmPayment',{email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount});
@@ -237,7 +253,8 @@ export default class AddCardForPayment extends Component {
                 value={this.state.expiry}
                 onChangeText={(expiry)=>this.setState({expiry})}
                 placeholder={'MM/YY'}
-                style={styles.input} />
+                style={styles.input} 
+                maxLength = {4}/>
 
                 <Text style={styles.inputtext}>Security Code(CVC/CVV)</Text>  
                 <TextInput

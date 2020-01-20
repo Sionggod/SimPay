@@ -96,10 +96,12 @@ export default class ProfilePage extends Component {
             email: null,
             phone: null,
             name: null,
+            verified: '(un-verified)',
             value: '',
             nameText: '',
             emailText: '',
             phoneText: '',
+            show: true,
 
         };
         handleTextChange = (newText) => this.setState({ value:newText});
@@ -136,6 +138,9 @@ export default class ProfilePage extends Component {
 
           var user = firebase.auth().currentUser;
           this.setState({name: user.displayName});
+          if(user.emailVerified){
+            this.setState({verified: '(verified)',show: false});
+          }
     }
 
     EditDetails = ()=> {
@@ -155,13 +160,28 @@ export default class ProfilePage extends Component {
 
     }
 
+    VerifyEmail = () => {
+
+        var user = firebase.auth().currentUser;
+
+        user.sendEmailVerification().then(function() {
+        // Email sent.
+        console.log('Email sent');
+        }).catch(function(error) {
+        // An error happened.
+        });
+
+       
+
+    }
+
     render() {
         return(
             <View style={styles.contentContainer}>
                 <Text style ={styles.header}>Profile Details </Text>
                 <StatusBar hidden/>
                 <Text style = {styles.header2}>Email: </Text>
-                <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}> {this.state.email}</Text>
+        <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}> {this.state.email}{this.state.verified}</Text>
                 <Text style = {styles.header2}>Mobile Number:</Text>
                 <FloatingLabelInput label = {this.state.phone} returnKeyType='done' keyboardType={'numeric'} value ={this.state.phoneText} onChangeText={(phoneText)=>this.setState({phoneText})} />
                 <Text style = {styles.header2}>Name: </Text>
@@ -170,6 +190,10 @@ export default class ProfilePage extends Component {
                 <TouchableOpacity style={styles.button} onPress={this.EditDetails}>
                     <Text>Edit Details</Text>
                 </TouchableOpacity>
+                {this.state.show ? (<TouchableOpacity style={styles.button} onPress={this.VerifyEmail}>
+                    <Text>Verify Email</Text>
+                </TouchableOpacity>) : null }
+                
             </View>
         );
     }
