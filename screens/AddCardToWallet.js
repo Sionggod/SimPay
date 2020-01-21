@@ -181,6 +181,8 @@ export default class AddCardToWallet extends Component {
         }
         // code below is to get token from stripe api
             var card = await stripe.createToken(information);
+            if(card.id != null)
+            {
             this.state.brand = card.card.brand;
           
     
@@ -203,6 +205,11 @@ export default class AddCardToWallet extends Component {
       }).catch((error) => {
   
       });
+    }
+    else
+    {
+      console.log('input valid card details');
+    }
 
           // missingfields = "";
           // missingfields +=this.state.name;

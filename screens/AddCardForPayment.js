@@ -179,6 +179,8 @@ export default class AddCardForPayment extends Component {
       }
       // code below is to get token from stripe api
           var card = await stripe.createToken(information);
+          if(card.id != null)
+          {
           this.state.brand = card.card.brand;
       
         firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.cardnumber)).set(
@@ -199,7 +201,10 @@ export default class AddCardForPayment extends Component {
       }).catch((error) => {
   
       });
-
+    }
+    else{
+      console.log('input valid card details');
+    }
           // missingfields = "";
           // missingfields +=this.state.name;
           // missingfields +="\n";
