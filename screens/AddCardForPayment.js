@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, TouchableOpacity, Button, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
+import SimpleCrypto from "simple-crypto-js";
+import { sha256, sha224 } from 'js-sha256';
+
+var _secretKey = "123456";
+ 
+var simpleCrypto = new SimpleCrypto(_secretKey);
 
 
 const styles = StyleSheet.create({
@@ -161,15 +167,16 @@ export default class AddCardForPayment extends Component {
           var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
       
-        firebase.database().ref('users/'+ userEmail+ '/Card/'+this.state.cardnumber).set(
+        firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.cardnumber)).set(
           {
-             name: this.state.name,
-             cardno: this.state.cardnumber,
-             cvc: this.state.cvc,
-             expirymonth: str.substring(0,2),
-             expiryyear: str.substring(2,4),
+            name: simpleCrypto.encrypt(this.state.name),
+            cardno: simpleCrypto.encrypt(this.state.cardnumber),
+            cvc: simpleCrypto.encrypt(this.state.cvc),
+            expirymonth: simpleCrypto.encrypt(str.substring(0,2)),
+            expiryyear: simpleCrypto.encrypt(str.substring(2,4)),
          }
         ).then(()=> {
+          this.props.navigation.navigate('WalletMain',{email: this.state.email});
           this.props.navigation.navigate('ConfirmPayment',{email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount});
           console.log(this.state.name ,'Card inserted');
        

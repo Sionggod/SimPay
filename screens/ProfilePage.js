@@ -142,6 +142,7 @@ export default class ProfilePage extends Component {
             this.setState({verified: '(verified)',show: false});
           }
     }
+ 
 
     EditDetails = ()=> {
         if(this.state.nameText != '' && this.state.nameText != null && this.state.name != this.state.nameText)
@@ -167,6 +168,7 @@ export default class ProfilePage extends Component {
         user.sendEmailVerification().then(function() {
         // Email sent.
         console.log('Email sent');
+        this.setState({show: false});
         }).catch(function(error) {
         // An error happened.
         });

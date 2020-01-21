@@ -3,6 +3,11 @@ import { FlatList,Alert, StyleSheet, TextInput, Text, View, Image, Button, Touch
 import axios from 'axios';
 import firebase from 'firebase';
 var stripe = require('stripe-client')('pk_test_gA0EY3yvEnOSzsVZaWj3fAVb004i1hK2K9');
+import SimpleCrypto from "simple-crypto-js";
+
+var _secretKey = "123456";
+ 
+var simpleCrypto = new SimpleCrypto(_secretKey);
 
 const styles = StyleSheet.create({
     container: {
@@ -184,23 +189,23 @@ export default class CheckPayment extends Component {
                   child.forEach(function(stuff) {
                     if(stuff.key == 'cardno')
                     {
-                        data.cardNum = stuff.val();
+                        data.cardNum = simpleCrypto.decrypt(stuff.val());
                     }
                     else if(stuff.key == 'cvc')
                     {
-                        data.cvc = stuff.val();
+                        data.cvc = simpleCrypto.decrypt(stuff.val());
                     }
                     else if(stuff.key == 'expirymonth')
                     {
-                        data.expirymonth = stuff.val();
+                        data.expirymonth = simpleCrypto.decrypt(stuff.val());
                     }
                     else if(stuff.key == 'expiryyear')
                     {
-                        data.expiryyear = stuff.val();
+                        data.expiryyear = simpleCrypto.decrypt(stuff.val());
                     }
                     else if(stuff.key == 'name')
                     {
-                        data.name = stuff.val();
+                        data.name = simpleCrypto.decrypt(stuff.val());
                     }
                   })
                   DATA2.push(data);

@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import {FlatList, StyleSheet, Text, View, Alert, Button, TouchableOpacity, ImageBackground } from 'react-native';  
 import firebase from 'firebase';
+import SimpleCrypto from "simple-crypto-js";
+import { sha256, sha224 } from 'js-sha256';
 
+var _secretKey = "123456";
+ 
+var simpleCrypto = new SimpleCrypto(_secretKey);
 
 
 const styles = StyleSheet.create({
@@ -64,7 +69,7 @@ export default class WalletOverview extends Component {
     ConfirmRemoveCard = (item) => {
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, '');
-        firebase.database().ref('users/'+ userEmail + '/Card/'+item.cardNum).remove();
+        firebase.database().ref('users/'+ userEmail + '/Card/'+sha256(item.cardNum)).remove();
         this.componentWillMount();
           
     }
@@ -163,23 +168,23 @@ export default class WalletOverview extends Component {
                  child.forEach(function(stuff) {
                      if(stuff.key == 'cardno')
                      {
-                         data.cardNum = stuff.val();
+                         data.cardNum = simpleCrypto.decrypt(stuff.val());
                      }
                      else if(stuff.key == 'cvc')
                      {
-                         data.cvc = stuff.val();
+                         data.cvc = simpleCrypto.decrypt(stuff.val());
                      }
                      else if(stuff.key == 'expirymonth')
                      {
-                         data.expirymonth = stuff.val();
+                         data.expirymonth = simpleCrypto.decrypt(stuff.val());
                      }
                      else if(stuff.key == 'expiryyear')
                      {
-                         data.expiryyear = stuff.val();
+                         data.expiryyear = simpleCrypto.decrypt(stuff.val());
                      }
                      else if(stuff.key == 'name')
                      {
-                         data.name = stuff.val();
+                         data.name = simpleCrypto.decrypt(stuff.val());
                      }
                  })
                  DATA.push(data);
@@ -196,7 +201,8 @@ export default class WalletOverview extends Component {
          });
 
       }
-     
+
+      
     render() {
 
          if(this.state.loading) {
@@ -212,7 +218,7 @@ export default class WalletOverview extends Component {
                       { 'Existing Card'}
                    </Text>
                    <Text style={{fontSize:15,justifyContent: 'flex-end' }}> 
-                      { 'Select The Card you wish to remove'}
+                      { 'Select The Card you wish to remove'} 
                    </Text>
                </View>
                 <FlatList  
