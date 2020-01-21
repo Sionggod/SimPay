@@ -3,6 +3,7 @@ import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Te
 import firebase from 'firebase';
 import SimpleCrypto from "simple-crypto-js";
 import { sha256, sha224 } from 'js-sha256';
+var stripe = require('stripe-client')('pk_test_gA0EY3yvEnOSzsVZaWj3fAVb004i1hK2K9');
 
 var _secretKey = "123456";
  
@@ -85,7 +86,7 @@ export default class AddCardForPayment extends Component {
         return str.replace(reg, '')
     }
 
-    handleUpdate = () => {
+    handleUpdate = async () => {
      
         var Valid = true;
         if(this.state.name == null|| this.state.cardnumber == null || 
@@ -166,6 +167,19 @@ export default class AddCardForPayment extends Component {
           var str = this.state.expiry
           var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
+
+        var information = {
+          card: {
+              number: this.state.cardnumber,
+              exp_month: str.substring(0,2),
+              exp_year: str.substring(2,4),
+              cvc: this.state.cvc,
+              name: this.state.name,
+          }
+      }
+      // code below is to get token from stripe api
+          var card = await stripe.createToken(information);
+          this.state.brand = card.card.brand;
       
         firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.cardnumber)).set(
           {
@@ -174,6 +188,7 @@ export default class AddCardForPayment extends Component {
             cvc: simpleCrypto.encrypt(this.state.cvc),
             expirymonth: simpleCrypto.encrypt(str.substring(0,2)),
             expiryyear: simpleCrypto.encrypt(str.substring(2,4)),
+            brand: simpleCrypto.encrypt(this.state.brand),
          }
         ).then(()=> {
           this.props.navigation.navigate('WalletMain',{email: this.state.email});

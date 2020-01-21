@@ -186,10 +186,28 @@ export default class WalletOverview extends Component {
                      {
                          data.name = simpleCrypto.decrypt(stuff.val());
                      }
+                     else if(stuff.key == 'brand')
+                     {
+                        var brand = simpleCrypto.decrypt(stuff.val());
+                        console.log(brand);
+                        if(brand == 'MasterCard')
+                        {
+                            data.brand = require('../assets/images/cardmaster.jpg');
+                        }
+                        else if(brand == 'Visa')
+                        {
+                            data.brand = require('../assets/images/cardvisa.jpg');
+                        }
+                        else
+                        {
+                            data.brand = require('../assets/images/carddefault.jpg');
+                        }
+                     }
                  })
+                 console.log(data.brand);
                  DATA.push(data);
                  
-                 data = {name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:''}
+                 data = {name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:'',brand:''}
                });
                //getting card info
              //console.log('Lenght of Data is '+DATA.length);
@@ -225,16 +243,9 @@ export default class WalletOverview extends Component {
                     data={DATA}  
                     renderItem={({item}) =>  
                         <View style={styles.flat}>
-                            {/* var type = "";
-                            if(item.cardtype == 'master'){
-                                type = '../assets/images/cardmaster.jpg';
-                            } else if (item.cardtype == 'visa'){
-                                type = '../assets/images/cardvisa.jpg';
-                            } */}
                             <TouchableOpacity style={styles.item} 
                              onPress={this.getListViewItem.bind(this, item)}>
-                            
-                            <ImageBackground source={require('../assets/images/cardmaster.jpg')} style={{width: '100%', height: '100%'}}>
+                            <ImageBackground style={{width: '100%', height: '100%'}} source={item.brand}>
                                 <Text style={{fontSize:18, fontWeight: 'bold', color:'white',paddingTop: '30%', paddingLeft: '10%'}}>
                                     {'****   ****   ****   '+item.cardNum.substring(item.cardNum.length-4,item.cardNum.length)}
                                 </Text>
