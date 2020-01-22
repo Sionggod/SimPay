@@ -101,7 +101,6 @@ export default class ProfilePage extends Component {
             nameText: '',
             emailText: '',
             phoneText: '',
-            show: true,
 
         };
         handleTextChange = (newText) => this.setState({ value:newText});
@@ -139,7 +138,7 @@ export default class ProfilePage extends Component {
           var user = firebase.auth().currentUser;
           this.setState({name: user.displayName});
           if(user.emailVerified){
-            this.setState({verified: '(verified)',show: false});
+            this.setState({verified: '(verified)'});
           }
     }
  
@@ -148,32 +147,32 @@ export default class ProfilePage extends Component {
         if(this.state.nameText != '' && this.state.nameText != null && this.state.name != this.state.nameText)
         {
             this.setState({name: this.state.nameText});
+            var user = firebase.auth().currentUser;
+             user.updateProfile({
+                displayName: this.state.nameText,
+                }).then(() => {
+                // Update successful.
+                this.setState({nameText: ''});
+                }).catch(function(error) {
+                 // An error happened.
+                });
         }
         if(this.state.phoneText != '' && this.state.phoneText != null && this.state.phone != this.state.phoneText)
         {
             this.setState({phone: this.state.phoneText});
+            var temp = this.remove_character('@',this.state.email);
+            var userEmail = temp.replace(/\./g, ''); 
+  
+            // Get a key for a new Post.
+            firebase.database().ref('users/'+ userEmail).update(
+                {
+                   phone: this.state.phoneText,
+                
+                }).then(() =>{
+                    this.setState({phoneText: ''});
+                });
         }
-        
-        
-        
-        console.log('name: ' + this.state.name);
-        console.log('phone: '+this.state.phone);
 
-    }
-
-    VerifyEmail = () => {
-
-        var user = firebase.auth().currentUser;
-
-        user.sendEmailVerification().then(function() {
-        // Email sent.
-        console.log('Email sent');
-        this.setState({show: false});
-        }).catch(function(error) {
-        // An error happened.
-        });
-
-       
 
     }
 
@@ -192,9 +191,6 @@ export default class ProfilePage extends Component {
                 <TouchableOpacity style={styles.button} onPress={this.EditDetails}>
                     <Text>Edit Details</Text>
                 </TouchableOpacity>
-                {this.state.show ? (<TouchableOpacity style={styles.button} onPress={this.VerifyEmail}>
-                    <Text>Verify Email</Text>
-                </TouchableOpacity>) : null }
                 
             </View>
         );

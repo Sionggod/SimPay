@@ -87,7 +87,19 @@ export default class RegistrationPage extends Component {
     }
 
 
-      
+    VerifyEmail = () => {
+
+      var user = firebase.auth().currentUser;
+
+      user.sendEmailVerification().then(()=> {
+      // Email sent.
+      console.log('Email sent');
+
+      }).catch(function(error) {
+      // An error happened.
+      });
+
+  }
 
     handleSubmit = (event) => {
   
@@ -159,11 +171,16 @@ export default class RegistrationPage extends Component {
             if(errorMessage == 'The email address is already in use by another account.')
             {
               Alert.alert('Account Exists', 'Email: ' + tempEmail + ' already exists');
+              // this is to ensure database do not add mroe than 1 account details
+              Valid = false;
             }
            
 
           });
 
+          // this is to prevent double account creation in database as lower case letters are not detected
+          if(Valid)
+          {
           var temp = this.remove_character('@',this.state.email);
            var userEmail = temp.replace(/\./g, ''); 
            console.log("userEmail is  " + userEmail);
@@ -174,11 +191,11 @@ export default class RegistrationPage extends Component {
                 {
                     phone: this.state.Hp,
                 }
-              ).then(()=> { Alert.alert('Account Created', 'Your account has been created successfully', [
+              ).then(()=> { Alert.alert('Account Created', 'An email as been sent to your email account for verification', [
                   {text: 'OK', onPress: ()=> this.props.navigation.navigate('Login')}
                 ]);
                 console.log(this.state.name ,'inserted');
-            
+                this.VerifyEmail();
               
             }).catch((error) => {
   
@@ -187,6 +204,7 @@ export default class RegistrationPage extends Component {
             }
 
           }.bind(this));
+        }
 
         }
         else

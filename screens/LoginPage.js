@@ -71,17 +71,40 @@ export default class LoginPage extends Component {
         let reg = new RegExp(str_to_remove)
         return str.replace(reg, '')
     }
+    VerifyEmail = () => {
+
+      var user = firebase.auth().currentUser;
+
+      user.sendEmailVerification().then(()=> {
+      // Email sent.
+      console.log('Email sent');
+
+      }).catch(function(error) {
+      // An error happened.
+      });
+
+  }
 
     handleLogin = (event) => {
         if(this.state.email != null && this.state.password != null){
           console.log(this.state.email + " " + this.state.password);
           firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(function(){
-
+            var user = firebase.auth().currentUser;
+            // if user is verified then log him in
+            if(user.emailVerified){
               this.props.navigation.navigate('WalletMain',{email: this.state.email});
               this.props.navigation.navigate('ProfileMain',{email: this.state.email});
               this.props.navigation.navigate('QRMain',{email: this.state.email});
-              
-           
+            }
+            else{
+              Alert.alert('Account un-verified', 'An Email has been sent to your email for verification');
+              this.VerifyEmail();
+              firebase.auth().signOut().then(function() {
+                console.log('Signed Out');
+              }, function(error) {
+                console.error('Sign Out Error', error);
+              });
+            }
 
           }.bind(this)).catch(function(error) {
             // Handle Errors here.

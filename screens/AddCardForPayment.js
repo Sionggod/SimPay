@@ -5,10 +5,6 @@ import SimpleCrypto from "simple-crypto-js";
 import { sha256, sha224 } from 'js-sha256';
 var stripe = require('stripe-client')('pk_test_gA0EY3yvEnOSzsVZaWj3fAVb004i1hK2K9');
 
-var _secretKey = "123456";
- 
-var simpleCrypto = new SimpleCrypto(_secretKey);
-
 
 const styles = StyleSheet.create({
     container: {
@@ -79,6 +75,15 @@ export default class AddCardForPayment extends Component {
     componentWillUnmount() {
       this.keyboardDidShowSub.remove();
       this.keyboardDidHideSub.remove();
+    }
+
+    reduction(email) {
+      temp = sha256(email);
+      for(i=0; i < 3;i++)
+      {
+        temp = sha256(temp.substring(0,32));
+      }
+      return temp;
     }
 
     remove_character(str_to_remove, str) {
@@ -183,6 +188,10 @@ export default class AddCardForPayment extends Component {
           {
           this.state.brand = card.card.brand;
       
+          var _secretKey = this.reduction(this.state.email);
+ 
+          var simpleCrypto = new SimpleCrypto(_secretKey);
+
         firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.cardnumber)).set(
           {
             name: simpleCrypto.encrypt(this.state.name),

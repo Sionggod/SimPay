@@ -4,10 +4,8 @@ import axios from 'axios';
 import firebase from 'firebase';
 var stripe = require('stripe-client')('pk_test_gA0EY3yvEnOSzsVZaWj3fAVb004i1hK2K9');
 import SimpleCrypto from "simple-crypto-js";
+import { sha256} from 'js-sha256';
 
-var _secretKey = "123456";
- 
-var simpleCrypto = new SimpleCrypto(_secretKey);
 
 const styles = StyleSheet.create({
     container: {
@@ -109,7 +107,7 @@ export default class CheckPayment extends Component {
         }).then(response => {
             console.log(response);
             this.props.navigation.navigate('PaymentSummary',
-            {merchantID: this.state.merchantID,amountPayable: this.state.amt,email: this.state.email,card: this.state.cardUsed});
+            {merchantID: this.state.merchantID,amountPayable: this.state.amt,email: this.state.email,card: this.state.Cardnumber});
         });
          }
          else{
@@ -125,7 +123,7 @@ export default class CheckPayment extends Component {
           console.log(item.cardNum);
                  Alert.alert(
                     'Card Holder : ' + item.name,
-                    'Card number : ' + item.cardNum,
+                    'Card number : ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length),
                     [
                       {text: 'Confirm', onPress: () => this.ShowCardUsed(item)},
                       {
@@ -141,7 +139,8 @@ export default class CheckPayment extends Component {
     }  
 
     ShowCardUsed(item){
-        this.setState({cardUsed: item.cardNum,Cardnumber: item.cardNum
+        var carddetail = '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length);
+        this.setState({cardUsed: carddetail,Cardnumber: item.cardNum
             ,Cardname: item.name,cvc: item.cvc,exp_month: item.expirymonth,
             exp_year: item.expiryyear});
         // console.log(this.state.Cardnumber);
@@ -152,6 +151,15 @@ export default class CheckPayment extends Component {
       
 
     DATA2 = [];
+
+    reduction(email) {
+        temp = sha256(email);
+        for(i=0; i < 3;i++)
+        {
+          temp = sha256(temp.substring(0,32));
+        }
+        return temp;
+      }
 
       componentWillMount() {
         var config = {
@@ -179,6 +187,11 @@ export default class CheckPayment extends Component {
            //Get user token
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
+
+        var _secretKey = this.reduction(this.state.email);
+ 
+        var simpleCrypto = new SimpleCrypto(_secretKey);
+
         firebase.database().ref('users/' + userEmail+'/Card/')
         .once('value',function(snapshot) {
           var exists = (snapshot.val() !== null);

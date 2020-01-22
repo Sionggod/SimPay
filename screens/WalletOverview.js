@@ -4,9 +4,6 @@ import firebase from 'firebase';
 import SimpleCrypto from "simple-crypto-js";
 import { sha256, sha224 } from 'js-sha256';
 
-var _secretKey = "123456";
- 
-var simpleCrypto = new SimpleCrypto(_secretKey);
 
 
 const styles = StyleSheet.create({
@@ -77,7 +74,7 @@ export default class WalletOverview extends Component {
     AlertRemoveCard = (item) => {
         Alert.alert(
             'Remove\n',
-            'Card number : ' + item.cardNum,
+            'Card number : ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length),
             [
               {text: 'Yes', onPress: () => this.ConfirmRemoveCard(item)},
               {
@@ -102,7 +99,7 @@ export default class WalletOverview extends Component {
 
                  Alert.alert(
                     'Card Holder : ' + item.name,
-                    'Card number : ' + item.cardNum,
+                    'Card number : ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length),
                     [
                       {text: 'Confirm', onPress: () => this.AlertRemoveCard(item)},
                       {
@@ -139,6 +136,15 @@ export default class WalletOverview extends Component {
         }
     }
 
+    reduction(email){
+        temp = sha256(email);
+        for(i=0; i < 3;i++)
+        {
+          temp = sha256(temp.substring(0,32));
+        }
+        return temp;
+      }
+
     DATA = [];
     
     
@@ -161,6 +167,11 @@ export default class WalletOverview extends Component {
         DATA = [];
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, '');
+
+        var _secretKey = this.reduction(this.state.email);
+ 
+        var simpleCrypto = new SimpleCrypto(_secretKey);
+
         firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
             data = {key:'',name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:''}
              snapshot.forEach(function(child) {
