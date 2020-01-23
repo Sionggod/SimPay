@@ -46,7 +46,11 @@ export default class SidebarMenu extends Component {
             {
                 navOptionName: 'Profile',
                 screenToNavigate: 'ProfileStack',
-            }
+            },
+            {
+                navOptionName: 'Transaction',
+                screenToNavigate: 'TransactionStack',
+            },
         ];
     }
 

@@ -24,6 +24,9 @@ import AddCardToWallet from './screens/AddCardToWallet.js';
 // import ProfileStackNavigation pages
 import ProfilePage from './screens/ProfilePage.js';
 
+//import TransactionNavigation page
+import TransactionPage from './screens/TransactionPage.js'
+
 // import custom sidebar for drawer navigation
 import SidebarMenu from './screens/SidebarMenu.js';
 
@@ -68,6 +71,20 @@ const WalletStackNavigation = createStackNavigator(
             },
         }
     }
+);
+
+//profile transaction navigation
+const TransactionNavigation = createStackNavigator(
+  {
+      Transaction:
+      {
+          screen: TransactionPage,
+          navigationOptions: ({ navigation }) => ({
+            headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+            headerTitle: 'Transaction History',
+        })
+      },
+  },
 );
 
 // profile stack navigation
@@ -156,6 +173,10 @@ const DrawerNavigation = createDrawerNavigator(
             ProfileStack:
             {
                 screen: ProfileStackNavigation,
+            },
+            TransactionStack:
+            {
+                screen: TransactionNavigation,
             },
     },
     {
