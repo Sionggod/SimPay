@@ -81,7 +81,7 @@ const TransactionNavigation = createStackNavigator(
           screen: TransactionPage,
           navigationOptions: ({ navigation }) => ({
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
-            headerTitle: 'Transaction History',
+            //headerTitle: 'Transaction History',
         })
       },
   },
@@ -189,6 +189,7 @@ const DrawerNavigation = createDrawerNavigator(
 // switch navigation
 const SwitchNavigation = createSwitchNavigator(
     {
+        Transaction: {screen: TransactionPage},
         Login: { screen: LoginPage },
         Registration: { screen: RegistrationPage },
         Landing: { screen: DrawerNavigation},

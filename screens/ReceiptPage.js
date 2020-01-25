@@ -120,10 +120,14 @@ export default class ReceiptPage extends Component {
         firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.cardUsed)+'/Transactions/'+sha256(DateText+TimeText)).set(
             {
   
-               date: simpleCrypto.encrypt(DateText),
-               time: simpleCrypto.encrypt(TimeText),
-               amount: simpleCrypto.encrypt(this.state.amt),
-               paid: simpleCrypto.encrypt(this.state.merchantID),
+            //    date: simpleCrypto.encrypt(DateText),
+            //    time: simpleCrypto.encrypt(TimeText),
+            //    amount: simpleCrypto.encrypt(this.state.amt),
+            //    paid: simpleCrypto.encrypt(this.state.merchantID),
+                date: DateText,
+                time: TimeText,
+                amount: this.state.amt,
+                paid: this.state.merchantID,
            }
           ).then(()=> {
             

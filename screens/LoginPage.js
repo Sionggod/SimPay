@@ -87,6 +87,7 @@ export default class LoginPage extends Component {
 
     handleLogin = (event) => {
         if(this.state.email != null && this.state.password != null){
+          this.state.email = this.state.email.toLowerCase();
           console.log(this.state.email + " " + this.state.password);
           firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(function(){
             var user = firebase.auth().currentUser;
@@ -94,6 +95,7 @@ export default class LoginPage extends Component {
             if(user.emailVerified){
               this.props.navigation.navigate('WalletMain',{email: this.state.email});
               this.props.navigation.navigate('ProfileMain',{email: this.state.email});
+              this.props.navigation.navigate('Transaction',{email: this.state.email});
               this.props.navigation.navigate('QRMain',{email: this.state.email});
             }
             else{

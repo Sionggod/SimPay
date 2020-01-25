@@ -181,6 +181,7 @@ export default class RegistrationPage extends Component {
           // this is to prevent double account creation in database as lower case letters are not detected
           if(Valid)
           {
+            this.state.email = this.state.email.toLowerCase();
           var temp = this.remove_character('@',this.state.email);
            var userEmail = temp.replace(/\./g, ''); 
            console.log("userEmail is  " + userEmail);

@@ -10,7 +10,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white'
     },  
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
         width: 150,
-        padding: 10,
+        padding: "5%",
         borderRadius: 5,
         marginBottom: 15,
         backgroundColor: '#99ccff',
@@ -72,44 +72,345 @@ export default class WalletOverview extends Component {
         super(props);
         const {navigation} = this.props;
         this.state = {
-            duration: "",
+            duration: 1,
             card:"",
-            curmonth: new Date().getMonth(),
-            curyear: new Date().getFullYear(),
-            email: null,
+            email: this.props.navigation.getParam('email'),
             loading: true,
-            token: '',
             called: false,
+            ThreeMonths: [],
+            FirstMonth: [],
+            SecondMonth: [],
+            ThirdMonth: [],
+            CardsAvailable: [],
+
         }
-        this.state.email=(navigation.getParam('email'));
-        console.log('overview' + this.state.email);
+        console.log('Email used ' + this.state.email);
     }  
 
 
-    DATA = [];
-    
-    GetSectionListItem=(item)=>{
-        Alert.alert(item)
-      }
-
-    RetrieveArray=(item)=>{
-
+    remove_character(str_to_remove, str) {
+        let reg = new RegExp(str_to_remove)
+        return str.replace(reg, '')
     }
 
-    render() {
-        var A = ['Apple', 'Apricot', 'Avocado'] ;
-        var B = ['Banana', 'Blackberry', 'Blackcurrant', 'Blueberry', 'Boysenberry','a','b','c','d','e','f','p',',','l','k'] ;
-        var C = ['Cherry', 'Coconut','l','k,','g',this.state.curmonth] ;
-        var D =[];
+    get_Month(month)
+    {
+        if(month == 1)
+        return 'January';
+        else if(month == 2)
+        return 'Febuary';
+        else if(month == 3)
+        return 'March';
+        else if(month == 4)
+        return 'April';
+        else if(month == 5)
+        return 'May';
+        else if(month == 6)
+        return 'June';
+        else if(month == 7)
+        return 'July';
+        else if(month == 8)
+        return 'August';
+        else if(month == 9)
+        return 'September';
+        else if(month == 10)
+        return 'October';
+        else if(month == 11)
+        return 'November';
+        else  
+        return 'December';
+    } 
+
+    SortByTiming = (MonthSet) => {
+        tempMonth = [];
+        while(MonthSet.length != 0)
+        {
+            var largest = MonthSet[0].totalSeconds;
+            var index = 0;
+            for(i =0; i < MonthSet.length;i++)
+            {
+                if(MonthSet[i].totalSeconds > largest)
+                {
+                    largest = MonthSet[i].totalSeconds;
+                    index = i;
+                }
+            }
+            tempMonth.push(MonthSet[index]);
+            MonthSet.splice(index,1);
+        }
+        return tempMonth;
+    }
+
+    SortByMonths = () => {
+        // console.log(this.state.ThreeMonths[2].mnth + "//" + this.state.ThreeMonths[2].yr)
+        // console.log(DATA3[0].month + "||" + this.DATA3[0].year);
+        for(i =0; i < this.state.ThreeMonths.length;i++)
+        {
+            for(j =0; j < DATA3.length;j++)
+            {
+                //Push to first month
+                if(i == 0)
+                {
+                    if(DATA3[j].month == this.state.ThreeMonths[0].month && DATA3[j].year == this.state.ThreeMonths[0].year)
+                    {
+                        this.state.FirstMonth.push(DATA3[j]);
+                    }
+                }
+                else if(i == 1)
+                {
+                    if(DATA3[j].month == this.state.ThreeMonths[1].month && DATA3[j].year == this.state.ThreeMonths[1].year)
+                    {
+                        this.state.SecondMonth.push(DATA3[j]);
+                    }
+                }
+                else if(i == 2)
+                {
+                    if(DATA3[j].month == this.state.ThreeMonths[2].month && DATA3[j].year == this.state.ThreeMonths[2].year)
+                    {
+                        this.state.ThirdMonth.push(DATA3[j]);
+                    }
+                }
+
+
+            }
+        }
+    }
+    
+    Get3months = () => {
+        var month = 1; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        Months = [];
+        currDate = {month: month,year: year};
+            Months.push(currDate);
+        // pushing the next 2 months depending on conditions
+        for(i=0; i < 2;i++)
+        {
+            month--;
+            //if current month is january the prev 2 months will be dec and nov
+            if(month == 0)
+            {
+                month = 12;
+                year--;
+            }
+            currDate = {month: month,year: year};
+            Months.push(currDate);
+        }
+        // for(i =0; i < Months.length;i++)
+        // {
+        //     console.log(Months[i].month + "/" + Months[i].year);
+        // }
+        this.state.ThreeMonths = Months;
+        
+    }
+
+    SortbyDate = () => {
+
+        tempData = [];
+        while(DATA3.length != 0)
+        {
+            var largest = (DATA3[0].year*365) + (DATA3[0].month*30) + (DATA3[0].day*1);
+            var index = 0;
+            for(i =0; i < DATA3.length;i++)
+            {
+                var curr = (DATA3[i].year*365) + (DATA3[i].month*30) + (DATA3[i].day*1);
+                if(curr > largest)
+                {
+                    largest = curr;
+                    index = i;
+                }
+
+            }
+            tempData.push(DATA3[index]);
+            DATA3.splice(index,1);
+        }
+        // for(i=0; i < tempData.length;i++)
+        // console.log(tempData[i].year);
+        DATA3 = tempData;
+    }
+
+    DATA3 =[];
+
+    getCards = () => {
+        var temp = this.remove_character('@',this.state.email);
+        var userEmail = temp.replace(/\./g, ''); 
+
+        var _secretKey = this.reduction(this.state.email);
+ 
+        var simpleCrypto = new SimpleCrypto(_secretKey);
+
+        Cards = []
+        firebase.database().ref('users/'+ userEmail+ '/Card')
+        .once('value',function(snapshot){
+
+            snapshot.forEach(function(child) {
+                 
+                child.forEach(function(stuff) {
+                    if(stuff.key == 'cardno')
+                    {
+                        Cards.push(simpleCrypto.decrypt(stuff.val()));
+                    }
+                })
+                
+              });
+        }.bind(this)).then(() => {
+            this.state.card = Cards[0];
+            this.state.CardsAvailable = Cards;
+            this.getTransactions();
+            this.setState({loading: false})
+         });
+
+    }
+   
+    getTransactions = () =>{
+        console.log('im running');
+        var temp = this.remove_character('@',this.state.email);
+        var userEmail = temp.replace(/\./g, ''); 
+
+        var _secretKey = this.reduction(this.state.email);
+ 
+        var simpleCrypto = new SimpleCrypto(_secretKey);
+        DATA3 =[];
+        this.state.FirstMonth = [];
+        this.state.SecondMonth = [];
+        this.state.ThirdMonth = [];
+        firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.card)+'/Transactions')
+        .once('value',function(snapshot){
+            data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:''};
+            snapshot.forEach(function(child) {
+                 
+                child.forEach(function(stuff) {
+                   if(stuff.key == 'amount')
+                   {
+                    // data.amount = simpleCrypto.decrypt(stuff.val());
+                       data.amount = stuff.val();
+                   }
+                   else if(stuff.key == 'date')
+                   {
+                    //var date = simpleCrypto.decrypt(stuff.val());
+                       var date = stuff.val();
+                       var array = date.split("/");
+                       data.day = array[0];
+                       data.month = array[1];
+                       data.year = array[2];
+                       
+                   }
+                   else if(stuff.key == 'paid')
+                   {
+                       //data.merchant = simpleCrypto.decrypt(stuff.val());
+                       data.merchant = stuff.val();
+                   }
+                   else if(stuff.key == 'time')
+                   {
+                    // var time = simpleCrypto.decrypt(stuff.val());
+                       var time = stuff.val();
+                       var array = time.split(":");
+                       data.totalSeconds = (array[0]*60*60) + (array[1]*60) + (array[2]*1)
+                   }
+                })
+                DATA3.push(data);
+                data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:''};
+              });
+        }.bind(this)).then(() => {
+           this.SortbyDate();
+           this.Get3months();
+           this.SortByMonths();
+           this.state.FirstMonth = this.SortByTiming(this.state.FirstMonth);
+           this.state.SecondMonth = this.SortByTiming(this.state.SecondMonth);
+           this.state.ThirdMonth = this.SortByTiming(this.state.ThirdMonth);
+            this.setState({loading: false,called: false});
+         });
+    }
+
+   componentDidUpdate(){
+       console.log("loading");
+       if(this.state.loading == true && this.state.called == false)
+        {
+            this.getTransactions();
+        }
+   }
+    
+    componentWillMount() {
+        var config = {
+          apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
+          authDomain: "aspdatabase-7458c.firebaseapp.com",
+          databaseURL: "https://aspdatabase-7458c.firebaseio.com",
+          projectId: "aspdatabase-7458c",
+          storageBucket: "aspdatabase-7458c.appspot.com",
+          messagingSenderId: "974951413468",
+          appId: "1:974951413468:web:a0d27cbba22d508f51e619",
+          measurementId: "G-W02TZC7QT6"
+        };
+        if(!firebase.apps.length) {
+          firebase.initializeApp(config);
+        }
+        
+
+        this.getCards();
+        
+    }
+
+    selectionlist = (duration) =>{
+        console.log("Card is " + this.state.card);
+       
+        var currMonth = new Date().getMonth() + 1; //Current Month
+        var PreviousMonth = currMonth - 1;// month before current month
+        // if the current month is january
+        if(PreviousMonth == 0){
+            PreviousMonth = 12;
+        }
+        var thirdPrev = PreviousMonth -1;// month before the 2nd prev month
+        //console.log('duration : '+this.state.duration);
+        if(duration == 1)
+        {
+            return([
+                {data: this.state.FirstMonth, title: this.get_Month(currMonth)},
+              ])
+        }
+        else if(duration == 2)
+        {
+            
+            return([
+                {data: this.state.FirstMonth, title: this.get_Month(currMonth)},
+                {data: this.state.SecondMonth, title: this.get_Month(PreviousMonth)},
+              ])
+        }
+        else if(duration == 3)
+        {
+            return([
+                {data: this.state.FirstMonth, title: this.get_Month(currMonth)},
+                {data: this.state.SecondMonth, title: this.get_Month(PreviousMonth)},
+                {data: this.state.ThirdMonth, title: this.get_Month(thirdPrev)},
+              ])
+        }
+        
+    }
+    
+      reduction(email){
+        temp = sha256(email);
+        for(i=0; i < 3;i++)
+        {
+          temp = sha256(temp.substring(0,32));
+        }
+        return temp;
+      }
+
      
+      
+    
+
+    render() {
+      
+        if(this.state.loading) {
+            console.log('im called'); 
+            return null;
+         }
 
         return(
             <View style={styles.container}>  
-               <View style={{paddingTop: 30,flex: 1}}>
-                     <Text style={{fontSize:17, fontWeight: 'bold', paddingLeft: '10%'}}> 
+                     {/* <Text style={{fontSize:17, fontWeight: 'bold', paddingLeft: '10%'}}> 
                       { 'Transaction Filter'}
-                   </Text>
-                   <View style={{width:'100%', height: 50, backgroundColor: 'white', flexDirection: 'row'}}>
+                   </Text> */}
+                   <View style={{paddingTop: "10%",width:'100%', backgroundColor: 'white', flexDirection: 'row'}}>
                         <Picker
                             selectedValue={this.state.duration}
                             onValueChange={(itemValue) => this.setState({duration: itemValue})}
@@ -121,36 +422,27 @@ export default class WalletOverview extends Component {
                         </Picker> 
                         <Picker style={{alignContent: 'flex-end'}}
                             selectedValue={this.state.card}
-                            onValueChange={(itemValue) => this.setState({card: itemValue})}
+                            onValueChange={(itemValue) => this.setState({card: itemValue,loading: true})}
                             style = {{width: '40%', paddingLeft: 30}}
                             mode="dropdown">
-                            <Picker.Item label="Card 1" value="1"/>
-                            <Picker.Item label="Card 2" value="2"/>
-                            <Picker.Item label="Card 3" value="3"/>
+                            {this.state.CardsAvailable.map(acct => <Picker.Item key={acct} label={acct.substring(acct.length-4)} value={acct} />)}
                         </Picker>
                    </View>  
-                   <View style={{height: 40,flexDirection: 'row-reverse', backgroundColor: 'white', }}>
                         <TouchableOpacity style={styles.button}>
-                            <Text>Refresh</Text>
+                            <Text style={{fontSize:15}}>Refresh</Text>
                         </TouchableOpacity>
-                   </View>
+                    
                    
-               </View>
-               <View style={{paddingTop: 130, width: '94%',paddingBottom:15,paddingLeft:'3%'}}>
+               <View style={{width: "94%",paddingBottom: "30%"}}>
                     <SectionList
-                        style={{backgroundColor: 'white'}}
-                        sections={[
-                        { title: 'January', data: A },
-                        { title: 'February', data: B },
-                        { title: 'March', data: D },
-                        ]}
-
+                        style={{backgroundColor: 'white',width: '94%',paddingBottom: "20%",paddingLeft:'3%'}}
+                        sections={this.selectionlist(this.state.duration)}
                         renderSectionHeader={ ({section}) => <Text style={styles.SectionHeaderStyle}> { section.title } </Text> }
                         renderItem={ ({item}) => <Text style={styles.SectionListItemStyle}>
                             <Text style={{fontSize: 13}}>
-                                {" 23-January 2020 Date\n "}
+                                {item.day + "-" + this.get_Month(item.month) + "-" + item.year + "\n "}
                             </Text>
-                            { "Merchant detail" + '\n ' + "Amount spended"} </Text> }
+                            { item.merchant + '\n ' + item.amount} </Text> }
                         
                         keyExtractor={ (item, index) => index }
                     
