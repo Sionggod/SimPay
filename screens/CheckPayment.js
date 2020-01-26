@@ -5,9 +5,15 @@ import firebase from 'firebase';
 var stripe = require('stripe-client')('pk_test_gA0EY3yvEnOSzsVZaWj3fAVb004i1hK2K9');
 import SimpleCrypto from "simple-crypto-js";
 import { sha256} from 'js-sha256';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
 const styles = StyleSheet.create({
+    spinnerTextStyle: {
+        color: '#FFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -63,6 +69,8 @@ export default class CheckPayment extends Component {
             exp_year: '21',
             cvc: null,
             Cardname: null,
+            processing: false,
+            spinner: false,
         };
         // console.log('Merchant id : ' + this.state.merchantID);
         //  console.log('amt : '+ this.state.amt);
@@ -78,7 +86,9 @@ export default class CheckPayment extends Component {
 
 
     onPayment = async () =>  {
-        
+        if(this.state.processing == false)
+        {
+            this.setState({processing: true, spinner: true});
         var information = {
             card: {
                 number: this.state.Cardnumber,
@@ -108,11 +118,16 @@ export default class CheckPayment extends Component {
             console.log(response);
             this.props.navigation.navigate('PaymentSummary',
             {merchantID: this.state.merchantID,amountPayable: this.state.amt,email: this.state.email,card: this.state.Cardnumber});
+            this.setState({processing: false,spinner: false});
         });
          }
          else{
              alert('Something went wrong with your card');
+             this.setState({processing: false});
          }
+        }
+        else
+        console.log("Payment is processing");
         
       };
     
@@ -264,8 +279,12 @@ export default class CheckPayment extends Component {
         
         return (
             <View style={styles.container}>
-
-<FlatList  
+                <Spinner
+          visible={this.state.spinner}
+          textContent={'Processing payment...'}
+          textStyle={styles.spinnerTextStyle}
+        />
+                <FlatList  
                     data={DATA2}  
                     renderItem={({item}) =>  
                         <View style={styles.flat}>

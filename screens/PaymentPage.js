@@ -48,7 +48,8 @@ export default class PaymentPage extends Component {
 
    // Check if there is at least 1 card
    CheckCards = () =>{
-
+    if(this.state.amount > 0.50)
+    {
     var temp = this.remove_character('@',this.state.email);
     var userEmail = temp.replace(/\./g, '');
     counter = 0;
@@ -66,7 +67,11 @@ export default class PaymentPage extends Component {
       else
       this.props.navigation.navigate('AddCardPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount})
      });
-     
+    }
+    else
+    {
+      Alert.alert('Please key in an amount above $0.50');
+    }
     
   
   }
