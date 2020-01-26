@@ -82,6 +82,7 @@ export default class WalletOverview extends Component {
             SecondMonth: [],
             ThirdMonth: [],
             CardsAvailable: [],
+            DATA3: [],
 
         }
         console.log('Email used ' + this.state.email);
@@ -146,28 +147,28 @@ export default class WalletOverview extends Component {
         // console.log(DATA3[0].month + "||" + this.DATA3[0].year);
         for(i =0; i < this.state.ThreeMonths.length;i++)
         {
-            for(j =0; j < DATA3.length;j++)
+            for(j =0; j < this.state.DATA3.length;j++)
             {
                 //Push to first month
                 if(i == 0)
                 {
-                    if(DATA3[j].month == this.state.ThreeMonths[0].month && DATA3[j].year == this.state.ThreeMonths[0].year)
+                    if(this.state.DATA3[j].month == this.state.ThreeMonths[0].month && this.state.DATA3[j].year == this.state.ThreeMonths[0].year)
                     {
-                        this.state.FirstMonth.push(DATA3[j]);
+                        this.state.FirstMonth.push(this.state.DATA3[j]);
                     }
                 }
                 else if(i == 1)
                 {
-                    if(DATA3[j].month == this.state.ThreeMonths[1].month && DATA3[j].year == this.state.ThreeMonths[1].year)
+                    if(this.state.DATA3[j].month == this.state.ThreeMonths[1].month && this.state.DATA3[j].year == this.state.ThreeMonths[1].year)
                     {
-                        this.state.SecondMonth.push(DATA3[j]);
+                        this.state.SecondMonth.push(this.state.DATA3[j]);
                     }
                 }
                 else if(i == 2)
                 {
-                    if(DATA3[j].month == this.state.ThreeMonths[2].month && DATA3[j].year == this.state.ThreeMonths[2].year)
+                    if(this.state.DATA3[j].month == this.state.ThreeMonths[2].month && this.state.DATA3[j].year == this.state.ThreeMonths[2].year)
                     {
-                        this.state.ThirdMonth.push(DATA3[j]);
+                        this.state.ThirdMonth.push(this.state.DATA3[j]);
                     }
                 }
 
@@ -206,13 +207,13 @@ export default class WalletOverview extends Component {
     SortbyDate = () => {
 
         tempData = [];
-        while(DATA3.length != 0)
+        while(this.state.DATA3.length != 0)
         {
-            var largest = (DATA3[0].year*365) + (DATA3[0].month*30) + (DATA3[0].day*1);
+            var largest = (this.state.DATA3[0].year*365) + (this.state.DATA3[0].month*30) + (this.state.DATA3[0].day*1);
             var index = 0;
-            for(i =0; i < DATA3.length;i++)
+            for(i =0; i < this.state.DATA3.length;i++)
             {
-                var curr = (DATA3[i].year*365) + (DATA3[i].month*30) + (DATA3[i].day*1);
+                var curr = (this.state.DATA3[i].year*365) + (this.state.DATA3[i].month*30) + (this.state.DATA3[i].day*1);
                 if(curr > largest)
                 {
                     largest = curr;
@@ -220,15 +221,15 @@ export default class WalletOverview extends Component {
                 }
 
             }
-            tempData.push(DATA3[index]);
-            DATA3.splice(index,1);
+            tempData.push(this.state.DATA3[index]);
+            this.state.DATA3.splice(index,1);
         }
         // for(i=0; i < tempData.length;i++)
         // console.log(tempData[i].year);
-        DATA3 = tempData;
+        this.state.DATA3 = tempData;
     }
 
-    DATA3 =[];
+    
 
     getCards = () => {
         var temp = this.remove_character('@',this.state.email);
@@ -253,6 +254,7 @@ export default class WalletOverview extends Component {
                 
               });
         }.bind(this)).then(() => {
+            Cards.push("All")
             this.state.card = Cards[0];
             this.state.CardsAvailable = Cards;
             this.getTransactions();
@@ -260,22 +262,26 @@ export default class WalletOverview extends Component {
          });
 
     }
-   
-    getTransactions = () =>{
-        console.log('im running');
+    getAllTransactions = () => {
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
 
         var _secretKey = this.reduction(this.state.email);
  
         var simpleCrypto = new SimpleCrypto(_secretKey);
-        DATA3 =[];
+        this.state.DATA3 = [];
         this.state.FirstMonth = [];
         this.state.SecondMonth = [];
         this.state.ThirdMonth = [];
+        DATAtemp = [];
+        for(i = 0; i < this.state.CardsAvailable.length-1; i++)
+        {
+            this.state.card = this.state.CardsAvailable[i];
         firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.card)+'/Transactions')
         .once('value',function(snapshot){
-            data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:''};
+    
+            data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:'',cardnum:''};
+           
             snapshot.forEach(function(child) {
                  
                 child.forEach(function(stuff) {
@@ -306,11 +312,94 @@ export default class WalletOverview extends Component {
                        var array = time.split(":");
                        data.totalSeconds = (array[0]*60*60) + (array[1]*60) + (array[2]*1)
                    }
+                   else if(stuff.key == 'card')
+                   {
+                       //data.merchant = simpleCrypto.decrypt(stuff.val());
+                       data.cardnum = stuff.val();
+                   }
                 })
-                DATA3.push(data);
-                data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:''};
+                
+            
+                DATAtemp.push(data);
+                console.log("length : " + DATAtemp.length);
+                data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:'',cardnum:''};
               });
         }.bind(this)).then(() => {
+            count = this.state.CardsAvailable.length-1
+            if(i == count);
+            {
+                this.state.DATA3 = DATAtemp;
+                this.state.card = "All";
+                this.SortbyDate();
+                this.Get3months();
+                this.SortByMonths();
+                this.state.FirstMonth = this.SortByTiming(this.state.FirstMonth);
+                this.state.SecondMonth = this.SortByTiming(this.state.SecondMonth);
+                this.state.ThirdMonth = this.SortByTiming(this.state.ThirdMonth);
+                this.setState({loading: false,called: false});
+                
+            }
+         });
+        }
+    }
+   
+    getTransactions = () =>{
+
+        var temp = this.remove_character('@',this.state.email);
+        var userEmail = temp.replace(/\./g, ''); 
+
+        var _secretKey = this.reduction(this.state.email);
+ 
+        var simpleCrypto = new SimpleCrypto(_secretKey);
+        this.state.DATA3 =[];
+        this.state.FirstMonth = [];
+        this.state.SecondMonth = [];
+        this.state.ThirdMonth = [];
+        firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.card)+'/Transactions')
+        .once('value',function(snapshot){
+            data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:'',cardnum:''};
+            DATAtemp = []
+            snapshot.forEach(function(child) {
+                 
+                child.forEach(function(stuff) {
+                   if(stuff.key == 'amount')
+                   {
+                    // data.amount = simpleCrypto.decrypt(stuff.val());
+                       data.amount = stuff.val();
+                   }
+                   else if(stuff.key == 'date')
+                   {
+                    //var date = simpleCrypto.decrypt(stuff.val());
+                       var date = stuff.val();
+                       var array = date.split("/");
+                       data.day = array[0];
+                       data.month = array[1];
+                       data.year = array[2];
+                       
+                   }
+                   else if(stuff.key == 'paid')
+                   {
+                       //data.merchant = simpleCrypto.decrypt(stuff.val());
+                       data.merchant = stuff.val();
+                   }
+                   else if(stuff.key == 'time')
+                   {
+                    // var time = simpleCrypto.decrypt(stuff.val());
+                       var time = stuff.val();
+                       var array = time.split(":");
+                       data.totalSeconds = (array[0]*60*60) + (array[1]*60) + (array[2]*1)
+                   }
+                   else if(stuff.key == 'card')
+                   {
+                       //data.merchant = simpleCrypto.decrypt(stuff.val());
+                       data.cardnum = stuff.val();
+                   }
+                })
+                DATAtemp.push(data);
+                data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:'',cardnum:''};
+              });
+        }.bind(this)).then(() => {
+            this.state.DATA3 = DATAtemp;
            this.SortbyDate();
            this.Get3months();
            this.SortByMonths();
@@ -322,10 +411,18 @@ export default class WalletOverview extends Component {
     }
 
    componentDidUpdate(){
-       console.log("loading");
+       console.log("loading transaction page");
+ 
        if(this.state.loading == true && this.state.called == false)
         {
+            if(this.state.card != "All")
             this.getTransactions();
+            else
+            {
+                this.getAllTransactions();
+                console.log("Print all card transactions");
+            }
+            
         }
    }
     
@@ -407,9 +504,9 @@ export default class WalletOverview extends Component {
 
         return(
             <View style={styles.container}>  
-                     {/* <Text style={{fontSize:17, fontWeight: 'bold', paddingLeft: '10%'}}> 
+                     <Text style={{fontSize:17, fontWeight: 'bold', paddingLeft: '10%'}}> 
                       { 'Transaction Filter'}
-                   </Text> */}
+                   </Text> 
                    <View style={{paddingTop: "10%",width:'100%', backgroundColor: 'white', flexDirection: 'row'}}>
                         <Picker
                             selectedValue={this.state.duration}
@@ -428,11 +525,9 @@ export default class WalletOverview extends Component {
                             {this.state.CardsAvailable.map(acct => <Picker.Item key={acct} label={acct.substring(acct.length-4)} value={acct} />)}
                         </Picker>
                    </View>  
-                        <TouchableOpacity style={styles.button}>
-                            <Text style={{fontSize:15}}>Refresh</Text>
-                        </TouchableOpacity>
-                    
-                   
+                   <TouchableOpacity style={styles.button} onPress={this.getCards}>
+                    <Text>refresh Cards</Text>
+                </TouchableOpacity>
                <View style={{width: "94%",paddingBottom: "30%"}}>
                     <SectionList
                         style={{backgroundColor: 'white',width: '94%',paddingBottom: "20%",paddingLeft:'3%'}}
@@ -442,7 +537,7 @@ export default class WalletOverview extends Component {
                             <Text style={{fontSize: 13}}>
                                 {item.day + "-" + this.get_Month(item.month) + "-" + item.year + "\n "}
                             </Text>
-                            { item.merchant + '\n ' + item.amount} </Text> }
+                            { "****   ****   ****   "+item.cardnum.substring(item.cardnum.length-4) + '\n ' +item.merchant + '\n ' + item.amount} </Text> }
                         
                         keyExtractor={ (item, index) => index }
                     

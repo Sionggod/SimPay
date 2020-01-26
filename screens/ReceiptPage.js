@@ -124,6 +124,7 @@ export default class ReceiptPage extends Component {
             //    time: simpleCrypto.encrypt(TimeText),
             //    amount: simpleCrypto.encrypt(this.state.amt),
             //    paid: simpleCrypto.encrypt(this.state.merchantID),
+                card: '****   ****   ****   ' + this.state.cardUsed.substring(this.state.cardUsed.length-4),
                 date: DateText,
                 time: TimeText,
                 amount: this.state.amt,
