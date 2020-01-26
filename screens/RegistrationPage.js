@@ -188,6 +188,7 @@ export default class RegistrationPage extends Component {
            firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
              var exists = (snapshot.val() !== null);
             if (!exists) {
+              this.VerifyEmail();
               firebase.database().ref('users/'+ userEmail).set(
                 {
                     phone: this.state.Hp,
@@ -196,7 +197,7 @@ export default class RegistrationPage extends Component {
                   {text: 'OK', onPress: ()=> this.props.navigation.navigate('Login')}
                 ]);
                 console.log(this.state.name ,'inserted');
-                this.VerifyEmail();
+                
               
             }).catch((error) => {
   

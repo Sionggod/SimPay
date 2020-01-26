@@ -151,7 +151,7 @@ export default class ReceiptPage extends Component {
     
     return (
         <View style={styles.container}>
-            <Text>Card used : {this.state.cardUsed}</Text>
+            <Text>Card used : {'****   ****   ****   ' + this.state.cardUsed.substring(this.state.cardUsed.length-4)}</Text>
             <Text>Vendor Name:</Text>
             <Text>Merchant ID = {this.state.merchantID}</Text>
             <Text>Paid amount (S$): {this.state.amt}</Text>

@@ -88,7 +88,7 @@ export default class CheckPayment extends Component {
     onPayment = async () =>  {
         if(this.state.processing == false)
         {
-            this.setState({processing: true, spinner: true});
+            
         var information = {
             card: {
                 number: this.state.Cardnumber,
@@ -104,6 +104,7 @@ export default class CheckPayment extends Component {
             //console.log('token is ' + this.state.token);
         if(this.state.token != null){
             //Code below transfers amount to merchant registered under our stripe accounts
+            this.setState({processing: true, spinner: true});
         axios({
             method: 'POST',
             url:'https://us-central1-aspdatabase-7458c.cloudfunctions.net/payWithStripe',
