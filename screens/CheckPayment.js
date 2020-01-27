@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { FlatList,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity,ImageBackground } from 'react-native';
+import { FlatList,Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity,ImageBackground, Modal, 
+    TouchableHighlight, Platform } from 'react-native';
 import axios from 'axios';
 import firebase from 'firebase';
 var stripe = require('stripe-client')('pk_test_gA0EY3yvEnOSzsVZaWj3fAVb004i1hK2K9');
 import SimpleCrypto from "simple-crypto-js";
 import { sha256} from 'js-sha256';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import * as LocalAuthentication from 'expo-local-authentication';
+import Dialog from 'react-native-dialog';
 
 const styles = StyleSheet.create({
     spinnerTextStyle: {
@@ -71,6 +73,13 @@ export default class CheckPayment extends Component {
             Cardname: null,
             processing: false,
             spinner: false,
+            bioHash: '',
+            authenticated: false,
+            modalVisible: false,
+            failedCount: 0,
+            dialogVisible: false,
+            dialogInput: '',
+            secondPassCheck: null,
         };
         // console.log('Merchant id : ' + this.state.merchantID);
         //  console.log('amt : '+ this.state.amt);
@@ -84,11 +93,73 @@ export default class CheckPayment extends Component {
         return str.replace(reg, '')
     }
 
+    handleInput = (typedText) => {
+        this.setState({dialogInput: typedText});
+    }
+
+    showDialog = () => {
+        this.setState({ dialogVisible: true });
+    }
+    
+    handleCancel = () => {
+        this.setState({ dialogVisible: false });
+    }
+
+    handleSubmit = () => {
+        console.log('Password entered in input box = ' + this.state.dialogInput);
+        firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.dialogInput).then(()=> {
+            // valid account 
+            this.setState({secondPassCheck: true});
+            this.handleCancel();
+            this.onPayment();
+        }).catch(()=> {
+            Alert.alert('Wrong Password', 'You have entered a wrong password');
+        });
+    }
+
+    setModalVisible(visible) {
+        this.setState({ modalVisible: visible });
+    }
+
+    scanBiometrics = async ()=> {
+        if (this.state.bioHash == '') {
+            // user did not bind biometrics
+            this.showDialog();
+        } else {
+            // user has bound biometrics
+            try {
+                let result = await LocalAuthentication.authenticateAsync({promptMessage: 'Use your device biometrics to complete payment', fallbackLabel: 'Use Passcode'});
+                
+                const deviceId = Expo.Constants.deviceId;
+                // hash user email with unique device id
+                var concatEmailDeviceId = firebase.auth().currentUser.email + deviceId;
+                const hashedDeviceId = sha256(concatEmailDeviceId);
+      
+                if (result.success && (hashedDeviceId == this.state.bioHash)) {
+                    console.log('SUCCESS!');
+                  this.setState({
+                    modalVisible: false,
+                    authenticated: true,
+                    failedCount: 0,
+                  });
+                  
+                  this.onPayment();
+                } else {
+                  this.setState({
+                    failedCount: this.state.failedCount + 1,
+                  });
+                }
+              } catch (e) {
+                console.log(e);
+              }
+        }
+        
+        
+    }
 
     onPayment = async () =>  {
         if(this.state.processing == false)
         {
-            
         var information = {
             card: {
                 number: this.state.Cardnumber,
@@ -102,7 +173,7 @@ export default class CheckPayment extends Component {
             var card = await stripe.createToken(information);
             this.state.token = card.id;
             //console.log('token is ' + this.state.token);
-        if(this.state.token != null){
+        if(this.state.token != null && (this.state.authenticated == true) || this.state.token != null && (this.state.secondPassCheck == true)) {
             //Code below transfers amount to merchant registered under our stripe accounts
             this.setState({processing: true, spinner: true});
         axios({
@@ -203,6 +274,10 @@ export default class CheckPayment extends Component {
            //Get user token
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
+
+        firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
+            this.setState({bioHash: snapshot.val().biometricData});
+        }.bind(this));
 
         var _secretKey = this.reduction(this.state.email);
  
@@ -316,9 +391,45 @@ export default class CheckPayment extends Component {
                 <Text>Merchant ID = {this.state.merchantID}</Text>
                 <Text>Input amount (S$): {this.state.amt}</Text>
                 <TouchableOpacity style={styles.button} 
-                onPress={this.onPayment}>
-                    <Text>confirm payment</Text>
+                onPress={()=> {
+                    if(Platform.OS == 'android') {
+                        this.setModalVisible(!this.state.modalVisible);
+                      } else {
+                        this.scanBiometrics();
+                      }
+                }}>
+                    <Text>Confirm Payment</Text>
                 </TouchableOpacity>
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>Enter Password</Dialog.Title>
+                    <Dialog.Description>Please enter your password to complete the payment</Dialog.Description>
+                    <Dialog.Input onChangeText={this.handleInput} secureTextEntry={true} />
+                    <Dialog.Button label='Cancel' onPress={this.handleCancel} />
+                    <Dialog.Button label='Submit' onPress={this.handleSubmit} />
+                </Dialog.Container>
+                <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.modalVisible}
+                onShow={this.scanBiometrics}>
+                <View style={styles.modal}>
+                    <View style={styles.innerContainer}>
+                    <Text>Sign in with fingerprint</Text>
+                    {this.state.failedCount > 0 && (
+                        <Text style={{ color: 'red', fontSize: 14 }}>
+                        Failed to authenticate, press cancel and try again.
+                        </Text>
+                    )}
+                    <TouchableHighlight
+                        onPress={async () => {
+                        LocalAuthentication.cancelAuthenticate();
+                        this.setModalVisible(!this.state.modalVisible);
+                        }}>
+                        <Text style={{ color: 'red', fontSize: 16 }}>Cancel</Text>
+                    </TouchableHighlight>
+                    </View>
+                </View>
+                </Modal>
             </View>
         );
     }

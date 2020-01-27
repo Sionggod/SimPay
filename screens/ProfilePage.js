@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Animated, StatusBar, Alert, StyleSheet, TextInput, Text, View, Image, Button,TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
+import { sha256 } from 'js-sha256';
 
 const styles = StyleSheet.create({
     contentContainer: {
@@ -101,7 +102,8 @@ export default class ProfilePage extends Component {
             nameText: '',
             emailText: '',
             phoneText: '',
-
+            bioAuth: null,
+            bioHash: '',
         };
         handleTextChange = (newText) => this.setState({ value:newText});
         this.state.email=(navigation.getParam('email'));
@@ -133,6 +135,8 @@ export default class ProfilePage extends Component {
            console.log("userEmail is  " + userEmail);
            firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
             this.setState({phone: snapshot.val().phone});
+            this.setState({bioAuth: snapshot.val().biometricAuth});
+            this.setState({bioHash: snapshot.val().biometricData});
           }.bind(this));
 
           var user = firebase.auth().currentUser;
@@ -176,20 +180,82 @@ export default class ProfilePage extends Component {
 
     }
 
+    bindBiometrics = () => {
+        const deviceId = Expo.Constants.deviceId;
+        // hash user email with unique device id
+        var concatEmailDeviceId = firebase.auth().currentUser.email + deviceId;
+        const hashedDeviceId = sha256(concatEmailDeviceId);
+
+        this.state.email = this.state.email.toLowerCase();
+        var temp = this.remove_character('@',this.state.email);
+        var userEmail = temp.replace(/\./g, '');
+        firebase.database().ref('users/'+ userEmail).update(
+        {
+            biometricData: hashedDeviceId,
+            biometricAuth: true,
+        });
+
+        Alert.alert('Success', 'Your biometrics have been bounded to your SimPay account');
+        this.setState({bioAuth: true});
+    }
+
+    unbindBiometrics = () => {
+        const deviceId = Expo.Constants.deviceId;
+        // hash user email with unique device id
+        var concatEmailDeviceId = firebase.auth().currentUser.email + deviceId;
+        const hashedDeviceId = sha256(concatEmailDeviceId);
+
+        // check if hashedDeviceId tallies with DB biometricData
+        if (this.state.bioHash == hashedDeviceId) {
+            this.state.email = this.state.email.toLowerCase();
+            var temp = this.remove_character('@',this.state.email);
+            var userEmail = temp.replace(/\./g, '');
+            firebase.database().ref('users/'+ userEmail).update(
+            {
+                biometricData: '',
+                biometricAuth: false,
+            });
+            Alert.alert('Success', 'Your bounded biometrics have been removed successfully');
+            this.setState({bioAuth: false});
+        } else {
+            Alert.alert('Failed', 'Please remove your bound biometrics from your previous device first');
+        }
+    }
+
+    toggleBiometricAuth = () => {
+        if (this.state.bioAuth == false) {
+            // set up biometric authentcation
+            Alert.alert('Set-up Biometric', 'Your device\'s biometric data will be bound to your SimPay account', [
+                {text: 'OK', onPress: this.bindBiometrics},
+                {text: 'Cancel', style: 'cancel'},
+            ]);
+        } else {
+            // remove biometric authentication
+            Alert.alert('Remove biometric', 'This will remove your bounded biometrics in your account. Are you sure?', [
+                {text: 'Yes', onPress: this.unbindBiometrics},
+                {text: 'No', style: 'cancel'},
+            ]);
+        }
+    }
+
     render() {
         return(
             <View style={styles.contentContainer}>
                 <Text style ={styles.header}>Profile Details </Text>
                 <StatusBar hidden/>
                 <Text style = {styles.header2}>Email: </Text>
-        <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}> {this.state.email}{this.state.verified}</Text>
+        <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}>{this.state.email}{this.state.verified}</Text>
                 <Text style = {styles.header2}>Mobile Number:</Text>
                 <FloatingLabelInput label = {this.state.phone} returnKeyType='done' keyboardType={'numeric'} value ={this.state.phoneText} onChangeText={(phoneText)=>this.setState({phoneText})} />
                 <Text style = {styles.header2}>Name: </Text>
                 <FloatingLabelInput label = {this.state.name}  value ={this.state.nameText} onChangeText={(nameText)=>this.setState({nameText})} />
-
+                <Text style={styles.header2}>Biometric Authentication:</Text>
+                <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}>{this.state.bioAuth ? 'Yes' : 'No'}</Text>
                 <TouchableOpacity style={styles.button} onPress={this.EditDetails}>
                     <Text>Edit Details</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={this.toggleBiometricAuth}>
+                    <Text>{this.state.bioAuth ? 'Remove Biometric Authentication' : 'Set-up Biometric Authentication'}</Text>
                 </TouchableOpacity>
                 
             </View>

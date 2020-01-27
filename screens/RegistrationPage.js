@@ -192,6 +192,8 @@ export default class RegistrationPage extends Component {
               firebase.database().ref('users/'+ userEmail).set(
                 {
                     phone: this.state.Hp,
+                    biometricAuth: false,
+                    biometricData: '',
                 }
               ).then(()=> { Alert.alert('Account Created', 'An email as been sent to your email account for verification', [
                   {text: 'OK', onPress: ()=> this.props.navigation.navigate('Login')}
