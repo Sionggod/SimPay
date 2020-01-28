@@ -7,60 +7,60 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'white'
-    },  
-    flat:{
-        flex: 1,
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         backgroundColor: 'white'
+//     },  
+//     flat:{
+//         flex: 1,
           
-    },
-    item: {  
-        alignItems: 'center',
-        justifyContent: 'center', 
-        height: 180,  
-        width: 300,
-        marginVertical: 10,
+//     },
+//     item: {  
+//         alignItems: 'center',
+//         justifyContent: 'center', 
+//         height: 180,  
+//         width: 300,
+//         marginVertical: 10,
         
-    },  
-    listItem: {
-        padding: 10,
-        marginVertical: 10,
-        backgroundColor: '#ccc',
-        borderColor: 'black',
-        borderWidth: 1
-    },
-    button: {
-        alignItems: 'center',
-        width: 150,
-        padding: "5%",
-        borderRadius: 5,
-        marginBottom: 15,
-        backgroundColor: '#99ccff',
-    },
-    SectionHeaderStyle:{
+//     },  
+//     listItem: {
+//         padding: 10,
+//         marginVertical: 10,
+//         backgroundColor: '#ccc',
+//         borderColor: 'black',
+//         borderWidth: 1
+//     },
+//     button: {
+//         alignItems: 'center',
+//         width: 150,
+//         padding: "5%",
+//         borderRadius: 5,
+//         marginBottom: 15,
+//         backgroundColor: '#99ccff',
+//     },
+//     SectionHeaderStyle:{
  
-        backgroundColor : 'skyblue',
-        fontSize : 20,
-        padding: 5,
-        color: 'white',
-        borderRadius: 3,
-      },
+//         backgroundColor : 'skyblue',
+//         fontSize : 20,
+//         padding: 5,
+//         color: 'white',
+//         borderRadius: 3,
+//       },
      
-      SectionListItemStyle:{
+//       SectionListItemStyle:{
      
-        fontSize : 17,
-        marginVertical: 5,
-        backgroundColor : '#F5F5F5',
-        borderWidth: 1,
-        borderRadius: 10,
-        borderColor: 'black',
+//         fontSize : 17,
+//         marginVertical: 5,
+//         backgroundColor : '#F5F5F5',
+//         borderWidth: 1,
+//         borderRadius: 10,
+//         borderColor: 'black',
      
-      },
-});
+//       },
+// });
 
 
 
@@ -344,7 +344,6 @@ export default class WalletOverview extends Component {
     }
    
     getTransactions = () =>{
-
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
 
@@ -502,12 +501,15 @@ export default class WalletOverview extends Component {
             return null;
          }
 
-        return(
+        return(   
             <View style={styles.container}>  
-                     <Text style={{fontSize:17, fontWeight: 'bold', paddingLeft: '10%'}}> 
-                      { 'Transaction Filter'}
-                   </Text> 
-                   <View style={{paddingTop: "10%",width:'100%', backgroundColor: 'white', flexDirection: 'row'}}>
+                    <View style={{width: "100%", justifyContent:'flex-start',paddingLeft:'7%', paddingTop: "2%"}}>
+                        <Text style={{fontSize:17, fontWeight: 'bold'}}> 
+                        { 'Transaction Filter'}
+                        </Text> 
+                    </View>
+                     
+                   <View style={{width:'100%', backgroundColor: 'white', flexDirection: 'row'}}>
                         <Picker
                             selectedValue={this.state.duration}
                             onValueChange={(itemValue) => this.setState({duration: itemValue})}
@@ -525,10 +527,15 @@ export default class WalletOverview extends Component {
                             {this.state.CardsAvailable.map(acct => <Picker.Item key={acct} label={acct.substring(acct.length-4)} value={acct} />)}
                         </Picker>
                    </View>  
-                   <TouchableOpacity style={styles.button} onPress={this.getCards}>
-                    <Text>refresh Cards</Text>
-                </TouchableOpacity>
-               <View style={{width: "94%",paddingBottom: "30%"}}>
+
+                   <View style={{width: "100%", alignItems: 'flex-end', paddingRight:"8%"}}>
+                        <TouchableOpacity style={styles.button} onPress={this.getCards}>
+                            <Text>Refresh Cards</Text>
+                        </TouchableOpacity>
+                   </View>  
+                   
+
+               <View style={{width: "94%",paddingBottom: "3%",flex: 1}}>
                     <SectionList
                         style={{backgroundColor: 'white',width: '94%',paddingBottom: "20%",paddingLeft:'3%'}}
                         sections={this.selectionlist(this.state.duration)}
@@ -547,6 +554,61 @@ export default class WalletOverview extends Component {
         );
              
     }
-    
-
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white'
+    },  
+    flat:{
+        flex: 1,
+          
+    },
+    item: {  
+        alignItems: 'center',
+        justifyContent: 'center', 
+        height: 180,  
+        width: 300,
+        marginVertical: 10,
+        
+    },  
+    listItem: {
+        padding: 10,
+        marginVertical: 10,
+        backgroundColor: '#ccc',
+        borderColor: 'black',
+        borderWidth: 1
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 135,
+        height: 35,
+        borderRadius: 5,
+        marginBottom: 15,
+        backgroundColor: '#99ccff',
+    },
+    SectionHeaderStyle:{
+ 
+        backgroundColor : 'skyblue',
+        fontSize : 20,
+        padding: 5,
+        color: 'white',
+        borderRadius: 3,
+      },
+     
+      SectionListItemStyle:{
+     
+        fontSize : 17,
+        marginVertical: 5,
+        backgroundColor : '#F5F5F5',
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: 'black',
+     
+      },
+});
