@@ -95,7 +95,6 @@ export default class LoginPage extends Component {
             if(user.emailVerified){
               this.props.navigation.navigate('WalletMain',{email: this.state.email});
               this.props.navigation.navigate('ProfileMain',{email: this.state.email});
-              this.props.navigation.navigate('Transaction',{email: this.state.email});
               this.props.navigation.navigate('QRMain',{email: this.state.email});
             }
             else{

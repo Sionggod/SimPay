@@ -74,7 +74,7 @@ export default class WalletOverview extends Component {
         this.state = {
             duration: 1,
             card:"",
-            email: this.props.navigation.getParam('email'),
+            email: null,
             loading: true,
             called: false,
             ThreeMonths: [],
@@ -83,9 +83,10 @@ export default class WalletOverview extends Component {
             ThirdMonth: [],
             CardsAvailable: [],
             DATA3: [],
+            LoggedOut: false,
 
         }
-        console.log('Email used ' + this.state.email);
+        //console.log('Email used ' + this.state.email);
     }  
 
 
@@ -126,13 +127,14 @@ export default class WalletOverview extends Component {
         tempMonth = [];
         while(MonthSet.length != 0)
         {
-            var largest = MonthSet[0].totalSeconds;
+            var largest = MonthSet[0].day*1 + ((((MonthSet[0].totalSeconds/60)/60))/24);
             var index = 0;
             for(i =0; i < MonthSet.length;i++)
             {
-                if(MonthSet[i].totalSeconds > largest)
+                curr = MonthSet[i].day*1 + ((((MonthSet[i].totalSeconds/60)/60))/24);
+                if(curr > largest)
                 {
-                    largest = MonthSet[i].totalSeconds;
+                    largest = curr;
                     index = i;
                 }
             }
@@ -321,7 +323,6 @@ export default class WalletOverview extends Component {
                 
             
                 DATAtemp.push(data);
-                console.log("length : " + DATAtemp.length);
                 data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:'',cardnum:''};
               });
         }.bind(this)).then(() => {
@@ -441,12 +442,23 @@ export default class WalletOverview extends Component {
         }
         
 
-        this.getCards();
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                this.setState({email: user.email, LoggedOut: false});
+                //console.log("hi transaction " + this.state.email);
+        
+                this.getCards();
+            } else {
+              // No user is signed in.
+              this.setState({LoggedOut: true});
+              console.log("Logged out");
+            }
+          }.bind(this));
         
     }
 
     selectionlist = (duration) =>{
-        console.log("Card is " + this.state.card);
+        //console.log("Card is " + this.state.card);
        
         var currMonth = new Date().getMonth() + 1; //Current Month
         var PreviousMonth = currMonth - 1;// month before current month
@@ -496,8 +508,8 @@ export default class WalletOverview extends Component {
 
     render() {
       
-        if(this.state.loading) {
-            console.log('im called'); 
+        if(this.state.loading || this.state.LoggedOut) {
+           // console.log('im called'); 
             return null;
          }
 

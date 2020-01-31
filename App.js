@@ -23,6 +23,7 @@ import AddCardToWallet from './screens/AddCardToWallet.js';
 
 // import ProfileStackNavigation pages
 import ProfilePage from './screens/ProfilePage.js';
+import AnalysisPage from './screens/AnalysisPage.js';
 
 //import TransactionNavigation page
 import TransactionPage from './screens/TransactionPage.js'
@@ -72,6 +73,20 @@ const WalletStackNavigation = createStackNavigator(
         }
     }
 );
+
+//profile transaction navigation
+const StatisticNavigation = createStackNavigator(
+    {
+        Statistic:
+        {
+            screen: AnalysisPage,
+            navigationOptions: ({ navigation }) => ({
+              headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+              //headerTitle: 'Transaction History',
+          })
+        },
+    },
+  );
 
 //profile transaction navigation
 const TransactionNavigation = createStackNavigator(
@@ -178,6 +193,10 @@ const DrawerNavigation = createDrawerNavigator(
             {
                 screen: TransactionNavigation,
             },
+            StatisticStack:
+            {
+                screen: StatisticNavigation,
+            },
     },
     {
          
@@ -189,6 +208,7 @@ const DrawerNavigation = createDrawerNavigator(
 // switch navigation
 const SwitchNavigation = createSwitchNavigator(
     {
+        Analysis: {screen: AnalysisPage},
         Transaction: {screen: TransactionPage},
         Login: { screen: LoginPage },
         Registration: { screen: RegistrationPage },

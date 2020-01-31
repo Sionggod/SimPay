@@ -63,6 +63,7 @@ export default class CheckPayment extends Component {
             email: this.props.navigation.getParam('email'),
             token: null,
             merchantAccount: null,
+            BusinessType: null,
             DATA: [],
             loading: true,
             cardUsed: 'Please select a card',
@@ -189,7 +190,7 @@ export default class CheckPayment extends Component {
         }).then(response => {
             console.log(response);
             this.props.navigation.navigate('PaymentSummary',
-            {merchantID: this.state.merchantID,amountPayable: this.state.amt,email: this.state.email,card: this.state.Cardnumber});
+            {merchantID: this.state.merchantID,amountPayable: this.state.amt,email: this.state.email,card: this.state.Cardnumber,type: this.state.BusinessType});
             this.setState({processing: false,spinner: false});
         });
          }
@@ -267,6 +268,7 @@ export default class CheckPayment extends Component {
             var exists = (snapshot.val() !== null);
             if (exists) {
                 this.state.merchantAccount = snapshot.val().account;
+                this.state.BusinessType = snapshot.val().type;
             }
 
           }.bind(this));
@@ -387,7 +389,7 @@ export default class CheckPayment extends Component {
                     }keyExtractor={(item => item.cardNum)} 
                />  
                 <Text>Card used : {this.state.cardUsed}</Text>
-                <Text>Vendor Name:</Text>
+                <Text>Vendor Type: {this.state.BusinessType}</Text>
                 <Text>Merchant ID = {this.state.merchantID}</Text>
                 <Text>Input amount (S$): {this.state.amt}</Text>
                 <TouchableOpacity style={styles.button} 

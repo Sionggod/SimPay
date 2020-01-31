@@ -68,7 +68,7 @@ export default class QRScanner extends Component {
     this.setState({ scanned: true });
 
     // array of merchants
-    var MerchantList = ["MerchantID_1", "MerchantID_2", "MerchantID_3", "MerchantID_4"];
+    var MerchantList = ["MerchantID_1", "MerchantID_2", "MerchantID_3", "MerchantID_4","MerchantID_5"];
 
     // checks if QR Code data read is in merchant list
     if (MerchantList.includes(`${data}`) == true)

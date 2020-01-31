@@ -58,6 +58,7 @@ export default class ReceiptPage extends Component {
             amt: this.props.navigation.getParam('amountPayable'),
             email: this.props.navigation.getParam('email'),
             cardUsed: this.props.navigation.getParam('card'),
+            BusinessType: this.props.navigation.getParam('type'),
         };
         
 
@@ -129,6 +130,7 @@ export default class ReceiptPage extends Component {
                 time: TimeText,
                 amount: this.state.amt,
                 paid: this.state.merchantID,
+                type: this.state.BusinessType,
            }
           ).then(()=> {
             
@@ -152,7 +154,7 @@ export default class ReceiptPage extends Component {
     return (
         <View style={styles.container}>
             <Text>Card used : {'****   ****   ****   ' + this.state.cardUsed.substring(this.state.cardUsed.length-4)}</Text>
-            <Text>Vendor Name:</Text>
+            <Text>Vendor Type: {this.state.BusinessType}</Text>
             <Text>Merchant ID = {this.state.merchantID}</Text>
             <Text>Paid amount (S$): {this.state.amt}</Text>
             <TouchableOpacity style={styles.button} 
