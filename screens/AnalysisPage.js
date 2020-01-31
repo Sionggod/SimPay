@@ -54,6 +54,7 @@ export default class AnalysisPage extends Component {
         totalAmount: 0,
         Month: this.get_Month(new Date().getMonth() + 1),
         LoggedOut: false,
+        loadedOnce: false,
 
     }
    // console.log('Email used ' + this.state.email);
@@ -247,6 +248,7 @@ getAllTransactions2 = () => {
     this.state.SecondMonth = [];
     this.state.ThirdMonth = [];
     DATAtemp2 = [];
+    
     for(i = 0; i < this.state.CardsAvailable.length-1; i++)
     {
         this.state.card = this.state.CardsAvailable[i];
@@ -299,13 +301,14 @@ getAllTransactions2 = () => {
             
         
             DATAtemp2.push(data);
-            //console.log("length : " + DATAtemp2.length);
+            console.log("length : " + DATAtemp2.length);
             data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:'',cardnum:'',type: ''};
           });
     }.bind(this)).then(() => {
         count = this.state.CardsAvailable.length-1
         if(i == count);
         {
+            
             this.state.DATA4 = DATAtemp2;
             this.SetBusinessType();
             this.state.card = "All";
@@ -334,6 +337,12 @@ getAllTransactions2 = () => {
             
         }
      });
+    }
+    // a default page if no cards are created yet
+    if(this.state.CardsAvailable.length == 1)
+    {
+        
+        this.setState({loading: false,called: false});
     }
 }
 
@@ -574,7 +583,6 @@ get3StatHandler = () => {
 
 SetBusinessType = () => {
     const sliceColor = ['#F44336','#2196F3','#FFEB3B', '#4CAF50', '#FF9800']
-    
     for(i=0;i < this.state.DATA4.length;i++)
     {
         found = false;
@@ -597,6 +605,7 @@ SetBusinessType = () => {
             data = {type: '',key: ''};
         }
     }
+
 }
 
 
