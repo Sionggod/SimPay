@@ -7,63 +7,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//         backgroundColor: 'white'
-//     },  
-//     flat:{
-//         flex: 1,
-          
-//     },
-//     item: {  
-//         alignItems: 'center',
-//         justifyContent: 'center', 
-//         height: 180,  
-//         width: 300,
-//         marginVertical: 10,
-        
-//     },  
-//     listItem: {
-//         padding: 10,
-//         marginVertical: 10,
-//         backgroundColor: '#ccc',
-//         borderColor: 'black',
-//         borderWidth: 1
-//     },
-//     button: {
-//         alignItems: 'center',
-//         width: 150,
-//         padding: "5%",
-//         borderRadius: 5,
-//         marginBottom: 15,
-//         backgroundColor: '#99ccff',
-//     },
-//     SectionHeaderStyle:{
- 
-//         backgroundColor : 'skyblue',
-//         fontSize : 20,
-//         padding: 5,
-//         color: 'white',
-//         borderRadius: 3,
-//       },
-     
-//       SectionListItemStyle:{
-     
-//         fontSize : 17,
-//         marginVertical: 5,
-//         backgroundColor : '#F5F5F5',
-//         borderWidth: 1,
-//         borderRadius: 10,
-//         borderColor: 'black',
-     
-//       },
-// });
-
-
-
 export default class WalletOverview extends Component {
 
     
@@ -146,7 +89,7 @@ export default class WalletOverview extends Component {
 
     SortByMonths = () => {
         // console.log(this.state.ThreeMonths[2].mnth + "//" + this.state.ThreeMonths[2].yr)
-        // console.log(DATA3[0].month + "||" + this.DATA3[0].year);
+         //console.log(this.state.DATA3[0].month + "||" + this.state.DATA3[0].year + "||" + this.state.ThreeMonths[0].month);
         for(i =0; i < this.state.ThreeMonths.length;i++)
         {
             for(j =0; j < this.state.DATA3.length;j++)
@@ -180,7 +123,7 @@ export default class WalletOverview extends Component {
     }
     
     Get3months = () => {
-        var month = 1; //Current Month
+        var month = new Date().getMonth() + 1; //Current Month
         var year = new Date().getFullYear(); //Current Year
         Months = [];
         currDate = {month: month,year: year};
@@ -411,9 +354,9 @@ export default class WalletOverview extends Component {
     }
 
    componentDidUpdate(){
-       console.log("loading transaction page");
+       //console.log("loading transaction page");
  
-       if(this.state.loading == true && this.state.called == false)
+       if(this.state.loading == true && this.state.called == false && this.state.LoggedOut == false)
         {
             if(this.state.card != "All")
             this.getTransactions();
@@ -444,6 +387,7 @@ export default class WalletOverview extends Component {
 
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
+                
                 this.setState({email: user.email, LoggedOut: false});
                 //console.log("hi transaction " + this.state.email);
         
@@ -451,7 +395,7 @@ export default class WalletOverview extends Component {
             } else {
               // No user is signed in.
               this.setState({LoggedOut: true});
-              console.log("Logged out");
+          console.log("Logged out");
             }
           }.bind(this));
         

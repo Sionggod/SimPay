@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Animated,Dimensions,Keyboard,UIManager,Alert, StyleSheet, TextInput, Text, View, Image, Button, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
+import SimpleCrypto from "simple-crypto-js";
+import { sha256} from 'js-sha256';
 
 const styles = StyleSheet.create({
     container: {
@@ -46,17 +48,40 @@ export default class PaymentPage extends Component {
       return str.replace(reg, '')
   }
 
+  reduction(email){
+    temp = sha256(email);
+    for(i=0; i < 3;i++)
+    {
+      temp = sha256(temp.substring(0,32));
+    }
+    return temp;
+  }
    // Check if there is at least 1 card
    CheckCards = () =>{
+
+
+
     if(this.state.amount > 0.50)
     {
     var temp = this.remove_character('@',this.state.email);
     var userEmail = temp.replace(/\./g, '');
+
+
     counter = 0;
     firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
        
          snapshot.forEach(function(child) {
+          child.forEach(function(stuff) {
+
+                  if(stuff.key == 'Status')
+                  {
+                    if(stuff.val() == 'Active')
+                    {
                       counter++;
+                    }
+                  }
+                      
+            })
                 
            });
           console.log('cards : ' + counter);

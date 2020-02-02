@@ -330,8 +330,13 @@ export default class CheckPayment extends Component {
                             data.brand = require('../assets/images/carddefault.jpg');
                         }
                      }
+                     else if(stuff.key == 'Status')
+                     {
+                         data.status = stuff.val();
+                     }
                   })
-                  DATA2.push(data);
+                  if(data.status == 'Active')
+                    DATA2.push(data);
                
                   data = {name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:'',brand:''}
               });

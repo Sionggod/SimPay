@@ -66,8 +66,19 @@ export default class WalletOverview extends Component {
     ConfirmRemoveCard = (item) => {
         var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, '');
-        firebase.database().ref('users/'+ userEmail + '/Card/'+sha256(item.cardNum)).remove();
-        this.componentWillMount();
+        
+        firebase.database().ref('users/'+ userEmail + '/Card/'+sha256(item.cardNum)).update(
+            {
+              name: 'Deleted',
+              cvc: 'Deleted',
+              expirymonth: 'Deleted',
+              expiryyear: 'Deleted',
+              brand: 'Deleted',
+              Status:'InActive',
+           }).then(()=> {
+            this.componentWillMount();
+           });
+        
           
     }
 
@@ -173,7 +184,7 @@ export default class WalletOverview extends Component {
         var simpleCrypto = new SimpleCrypto(_secretKey);
 
         firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
-            data = {key:'',name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:''}
+            data = {key:'',name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:'',status: ''}
              snapshot.forEach(function(child) {
                  
                  child.forEach(function(stuff) {
@@ -214,11 +225,16 @@ export default class WalletOverview extends Component {
                             data.brand = require('../assets/images/carddefault.jpg');
                         }
                      }
+                     else if(stuff.key == 'Status')
+                     {
+                         data.status = stuff.val();
+                     }
                  })
                  console.log(data.brand);
-                 DATA.push(data);
+                 if(data.status == 'Active')
+                    DATA.push(data);
                  
-                 data = {name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:'',brand:''}
+                 data = {name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:'',brand:'',status: ''}
                });
                //getting card info
              //console.log('Lenght of Data is '+DATA.length);

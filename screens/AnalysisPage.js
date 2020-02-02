@@ -149,7 +149,7 @@ SortByMonths = () => {
 }
 
 Get3months = () => {
-    var month = 1; //Current Month
+    var month = new Date().getMonth() + 1; //Current Month
     var year = new Date().getFullYear(); //Current Year
     Months = [];
     currDate = {month: month,year: year};
@@ -301,7 +301,6 @@ getAllTransactions2 = () => {
             
         
             DATAtemp2.push(data);
-            console.log("length : " + DATAtemp2.length);
             data = {amount:'',name:'',day:'',month:'',year:'',totalSeconds:'',paid:'',cardnum:'',type: ''};
           });
     }.bind(this)).then(() => {
@@ -347,7 +346,7 @@ getAllTransactions2 = () => {
 }
 
 componentWillUpdate(){
-    if(this.state.loading == false && this.state.called == true)
+    if(this.state.loading == false && this.state.called == true && this.state.LoggedOut == false)
     {
         //console.log('im running now');
         this.state.loading = true;

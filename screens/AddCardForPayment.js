@@ -192,7 +192,7 @@ export default class AddCardForPayment extends Component {
  
           var simpleCrypto = new SimpleCrypto(_secretKey);
 
-        firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.cardnumber)).set(
+        firebase.database().ref('users/'+ userEmail+ '/Card/'+sha256(this.state.cardnumber)).update(
           {
             name: simpleCrypto.encrypt(this.state.name),
             cardno: simpleCrypto.encrypt(this.state.cardnumber),
@@ -200,6 +200,7 @@ export default class AddCardForPayment extends Component {
             expirymonth: simpleCrypto.encrypt(str.substring(0,2)),
             expiryyear: simpleCrypto.encrypt(str.substring(2,4)),
             brand: simpleCrypto.encrypt(this.state.brand),
+            Status: 'Active',
          }
         ).then(()=> {
           this.props.navigation.navigate('WalletMain',{email: this.state.email});
