@@ -149,7 +149,6 @@ export default class RegistrationPage extends Component {
           //alert('Password length must be a minimum of 6');
           Valid = false;
         }
-
         
         if(Valid)
         {
@@ -159,7 +158,7 @@ export default class RegistrationPage extends Component {
             return result.user.updateProfile({
               displayName: name
             })
-
+          
           }).catch(function(error) {
             
             
@@ -175,37 +174,38 @@ export default class RegistrationPage extends Component {
               Valid = false;
             }
            
-
+            if (errorCode == 'auth/invalid-email')
+            {
+              Alert.alert('Invalid Email', 'Please enter a valid email');
+              Valid = false;
+            }
           });
 
           // this is to prevent double account creation in database as lower case letters are not detected
           if(Valid)
           {
             this.state.email = this.state.email.toLowerCase();
-          var temp = this.remove_character('@',this.state.email);
-           var userEmail = temp.replace(/\./g, ''); 
-           console.log("userEmail is  " + userEmail);
-           firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
-             var exists = (snapshot.val() !== null);
-            if (!exists) {
-              this.VerifyEmail();
-              firebase.database().ref('users/'+ userEmail).set(
+            var temp = this.remove_character('@',this.state.email);
+            var userEmail = temp.replace(/\./g, ''); 
+            console.log("userEmail is  " + userEmail);
+            firebase.database().ref('users/' + userEmail).once('value',function(snapshot) {
+              var exists = (snapshot.val() !== null);
+              if (!exists) {
+                this.VerifyEmail();
+                firebase.database().ref('users/'+ userEmail).set(
                 {
                     phone: this.state.Hp,
                     biometricAuth: false,
                     biometricData: '',
                 }
-              ).then(()=> { Alert.alert('Account Created', 'An email as been sent to your email account for verification', [
+                ).then(()=> { Alert.alert('Account Created', 'An email as been sent to your email account for verification', [
                   {text: 'OK', onPress: ()=> this.props.navigation.navigate('Login')}
                 ]);
                 console.log(this.state.name ,'inserted');
-                
-              
-            }).catch((error) => {
-  
-            });
-
-            }
+                }).catch((error) => {
+      
+                });
+              }
 
           }.bind(this));
         }
@@ -246,7 +246,7 @@ export default class RegistrationPage extends Component {
                 <TextInput style={styles.input} placeholder={'Full Name'} 
                 onChangeText={this.handleNameText}  value={this.state.name}></TextInput>
                 <TextInput style={styles.input} placeholder={'E-mail'}
-                onChangeText={this.handleEmailText}  value={this.state.email}></TextInput>
+                onChangeText={this.handleEmailText} autoCapitalize='none' value={this.state.email}></TextInput>
                 <TextInput style={styles.input} placeholder={'Phone Number'}
                 onChangeText={this.handleHpText}  value={this.state.Hp} returnKeyType='done' keyboardType={'numeric'}></TextInput>
                 <TextInput style={styles.input} placeholder={'Password'} secureTextEntry={true} 

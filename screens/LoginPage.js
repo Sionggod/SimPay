@@ -165,6 +165,7 @@ export default class LoginPage extends Component {
                 value={this.state.email}
                 onChangeText={(email)=>this.setState({email})}
                 placeholder={'Email'}
+                autoCapitalize='none'
                 style={styles.input} />
                 <TextInput
                 value={this.state.password}
