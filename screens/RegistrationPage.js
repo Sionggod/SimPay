@@ -155,35 +155,10 @@ export default class RegistrationPage extends Component {
           var tempEmail = this.state.email;
           var name = this.state.name;
           firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.Pw).then(function(result){
-            return result.user.updateProfile({
+            result.user.updateProfile({
               displayName: name
             })
-          
-          }).catch(function(error) {
-            
-            
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorCode);
-            console.log(errorMessage);
-            if(errorMessage == 'The email address is already in use by another account.')
-            {
-              Alert.alert('Account Exists', 'Email: ' + tempEmail + ' already exists');
-              // this is to ensure database do not add mroe than 1 account details
-              Valid = false;
-            }
-           
-            if (errorCode == 'auth/invalid-email')
-            {
-              Alert.alert('Invalid Email', 'Please enter a valid email');
-              Valid = false;
-            }
-          });
-
-          // this is to prevent double account creation in database as lower case letters are not detected
-          if(Valid)
-          {
+            // this is to prevent double account creation in database as lower case letters are not detected
             this.state.email = this.state.email.toLowerCase();
             var temp = this.remove_character('@',this.state.email);
             var userEmail = temp.replace(/\./g, ''); 
@@ -208,7 +183,28 @@ export default class RegistrationPage extends Component {
               }
 
           }.bind(this));
-        }
+            
+          }.bind(this)).catch(function(error) {
+            
+            
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+            if(errorMessage == 'The email address is already in use by another account.')
+            {
+              Alert.alert('Account Exists', 'Email: ' + tempEmail + ' already exists');
+              // this is to ensure database do not add mroe than 1 account details
+              Valid = false;
+            }
+           
+            if (errorCode == 'auth/invalid-email')
+            {
+              Alert.alert('Invalid Email', 'Please enter a valid email');
+              Valid = false;
+            }
+          });
 
         }
         else
