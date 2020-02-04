@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        paddingBottom:'10%',
     },
     input: {
         alignItems: 'center',
@@ -172,7 +173,7 @@ export default class AddCardForPayment extends Component {
           var str = this.state.expiry
           var temp = this.remove_character('@',this.state.email);
         var userEmail = temp.replace(/\./g, ''); 
-
+        this.state.cardnumber = this.state.cardnumber.trim();
         var information = {
           card: {
               number: this.state.cardnumber,
@@ -281,12 +282,16 @@ export default class AddCardForPayment extends Component {
 
                 <Text style={styles.inputtext}>Card Number</Text>
                 <TextInput
+                returnKeyType='done' 
+                keyboardType={'numeric'} 
                 value={this.state.cardnumber}
                 onChangeText={(cardnumber)=>this.setState({cardnumber})}
                 style={styles.input} />
 
                 <Text style={styles.inputtext}>Expiry Date</Text>  
                 <TextInput
+                returnKeyType='done' 
+                keyboardType={'numeric'} 
                 value={this.state.expiry}
                 onChangeText={(expiry)=>this.setState({expiry})}
                 placeholder={'MM/YY'}
@@ -295,6 +300,8 @@ export default class AddCardForPayment extends Component {
 
                 <Text style={styles.inputtext}>Security Code(CVC/CVV)</Text>  
                 <TextInput
+                returnKeyType='done' 
+                keyboardType={'numeric'} 
                 value={this.state.cvc}
                 onChangeText={(cvc)=>this.setState({cvc})}
                 style={styles.input} />

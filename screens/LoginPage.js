@@ -155,8 +155,9 @@ export default class LoginPage extends Component {
     render() {
         const { shift } = this.state;
         return (
-            <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
+            
             <View style={styles.container}>
+              <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
                 <Image
                 source={require('../assets/images/smartphone.png')}
                 style={styles.logo} />
@@ -180,8 +181,9 @@ export default class LoginPage extends Component {
                 <Text style={styles.loginFooter} >Don't have an account yet?</Text>
                 <Text style={styles.loginFooter, {color: 'blue', textDecorationLine: 'underline'}}
                 onPress={()=>this.props.navigation.navigate('Registration')}>Create new account</Text>
+                </Animated.View>
             </View>
-            </Animated.View>
+            
         );
     }
 

@@ -232,32 +232,35 @@ export default class RegistrationPage extends Component {
     render() {
       const { shift } = this.state;
       return (
-        <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
-            <ScrollView>
+        
             <View style={styles.container}>
+            <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
                 <Image
                 source={require('../assets/images/smartphone.png')}
                 style={styles.logo} />
                 <Text style={{fontSize: 30, marginBottom: 15}}>Create New Account</Text>
+                 <ScrollView>
                 <TextInput style={styles.input} placeholder={'Full Name'} 
                 onChangeText={this.handleNameText}  value={this.state.name}></TextInput>
                 <TextInput style={styles.input} placeholder={'E-mail'}
                 onChangeText={this.handleEmailText} autoCapitalize='none' value={this.state.email}></TextInput>
-                <TextInput style={styles.input} placeholder={'Phone Number'}
+                <TextInput  returnKeyType='done' keyboardType={'numeric'} style={styles.input} placeholder={'Phone Number'}
                 onChangeText={this.handleHpText}  value={this.state.Hp} returnKeyType='done' keyboardType={'numeric'}></TextInput>
                 <TextInput style={styles.input} placeholder={'Password'} secureTextEntry={true} 
                 onChangeText={this.handlePwText}  value={this.state.Pw}/>
                 <TextInput style={styles.input} placeholder={'Verify Password'} secureTextEntry={true}
                 onChangeText={this.handleVerifyPwText}  value={this.state.VerifyPw}/>
+                 </ScrollView>
                 <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
                     <Text>Sign Up</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={()=>this.props.navigation.navigate('Login')}>
                     <Text>Back</Text>
                 </TouchableOpacity>
+                </Animated.View>
             </View>
-            </ScrollView>
-            </Animated.View>
+           
+            
         );
     }
     handleKeyboardDidShow = (event) => {

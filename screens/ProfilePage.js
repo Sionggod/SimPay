@@ -39,18 +39,36 @@ const styles = StyleSheet.create({
 
 class FloatingLabelInput extends Component {
 
-
+    constructor(props){
+        super(props);
+        this.state = {
+            isFocused: false,
+        }
+    }
+/*
     state = {
         isFocused: false,
     };
+
+    */
 
     componentWillMount() {
       this._animatedIsFocused = new Animated.Value(this.props.value === '' ? 0 : 1);
     }
 
 
-    handleFocus = () => this.setState({ isFocused: true });
-    handleBlur = () => this.setState({ isFocused: false });
+    handleFocus = () => {
+        const { onActive } = this.props;
+            this.setState({ isFocused: true }, ()=>{
+                onActive()
+            })
+    };
+    handleBlur = () => {
+        const { onActive } = this.props;
+        this.setState(
+            { isFocused: false }
+        )
+    };
 
     componentDidUpdate() {
       Animated.timing(this._animatedIsFocused, {
@@ -61,7 +79,7 @@ class FloatingLabelInput extends Component {
 
 
     render() {
-        const { label, ...props } = this.props;
+        const { label, onActive, ...props } = this.props;
         const { isFocused } = this.state;
         const labelStyle = {
           position: 'absolute',
@@ -81,6 +99,7 @@ class FloatingLabelInput extends Component {
         };
     return (
         <View style = {{paddingTop: 18}}>
+            
              <Animated.Text style = {labelStyle}>
                 {label}
              </Animated.Text>
@@ -104,6 +123,7 @@ export default class ProfilePage extends Component {
             phoneText: '',
             bioAuth: null,
             bioHash: '',
+            isEditing: false,
         };
         handleTextChange = (newText) => this.setState({ value:newText});
         this.state.email=(navigation.getParam('email'));
@@ -176,7 +196,7 @@ export default class ProfilePage extends Component {
                     this.setState({phoneText: ''});
                 });
         }
-
+        this.toggleEditing();
 
     }
 
@@ -238,7 +258,15 @@ export default class ProfilePage extends Component {
         }
     }
 
+    toggleEditing = () => {
+        this.setState((prevState)=>({
+                isEditing: !prevState.isEditing
+            })
+        )
+    }
+
     render() {
+        const { isEditing } = this.state;
         return(
             <View style={styles.contentContainer}>
                 <Text style ={styles.header}>Profile Details </Text>
@@ -246,14 +274,27 @@ export default class ProfilePage extends Component {
                 <Text style = {styles.header2}>Email: </Text>
         <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}>{this.state.email}{this.state.verified}</Text>
                 <Text style = {styles.header2}>Mobile Number:</Text>
-                <FloatingLabelInput label = {this.state.phone} returnKeyType='done' keyboardType={'numeric'} value ={this.state.phoneText} onChangeText={(phoneText)=>this.setState({phoneText})} />
+                <FloatingLabelInput 
+                    label = {this.state.phone} 
+                    returnKeyType='done' 
+                    keyboardType={'numeric'} 
+                    value ={this.state.phoneText} 
+                    onChangeText={(phoneText)=>this.setState({phoneText})}
+                    onActive={()=>{this.toggleEditing()}} />
                 <Text style = {styles.header2}>Name: </Text>
-                <FloatingLabelInput label = {this.state.name}  value ={this.state.nameText} onChangeText={(nameText)=>this.setState({nameText})} />
+                <FloatingLabelInput label = {this.state.name}  value ={this.state.nameText} onChangeText={(nameText)=>this.setState({nameText})} 
+                                    onActive={()=>{this.toggleEditing()}} />
+
                 <Text style={styles.header2}>Biometric Authentication:</Text>
                 <Text style = {{color: "#aaa",fontSize: 20,alignSelf:'flex-start'}}>{this.state.bioAuth ? 'Yes' : 'No'}</Text>
-                <TouchableOpacity style={styles.button} onPress={this.EditDetails}>
-                    <Text>Edit Details</Text>
-                </TouchableOpacity>
+                {
+                    isEditing
+                    ?
+                    <TouchableOpacity style={styles.button} onPress={this.EditDetails}>
+                        <Text>Edit Details</Text>
+                    </TouchableOpacity>
+                    : null
+                }
                 <TouchableOpacity style={styles.button} onPress={this.toggleBiometricAuth}>
                     <Text>{this.state.bioAuth ? 'Remove Biometric Authentication' : 'Set-up Biometric Authentication'}</Text>
                 </TouchableOpacity>

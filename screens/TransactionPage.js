@@ -459,11 +459,11 @@ export default class WalletOverview extends Component {
 
         return(   
             <View style={styles.container}>  
-                    <View style={{width: "100%", justifyContent:'flex-start',paddingLeft:'7%', paddingTop: "2%"}}>
+                    {/* <View style={{width: "100%", justifyContent:'flex-start',paddingLeft:'7%', paddingTop: "2%"}}>
                         <Text style={{fontSize:17, fontWeight: 'bold'}}> 
                         { 'Transaction Filter'}
                         </Text> 
-                    </View>
+                    </View> */}
                      
                    <View style={{width:'100%', backgroundColor: 'white', flexDirection: 'row'}}>
                         <Picker
@@ -500,7 +500,7 @@ export default class WalletOverview extends Component {
                             <Text style={{fontSize: 13}}>
                                 {item.day + "-" + this.get_Month(item.month) + "-" + item.year + "\n "}
                             </Text>
-                            { "****   ****   ****   "+item.cardnum.substring(item.cardnum.length-4) + '\n ' +item.merchant + '\n ' + item.amount} </Text> }
+                            { "****   ****   ****   "+item.cardnum.substring(item.cardnum.length-4) + '\n ' +item.merchant + '\n ' + '$'+ item.amount} </Text> }
                         
                         keyExtractor={ (item, index) => index }
                     

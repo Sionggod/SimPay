@@ -8,7 +8,8 @@ import { sha256, sha224 } from 'js-sha256';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingBottom:'10%',
   },
   title: {
     fontSize: 24,
@@ -624,7 +625,6 @@ SetBusinessType = () => {
           <StatusBar
             hidden={true}
           />
-          <Text style={styles.title}>Budget</Text>
           <View style={{flexDirection: 'row'}}>
           {this.state.totalAmount ?    
           <PieChart
@@ -636,7 +636,7 @@ SetBusinessType = () => {
             coverFill={'#FFF'}
           />
             : null}
-           <View style={{flexDirection: 'column',paddingLeft: '10%'}}>
+           <View style={{flexDirection: 'column',paddingLeft: '10%',paddingTop: '10%'}}>
           {this.state.totalAmount ? this.state.BusinessTypes.map((item)=>(
          <Text key={item.key} style={styles.TextStyle} style={{backgroundColor: item.colour}}> { item.type } </Text>)
          ) : null}

@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        paddingBottom:'3%',
     },  
     flat:{
         flex: 1,
@@ -291,7 +292,7 @@ export default class WalletOverview extends Component {
                         </View>
                     }keyExtractor={(item => item.cardNum)} 
                />  
-                <TouchableOpacity style={styles.button} 
+                <TouchableOpacity style={styles.button}
                 onPress={()=>this.props.navigation.navigate('AddCard',{email: this.state.email})}>
                     <Text>Add Card</Text>
                 </TouchableOpacity>
