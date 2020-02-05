@@ -19,6 +19,8 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     logo: {
+        height: 150,
+        width: 150,
         marginBottom: 15,
     },
     button: {
@@ -236,7 +238,7 @@ export default class RegistrationPage extends Component {
             <View style={styles.container}>
             <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
                 <Image
-                source={require('../assets/images/smartphone.png')}
+                source={require('../assets/images/icon.png')}
                 style={styles.logo} />
                 <Text style={{fontSize: 30, marginBottom: 15}}>Create New Account</Text>
                 <TextInput style={styles.input} placeholder={'Full Name'} 

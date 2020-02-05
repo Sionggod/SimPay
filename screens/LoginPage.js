@@ -19,6 +19,8 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     logo: {
+        width: 192,
+        height: 192,
         marginBottom: 15,
     },
     forget: {
@@ -159,7 +161,7 @@ export default class LoginPage extends Component {
             <View style={styles.container}>
               <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
                 <Image
-                source={require('../assets/images/smartphone.png')}
+                source={require('../assets/images/icon.png')}
                 style={styles.logo} />
                 <Text style={{fontSize: 28, marginBottom: 25}}>WELCOME</Text>
                 <TextInput
