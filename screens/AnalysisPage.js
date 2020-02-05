@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
   TextStyle:{
     padding: 5,
-    fontSize : 14,
+    fontSize : 16,
      textAlign: 'center',
   },
     button: {
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 15,
         backgroundColor: '#99ccff',
-    }
+    },
 });
  
 export default class AnalysisPage extends Component {
@@ -583,7 +583,7 @@ get3StatHandler = () => {
 
 
 SetBusinessType = () => {
-    const sliceColor = ['#F44336','#2196F3','#FFEB3B', '#4CAF50', '#FF9800', '#FFBD3A','#FFA1DD','#DCDCDC']
+    const sliceColor = ['#DB4040','#DB40CC','#4098DB', '#40DB93', '#E2F373', '#F0C54F','#C761D7','#61D7CF']
     for(i=0;i < this.state.DATA4.length;i++)
     {
         found = false;
@@ -644,13 +644,16 @@ SetBusinessType = () => {
          </View>
         </View>
           <Text style={styles.title}>{this.state.Month}</Text>
-          <ScrollView style={{flex: 1}}>
-          <View style={{flexDirection: 'column',paddingLeft: '10%'}}>
-  {this.state.totalAmount ? this.state.BusinessTypes.map((item)=>(
-  <Text key={item.key} style={styles.TextStyle}> { item.type }{'\n'} Amount Spent: ${item.amount} - {item.amount ? Math.round((item.amount/this.state.totalAmount)*100) : 0}% </Text>)
-         ) : <Text>No Transactions made in the month of {this.state.Month}</Text>}
+
+          <ScrollView style={{flex: 1,width: '100%'}}>
+          <View style={{flexDirection: 'column',padding: '5%'}}>
+  {this.state.totalAmount ? this.state.BusinessTypes.map((item)=><View key={item.key+1}>
+    <Text style={{backgroundColor: item.colour,fontSize: 20,textAlign: 'center'}}> { item.type } </Text>
+  <Text key={item.key} style={styles.TextStyle}>   Amount Spent: ${item.amount} - {item.amount ? Math.round((item.amount/this.state.totalAmount)*100) : 0}% </Text>
+  </View>) : <Text>No Transactions made in the month of {this.state.Month}</Text>}
+  <Text style={{textAlign: 'center',fontSize: 16,backgroundColor: '#90DBFF',fontWeight: 'bold' }}>Total amount spent : ${this.state.totalAmount}</Text>
          </View>
-          <Text style={{paddingLeft: '15%'}}>Total amount spent : ${this.state.totalAmount}</Text>
+          
           </ScrollView>
 
           <View style={{flexDirection: 'row'}}>

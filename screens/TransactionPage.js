@@ -459,12 +459,6 @@ export default class WalletOverview extends Component {
 
         return(   
             <View style={styles.container}>  
-                    {/* <View style={{width: "100%", justifyContent:'flex-start',paddingLeft:'7%', paddingTop: "2%"}}>
-                        <Text style={{fontSize:17, fontWeight: 'bold'}}> 
-                        { 'Transaction Filter'}
-                        </Text> 
-                    </View> */}
-                     
                    <View style={{width:'100%', backgroundColor: 'white', flexDirection: 'row'}}>
                         <Picker
                             selectedValue={this.state.duration}
@@ -561,10 +555,10 @@ const styles = StyleSheet.create({
      
         fontSize : 17,
         marginVertical: 5,
-        backgroundColor : '#F5F5F5',
+        backgroundColor : '#D7F5FF',
         borderWidth: 1,
         borderRadius: 10,
-        borderColor: 'black',
+        borderColor: '#75ABFD',
      
       },
 });
