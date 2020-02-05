@@ -260,10 +260,7 @@ export default class WalletOverview extends Component {
         return(
             <View style={styles.container}>  
                <View>
-                   <Text style={{fontSize:25,justifyContent: 'flex-end'}}> 
-                      { 'Existing Card'}
-                   </Text>
-                   <Text style={{fontSize:15,justifyContent: 'flex-end' }}> 
+                   <Text style={{fontSize:18, paddingTop: 5, justifyContent: 'flex-end' }}> 
                       { 'Select the Card you wish to remove'} 
                    </Text>
                </View>

@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
         borderWidth: 1
     },
     button: {
-        alignItems: 'center',
-        width: 150,
+        width: 200,
         padding: 10,
         borderRadius: 5,
         marginBottom: 15,
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
+        alignItems: 'center',
     },
     modal: {
         flex: 1,
@@ -68,6 +68,7 @@ export default class CheckPayment extends Component {
             merchantID: this.props.navigation.getParam('merchantID'),
             amt: this.props.navigation.getParam('amountPayable'),
             email: this.props.navigation.getParam('email'),
+            merchantName: this.props.navigation.getParam('merchantName'),
             token: null,
             merchantAccount: null,
             BusinessType: null,
@@ -225,7 +226,7 @@ export default class CheckPayment extends Component {
         }).then(response => {
             console.log(response);
             this.props.navigation.navigate('PaymentSummary',
-            {merchantID: this.state.merchantID,amountPayable: this.state.amt,email: this.state.email,card: this.state.Cardnumber,type: this.state.BusinessType});
+            {merchantID: this.state.merchantID,amountPayable: this.state.amt,email: this.state.email,card: this.state.Cardnumber,type: this.state.BusinessType, merchantName: this.state.merchantName});
             this.setState({processing: false,spinner: false});
         });
          }
@@ -430,16 +431,17 @@ export default class CheckPayment extends Component {
                         </View>
                     }keyExtractor={(item => item.cardNum)} 
                />  
-                <Text>Card used : {this.state.cardUsed}</Text>
-                <Text>Vendor Type: {this.state.BusinessType}</Text>
-                <Text>Merchant ID = {this.state.merchantID}</Text>
-                <Text>Input amount (S$): {this.state.amt}</Text>
+                <Text style={{fontSize: 16}}>Card Used : {this.state.cardUsed}</Text>
+                <Text style={{fontSize: 16}}>Vendor Type: {this.state.BusinessType}</Text>
+                <Text style={{fontSize: 16}}>Vendor Name: {this.state.merchantName}</Text>
+                <Text style={{fontSize: 16}}>Merchant ID: {this.state.merchantID}</Text>
+                <Text style={{fontSize: 16}}>Input amount (S$): {this.state.amt}</Text>
                 <TouchableOpacity style={styles.button} 
                 onPress={()=> {
 
                         this.scanBiometrics();
                 }}>
-                    <Text>Confirm Payment</Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>Confirm Payment</Text>
                 </TouchableOpacity>
                 <Dialog.Container visible={this.state.dialogVisible}>
                     <Dialog.Title>Enter Password</Dialog.Title>

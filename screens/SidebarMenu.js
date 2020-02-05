@@ -6,7 +6,7 @@ import firebase from 'firebase';
 const styles = StyleSheet.create({
 
     Headerbar: {
-      backgroundColor: '#4FC3F7',
+      backgroundColor: '#2990cc',
       width: '100%',
       height: '11%'
     },
@@ -115,7 +115,6 @@ export default class SidebarMenu extends Component {
                       style={{
                         width: '100%',
                         fontSize: 18,
-                        color: global.currentScreenIndex === key ? 'blue' : 'black',
                         fontWeight: global.currentScreenIndex === key ? 'bold' : 'normal',
                       }}
                       onPress={() => {

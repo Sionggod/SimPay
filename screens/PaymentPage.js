@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     button: {
-        width: 120,
+        width: 180,
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
     }
 });
 const { State: TextInputState } = TextInput;
@@ -37,6 +37,7 @@ export default class PaymentPage extends Component {
             email: this.props.navigation.getParam('email'),
             shift: new Animated.Value(0),
             merchantID: this.props.navigation.getParam('merchantID'),
+            merchantName: '',
             cardCounter: 0,
             loading: true,
         }
@@ -88,9 +89,9 @@ export default class PaymentPage extends Component {
          
      }.bind(this)).then(()=> {
       if(counter > 0)
-      this.props.navigation.navigate('ConfirmPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount})
+      this.props.navigation.navigate('ConfirmPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount, merchantName: this.state.merchantName})
       else
-      this.props.navigation.navigate('AddCardPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount})
+      this.props.navigation.navigate('AddCardPayment', {email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount, merchantName: this.state.merchantName})
      });
     }
     else
@@ -120,7 +121,14 @@ export default class PaymentPage extends Component {
           firebase.initializeApp(config);
         }
 
-        
+        firebase.database().ref('Merchants/' + this.state.merchantID).once('value',function(snapshot) {
+          var exists = (snapshot.val() !== null);
+          if (exists) {
+              this.setState({merchantName: snapshot.val().name});
+              console.log(this.state.merchantName + ` is merchant name`);
+          }
+
+        }.bind(this));
       }
     
       componentWillUnmount() {
@@ -137,12 +145,12 @@ export default class PaymentPage extends Component {
         return (
             <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
             <View style={styles.container}>
-                <Text>Vendor Name:</Text>
-                <Text>Merchant ID = {this.state.merchantID}</Text>
-                <Text>Input amount (S$):</Text>
+                <Text style={{fontSize: 16}}>Vendor Name: {this.state.merchantName}</Text>
+                <Text style={{fontSize: 16}}>Merchant ID: {this.state.merchantID}</Text>
+                <Text style={{fontSize: 16}}>Input amount (S$):</Text>
                 <TextInput style={styles.input} returnKeyType='done' keyboardType={'numeric'} value={this.state.amount} onChangeText={(amount)=>this.setState({amount})} />
                 <TouchableOpacity style={styles.button} onPress={this.CheckCards}>
-                    <Text>Next</Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>Next</Text>
                 </TouchableOpacity >
             </View>
             </Animated.View>

@@ -59,6 +59,7 @@ export default class ReceiptPage extends Component {
             email: this.props.navigation.getParam('email'),
             cardUsed: this.props.navigation.getParam('card'),
             BusinessType: this.props.navigation.getParam('type'),
+            merchantName: this.props.navigation.getParam('merchantName'),
         };
         
 
@@ -155,7 +156,8 @@ export default class ReceiptPage extends Component {
         <View style={styles.container}>
             <Text>Card used : {'****   ****   ****   ' + this.state.cardUsed.substring(this.state.cardUsed.length-4)}</Text>
             <Text>Vendor Type: {this.state.BusinessType}</Text>
-            <Text>Merchant ID = {this.state.merchantID}</Text>
+            <Text>Vendor Name: {this.state.merchantName}</Text>
+            <Text>Merchant ID: {this.state.merchantID}</Text>
             <Text>Paid amount (S$): {this.state.amt}</Text>
             <TouchableOpacity style={styles.button} 
                 onPress={()=>this.props.navigation.navigate('QRMain',{email: this.state.email})}>
