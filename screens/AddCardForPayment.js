@@ -62,7 +62,7 @@ export default class AddCardForPayment extends Component {
             shift: new Animated.Value(0),
             merchantID: this.props.navigation.getParam('merchantID'),
             amount: this.props.navigation.getParam('amountPayable'),
-
+            merchantName: this.props.navigation.getParam('merchantName'),
         };
         this.state.email=(navigation.getParam('email'));
         
@@ -205,7 +205,7 @@ export default class AddCardForPayment extends Component {
          }
         ).then(()=> {
           this.props.navigation.navigate('WalletMain',{email: this.state.email});
-          this.props.navigation.navigate('ConfirmPayment',{email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount});
+          this.props.navigation.navigate('ConfirmPayment',{email: this.state.email,merchantID: this.state.merchantID,amountPayable: this.state.amount, merchantName: this.state.merchantName});
           console.log(this.state.name ,'Card inserted');
        
         

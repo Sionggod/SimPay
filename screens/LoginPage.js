@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
         marginTop: 25
     },
     button: {
-        width: 85,
+        width: 200,
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
-        backgroundColor: '#99ccff'
+        backgroundColor: '#2990cc'
     }
     });
 
@@ -178,7 +178,7 @@ export default class LoginPage extends Component {
                 style={styles.input} />
                 <Text style={styles.forget} onPress={()=>this.props.navigation.navigate('Forgot')}>Forget Password?</Text>
                 <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
-                    <Text>Login</Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>Login</Text>
                 </TouchableOpacity>
                 <Text style={styles.loginFooter} >Don't have an account yet?</Text>
                 <Text style={styles.loginFooter, {color: 'blue', textDecorationLine: 'underline'}}

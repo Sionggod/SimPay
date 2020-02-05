@@ -6,6 +6,8 @@ import { sha256 } from 'js-sha256';
 const styles = StyleSheet.create({
     contentContainer: {
         width: "100%",
+        paddingLeft: 15,
+        paddingRight: 15,
         aspectRatio: 1
     },
     header: {
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
         fontSize:20,
         alignSelf:'flex-start',
         backgroundColor:'#d3d3d3',
-        width: 500
+        width: '100%',
     },
     button: {
         width: 100,

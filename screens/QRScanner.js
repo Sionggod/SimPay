@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Button, Alert } from 'react-native';
+import { Text, View, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+
+const styles = StyleSheet.create({
+  button: {
+      height: 80,
+      padding: 25,
+      alignItems: 'center',
+      backgroundColor: '#2990cc'
+  }
+});
 
 export default class QRScanner extends Component {
 
@@ -56,7 +65,9 @@ export default class QRScanner extends Component {
         />
 
         {scanned && (
-          <Button title={'Tap to Scan Again'} onPress={() => this.setState({ scanned: false })} />
+          <TouchableOpacity onPress={() => this.setState({ scanned: false })} style={styles.button} >
+              <Text style={{fontSize: 22, color: 'white'}}>Tap to Scan Again</Text>
+          </TouchableOpacity>
         )}
       </View>
     );

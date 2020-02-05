@@ -10,27 +10,19 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     input: {
-        width: 200,
+        width: 260,
         height: 45,
         padding: 10,
         borderWidth: 1,
         borderRadius: 5,
-        marginBottom: 15
-    },
-    forgotButton: {
-        width: 125,
-        padding: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-        backgroundColor: '#99ccff',
-        marginBottom: 15,
+        marginBottom: 30
     },
     button: {
-        width: 85,
+        width: 200,
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
         marginBottom: 15,
     }
 });
@@ -93,18 +85,18 @@ export default class ForgotPassword extends Component {
     render() {
         return(
             <View style={styles.container}>
-                <Text style={{fontSize: 20}}>Recover Your Password</Text>
-                <Text style={{fontStyle: 'italic', fontSize: 10, marginBottom: 15, width: 200}}>Enter the e-mail address you use to sign in. We will send you an email with a link to reset your password.</Text> 
+                <Text style={{fontSize: 25, marginBottom: 50}}>Reset Password</Text>
+                <Text style={{fontStyle: 'italic', fontSize: 16, marginBottom: 15, width: 260}}>We will send you an e-mail with a link to reset your password</Text> 
                 <TextInput
                 value={this.state.email} 
                 onChangeText={(email)=>this.setState({email})} 
                 placeholder={'Email'} 
                 style={styles.input} />
-                <TouchableOpacity style={styles.forgotButton} onPress={this.handleResetPassword}>
-                    <Text>Reset Password</Text>
+                <TouchableOpacity style={styles.button} onPress={this.handleResetPassword}>
+                    <Text style={{fontSize: 16, color: 'white'}}>Reset Password</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=>this.props.navigation.navigate('Login')} style={styles.button}>
-                    <Text>Back</Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>Back</Text>
                 </TouchableOpacity>
             </View>
         );

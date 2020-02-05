@@ -24,11 +24,11 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     button: {
-        width: 100,
+        width: 180,
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
         marginBottom: 15,
     }
 });
@@ -252,10 +252,10 @@ export default class RegistrationPage extends Component {
                 <TextInput style={styles.input} placeholder={'Verify Password'} secureTextEntry={true}
                 onChangeText={this.handleVerifyPwText}  value={this.state.VerifyPw}/>
                 <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
-                    <Text>Sign Up</Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>Sign Up</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={()=>this.props.navigation.navigate('Login')}>
-                    <Text>Back</Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>Back</Text>
                 </TouchableOpacity>
                 </Animated.View>
             </View>
