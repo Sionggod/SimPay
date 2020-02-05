@@ -161,7 +161,7 @@ export default class LoginPage extends Component {
             <View style={styles.container}>
               <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
                 <Image
-                source={require('../assets/images/icon.png')}
+                source={require('../assets/images/icon4.png')}
                 style={styles.logo} />
                 <Text style={{fontSize: 28, marginBottom: 25}}>WELCOME</Text>
                 <TextInput

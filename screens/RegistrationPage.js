@@ -236,9 +236,10 @@ export default class RegistrationPage extends Component {
       return (
         
             <View style={styles.container}>
+              <ScrollView style={{width: '100%'}}>
             <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
                 <Image
-                source={require('../assets/images/icon.png')}
+                source={require('../assets/images/icon4.png')}
                 style={styles.logo} />
                 <Text style={{fontSize: 30, marginBottom: 15}}>Create New Account</Text>
                 <TextInput style={styles.input} placeholder={'Full Name'} 
@@ -258,6 +259,7 @@ export default class RegistrationPage extends Component {
                     <Text style={{fontSize: 16, color: 'white'}}>Back</Text>
                 </TouchableOpacity>
                 </Animated.View>
+                </ScrollView>
             </View>
            
             
