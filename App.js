@@ -31,6 +31,17 @@ import TransactionPage from './screens/TransactionPage.js'
 // import custom sidebar for drawer navigation
 import SidebarMenu from './screens/SidebarMenu.js';
 
+
+const styles = {
+    header: {
+        backgroundColor: '#4FC3F7',
+      },
+      headerTintColor: '#FFFFFF',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+};
+
 global.currentScreenIndex = 0;
 
 class NavigationDrawerStructure extends Component {
@@ -61,6 +72,7 @@ const WalletStackNavigation = createStackNavigator(
             navigationOptions: ({ navigation }) => ({
                 headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
                 headerTitle: 'Wallet',
+                headerStyle: styles.header,
             })
         },
         AddCard:
@@ -69,6 +81,7 @@ const WalletStackNavigation = createStackNavigator(
             navigationOptions:
             {
                 headerTitle: 'Add a new card',
+                headerStyle: styles.header,
             },
         }
     }
@@ -82,7 +95,8 @@ const StatisticNavigation = createStackNavigator(
             screen: AnalysisPage,
             navigationOptions: ({ navigation }) => ({
               headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
-              //headerTitle: 'Transaction History',
+              headerTitle: 'Budget',
+              headerStyle: styles.header,
           })
         },
     },
@@ -96,7 +110,8 @@ const TransactionNavigation = createStackNavigator(
           screen: TransactionPage,
           navigationOptions: ({ navigation }) => ({
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
-            //headerTitle: 'Transaction History',
+            headerTitle: 'Transactions',
+            headerStyle: styles.header,
         })
       },
   },
@@ -110,6 +125,8 @@ const ProfileStackNavigation = createStackNavigator(
             screen: ProfilePage,
             navigationOptions: ({ navigation }) => ({
                 headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+                headerTitle: 'Profile',
+                headerStyle: styles.header,
             })
         },
     },
@@ -123,6 +140,9 @@ const QRStackNavigation = createStackNavigator(
             screen: MainMenu,
             navigationOptions: ({ navigation }) => ({
                 headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+                headerTitle: 'Qr Code Scanner',
+                headerStyle: styles.header,
+                
             })
         },
         QRScan:
@@ -131,6 +151,7 @@ const QRStackNavigation = createStackNavigator(
             navigationOptions:
             {
                 headerTitle: 'Scan QR Code',
+                headerStyle: styles.header,
             },
         },
         Payment:
@@ -139,6 +160,7 @@ const QRStackNavigation = createStackNavigator(
             navigationOptions:
             {
                 headerTitle: 'Payment Details',
+                headerStyle: styles.header,
             },
         },
         ConfirmPayment:
@@ -147,6 +169,7 @@ const QRStackNavigation = createStackNavigator(
             navigationOptions:
             {
                 headerTitle: 'Confirm Payment Details',
+                headerStyle: styles.header,
             },
         },
         PaymentSummary:
@@ -155,6 +178,7 @@ const QRStackNavigation = createStackNavigator(
             navigationOptions:
             {
                 headerTitle: 'Payment Summary',
+                headerStyle: styles.header,
             },
 
         },
@@ -164,6 +188,7 @@ const QRStackNavigation = createStackNavigator(
             navigationOptions:
             {
                 headerTitle: 'Add card Payment',
+                headerStyle: styles.header,
             },
         },
     },
@@ -208,8 +233,6 @@ const DrawerNavigation = createDrawerNavigator(
 // switch navigation
 const SwitchNavigation = createSwitchNavigator(
     {
-        Analysis: {screen: AnalysisPage},
-        Transaction: {screen: TransactionPage},
         Login: { screen: LoginPage },
         Registration: { screen: RegistrationPage },
         Landing: { screen: DrawerNavigation},

@@ -4,12 +4,18 @@ import {Icon} from 'react-native-elements';
 import firebase from 'firebase';
 
 const styles = StyleSheet.create({
+
+    Headerbar: {
+      backgroundColor: '#4FC3F7',
+      width: '100%',
+      height: '11%'
+    },
     sideMenuContainer: {
         width: '100%',
         height: '100%',
         backgroundColor: '#fff',
         alignItems: 'center',
-        paddingTop: 60,
+        
     },
     sideMenuProfileIcon: {
         resizeMode: 'center',
@@ -89,6 +95,7 @@ export default class SidebarMenu extends Component {
       const {navigation} = this.props;
         return(
           <View style={styles.sideMenuContainer}>
+            <View style={styles.Headerbar}/>
               {/*Setting up Navigation Options from option array using loop*/}
               <View style={{ width: '100%' }}>
                 {this.items.map((item, key) => (
