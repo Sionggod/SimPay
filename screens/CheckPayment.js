@@ -133,10 +133,6 @@ export default class CheckPayment extends Component {
     scanBiometrics = async ()=> {
 
         
-        this.state.tap = this.state.tap+1;
-        this.setState({
-            failedCount: 0
-          });
         if(this.state.cardUsed == 'Please select a card')
         {
        
@@ -144,6 +140,10 @@ export default class CheckPayment extends Component {
         }
         else
         {
+            this.state.tap = this.state.tap+1;
+        this.setState({
+            failedCount: 0
+          });
             if(this.state.tap == 1)
             {
         if (this.state.bioHash == '') {
