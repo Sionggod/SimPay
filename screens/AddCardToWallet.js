@@ -308,7 +308,8 @@ export default class AddCardToWallet extends Component {
                 keyboardType={'numeric'} 
                 value={this.state.cvc}
                 onChangeText={(cvc)=>this.setState({cvc})}
-                style={styles.input} />
+                style={styles.input}
+                maxLength = {3} />
                 <TouchableOpacity onPress={this.handleUpdate} style={styles.button}>
                     <Text>Update</Text>
                 </TouchableOpacity>

@@ -239,7 +239,6 @@ export default class RegistrationPage extends Component {
                 source={require('../assets/images/smartphone.png')}
                 style={styles.logo} />
                 <Text style={{fontSize: 30, marginBottom: 15}}>Create New Account</Text>
-                 <ScrollView>
                 <TextInput style={styles.input} placeholder={'Full Name'} 
                 onChangeText={this.handleNameText}  value={this.state.name}></TextInput>
                 <TextInput style={styles.input} placeholder={'E-mail'}
@@ -250,7 +249,6 @@ export default class RegistrationPage extends Component {
                 onChangeText={this.handlePwText}  value={this.state.Pw}/>
                 <TextInput style={styles.input} placeholder={'Verify Password'} secureTextEntry={true}
                 onChangeText={this.handleVerifyPwText}  value={this.state.VerifyPw}/>
-                 </ScrollView>
                 <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
                     <Text>Sign Up</Text>
                 </TouchableOpacity>

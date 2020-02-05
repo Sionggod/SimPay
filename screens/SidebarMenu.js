@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, Text, Button, TouchableOpacity } from 'react-native';
+import {Icon} from 'react-native-elements';
 import firebase from 'firebase';
 
 const styles = StyleSheet.create({
@@ -9,7 +10,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         paddingTop: 60,
-        paddingLeft: 15
     },
     sideMenuProfileIcon: {
         resizeMode: 'center',
@@ -18,13 +18,6 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderRadius: 150 / 2,
     },
-    button: {
-        width: 100,
-        padding: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-        backgroundColor: '#99ccff'
-    }
 });
 
 export default class SidebarMenu extends Component {
@@ -36,22 +29,27 @@ export default class SidebarMenu extends Component {
    
         this.items = [
             {
+                navOptionThumb: 'camera-alt',
                 navOptionName: 'Scan QR',
                 screenToNavigate: 'QRStack',
             },
             {
+                navOptionThumb: 'credit-card', 
                 navOptionName: 'Wallet',
                 screenToNavigate: 'WalletStack',
             },
             {
+                navOptionThumb: 'account-circle',
                 navOptionName: 'Profile',
                 screenToNavigate: 'ProfileStack',
             },
             {
+              navOptionThumb: 'local-atm',
               navOptionName: 'Transaction',
               screenToNavigate: 'TransactionStack',
             },
             {
+              navOptionThumb: 'equalizer',
               navOptionName: 'Budget',
               screenToNavigate: 'StatisticStack',
             },
@@ -103,10 +101,15 @@ export default class SidebarMenu extends Component {
                       backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff',
                     }}
                     key={key}>
+                    <View style={{ marginRight: 10, marginLeft: 20 }}>
+                      <Icon name={item.navOptionThumb} size={25} color="#808080" />
+                    </View>
                     <Text
                       style={{
-                        fontSize: 15,
-                        color: global.currentScreenIndex === key ? 'red' : 'black',
+                        width: '100%',
+                        fontSize: 18,
+                        color: global.currentScreenIndex === key ? 'blue' : 'black',
+                        fontWeight: global.currentScreenIndex === key ? 'bold' : 'normal',
                       }}
                       onPress={() => {
                         global.currentScreenIndex = key;
@@ -116,12 +119,19 @@ export default class SidebarMenu extends Component {
                     </Text>
                   </View>
                 ))}
+                  <TouchableOpacity style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                  }} onPress={this.logout}>
+                    <View style={{ marginRight: 10, marginLeft: 20 }}>
+                      <Icon name={'exit-to-app'} size={25} color="#808080" />
+                    </View>
+                    <Text style={{width: '100%', fontSize: 18}}>Logout</Text>
+                  </TouchableOpacity>
               </View>
-              <View>
-                <TouchableOpacity style={styles.button} onPress={this.logout}>
-                  <Text>Logout</Text>
-                </TouchableOpacity>
-              </View>
+              
           </View>
         )
     }

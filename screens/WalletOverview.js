@@ -85,7 +85,7 @@ export default class WalletOverview extends Component {
 
     AlertRemoveCard = (item) => {
         Alert.alert(
-            'Remove\n',
+            'Confirm Delete',
             'Card number : ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length),
             [
               {text: 'Yes', onPress: () => this.ConfirmRemoveCard(item)},
@@ -109,11 +109,11 @@ export default class WalletOverview extends Component {
                  item.expirymonth + '/'+ item.expiryyear + '\n' +
                  item.cvc;
 
-                 Alert.alert(
-                    'Card Holder : ' + item.name,
-                    'Card number : ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length),
+                 Alert.alert('Delete Card',
+                    'Card Holder: ' + item.name+
+                    '\nCard number: ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length),
                     [
-                      {text: 'Confirm', onPress: () => this.AlertRemoveCard(item)},
+                      {text: 'Delete', onPress: () => this.AlertRemoveCard(item)},
                       {
                         text: 'Cancel',
                         onPress: () => console.log('Cancel Pressed'),
@@ -264,7 +264,7 @@ export default class WalletOverview extends Component {
                       { 'Existing Card'}
                    </Text>
                    <Text style={{fontSize:15,justifyContent: 'flex-end' }}> 
-                      { 'Select The Card you wish to remove'} 
+                      { 'Select the Card you wish to remove'} 
                    </Text>
                </View>
                 <FlatList  
