@@ -49,6 +49,13 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         backgroundColor: '#99ccff',
     },
+    modal: {
+        flex: 1,
+        marginTop: '90%',
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 });
 
 export default class CheckPayment extends Component {
@@ -81,6 +88,7 @@ export default class CheckPayment extends Component {
             dialogVisible: false,
             dialogInput: '',
             secondPassCheck: null,
+            tap: 0,
         };
         // console.log('Merchant id : ' + this.state.merchantID);
         //  console.log('amt : '+ this.state.amt);
@@ -123,19 +131,36 @@ export default class CheckPayment extends Component {
     }
 
     scanBiometrics = async ()=> {
+
+        
+        this.state.tap = this.state.tap+1;
+        this.setState({
+            failedCount: 0
+          });
+        if(this.state.cardUsed == 'Please select a card')
+        {
+       
+             alert('Please select a card');
+        }
+        else
+        {
+            if(this.state.tap == 1)
+            {
         if (this.state.bioHash == '') {
             // user did not bind biometrics
             this.showDialog();
         } else {
             // user has bound biometrics
             try {
+                this.setState({modalVisible: true});
                 let result = await LocalAuthentication.authenticateAsync({promptMessage: 'Use your device biometrics to complete payment', fallbackLabel: 'Use Passcode'});
                 
                 const deviceId = Expo.Constants.deviceId;
                 // hash user email with unique device id
                 var concatEmailDeviceId = firebase.auth().currentUser.email + deviceId;
                 const hashedDeviceId = sha256(concatEmailDeviceId);
-      
+                if(result != null )
+                {
                 if (result.success && (hashedDeviceId == this.state.bioHash)) {
                     console.log('SUCCESS!');
                   this.setState({
@@ -146,19 +171,29 @@ export default class CheckPayment extends Component {
                   
                   this.onPayment();
                 } else {
+                    console.log(" failed ");
                   this.setState({
-                    failedCount: this.state.failedCount + 1,
+                    failedCount: 1
                   });
+                  //this.scanBiometrics();
                 }
+            }
               } catch (e) {
                 console.log(e);
               }
+            
         }
-        
-        
+        this.state.tap = 0;
+        }
     }
 
+        
+}
+
     onPayment = async () =>  {
+
+     
+
         if(this.state.processing == false)
         {
         var information = {
@@ -202,6 +237,8 @@ export default class CheckPayment extends Component {
         else
         console.log("Payment is processing");
         
+       
+
       };
     
 
@@ -399,11 +436,8 @@ export default class CheckPayment extends Component {
                 <Text>Input amount (S$): {this.state.amt}</Text>
                 <TouchableOpacity style={styles.button} 
                 onPress={()=> {
-                    if(Platform.OS == 'android') {
-                        this.setModalVisible(!this.state.modalVisible);
-                      } else {
+
                         this.scanBiometrics();
-                      }
                 }}>
                     <Text>Confirm Payment</Text>
                 </TouchableOpacity>
@@ -414,6 +448,8 @@ export default class CheckPayment extends Component {
                     <Dialog.Button label='Cancel' onPress={this.handleCancel} />
                     <Dialog.Button label='Submit' onPress={this.handleSubmit} />
                 </Dialog.Container>
+
+                {Platform.OS === 'android' ? 
                 <Modal
                 animationType="slide"
                 transparent={true}
@@ -422,21 +458,30 @@ export default class CheckPayment extends Component {
                 <View style={styles.modal}>
                     <View style={styles.innerContainer}>
                     <Text>Sign in with fingerprint</Text>
-                    {this.state.failedCount > 0 && (
-                        <Text style={{ color: 'red', fontSize: 14 }}>
+                    {this.state.failedCount ?  <Text style={{ color: 'red', fontSize: 14 }}>
                         Failed to authenticate, press cancel and try again.
-                        </Text>
-                    )}
+                        </Text> : null
+                       
+                    }
                     <TouchableHighlight
                         onPress={async () => {
                         LocalAuthentication.cancelAuthenticate();
-                        this.setModalVisible(!this.state.modalVisible);
+                        this.setState({modalVisible: false});
                         }}>
                         <Text style={{ color: 'red', fontSize: 16 }}>Cancel</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight
+                        onPress={async () => {
+                        LocalAuthentication.cancelAuthenticate();
+                        this.setState({modalVisible: false});
+                        this.showDialog();
+                        }}>
+                        <Text style={{ color: 'red', fontSize: 16 }}>Use password</Text>
                     </TouchableHighlight>
                     </View>
                 </View>
                 </Modal>
+        : null}
             </View>
         );
     }
