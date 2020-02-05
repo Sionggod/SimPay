@@ -14,12 +14,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    margin: 10
+    margin: 10,
+    backgroundColor: '#90DBFF',
+    borderWidth: 2,
+    borderColor: '#30689F',
+    width: '90%',
+    textAlign: 'center',
+    padding: '3%',
   },
   TextStyle:{
     padding: 5,
     fontSize : 16,
      textAlign: 'center',
+     borderWidth: 1,
   },
     button: {
         alignItems: 'center',
@@ -583,7 +590,7 @@ get3StatHandler = () => {
 
 
 SetBusinessType = () => {
-    const sliceColor = ['#DB4040','#DB40CC','#4098DB', '#40DB93', '#E2F373', '#F0C54F','#C761D7','#61D7CF']
+    const sliceColor = ['#DB4040','#60309F','#4098DB', '#40DB93', '#E2F373', '#F0C54F','#C761D7','#61D7CF']
     for(i=0;i < this.state.DATA4.length;i++)
     {
         found = false;
@@ -648,14 +655,18 @@ SetBusinessType = () => {
           <ScrollView style={{flex: 1,width: '100%'}}>
           <View style={{flexDirection: 'column',padding: '5%'}}>
   {this.state.totalAmount ? this.state.BusinessTypes.map((item)=><View key={item.key+1}>
-    <Text style={{backgroundColor: item.colour,fontSize: 20,textAlign: 'center'}}> { item.type } </Text>
-  <Text key={item.key} style={styles.TextStyle}>   Amount Spent: ${item.amount} - {item.amount ? Math.round((item.amount/this.state.totalAmount)*100) : 0}% </Text>
+    <Text style={{backgroundColor: item.colour,fontSize: 20,textAlign: 'center',borderWidth: 1,borderColor: item.colour}}> { item.type } </Text>
+  <Text key={item.key} style={{padding: 5,
+     fontSize : 16,
+     textAlign: 'center',
+     borderWidth: 1,
+     borderColor: item.colour}} >   
+     Amount Spent: ${item.amount} - {item.amount ? Math.round((item.amount/this.state.totalAmount)*100) : 0}% 
+     </Text>
   </View>) : <Text>No Transactions made in the month of {this.state.Month}</Text>}
-  <Text style={{textAlign: 'center',fontSize: 16,backgroundColor: '#90DBFF',fontWeight: 'bold' }}>Total amount spent : ${this.state.totalAmount}</Text>
-         </View>
-          
+  <Text style={{textAlign: 'center',fontSize: 16,backgroundColor: '#90DBFF',fontWeight: 'bold',borderWidth: 1 }}>Total amount spent : ${this.state.totalAmount}</Text>
+         </View> 
           </ScrollView>
-
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity style={styles.button} 
             onPress={this.get1StatHandler}>
