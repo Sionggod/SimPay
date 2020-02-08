@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         marginBottom: 15,
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
     },
     flat:{
         flex: 1,
@@ -130,8 +130,9 @@ export default class ReceiptPage extends Component {
                 date: DateText,
                 time: TimeText,
                 amount: this.state.amt,
-                paid: this.state.merchantID,
+                paid: this.state.merchantName,
                 type: this.state.BusinessType,
+                merchantID: this.state.merchantID,
            }
           ).then(()=> {
             
@@ -161,7 +162,7 @@ export default class ReceiptPage extends Component {
             <Text>Paid amount (S$): {this.state.amt}</Text>
             <TouchableOpacity style={styles.button} 
                 onPress={()=>this.props.navigation.navigate('QRMain',{email: this.state.email})}>
-                    <Text>Done</Text>
+                    <Text style={{color: 'white'}}>Done</Text>
                 </TouchableOpacity>
         </View>
         );

@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
       padding: 10,
       borderRadius: 5,
       alignItems: 'center',
-      backgroundColor: '#99ccff',
+      backgroundColor: '#2990cc',
   }
 });
 const { State: TextInputState } = TextInput;
@@ -311,7 +311,7 @@ export default class AddCardToWallet extends Component {
                 style={styles.input}
                 maxLength = {3} />
                 <TouchableOpacity onPress={this.handleUpdate} style={styles.button}>
-                    <Text>Update</Text>
+                    <Text style={{color: 'white'}}>Update</Text>
                 </TouchableOpacity>
             </View>
             </Animated.View>

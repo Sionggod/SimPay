@@ -23,11 +23,11 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     button: {
-        width: 100,
+        width: '30%',
         padding: 5,
         borderRadius: 5,
         alignItems: 'center',
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
         alignSelf:'flex-end'
     },
     TextBox:{
@@ -298,7 +298,7 @@ export default class ProfilePage extends Component {
                     : null
                 }
                 <TouchableOpacity style={styles.button} onPress={this.toggleBiometricAuth}>
-                    <Text>{this.state.bioAuth ? 'Remove Biometric Authentication' : 'Set-up Biometric Authentication'}</Text>
+                    <Text style={{color: 'white'}}>{this.state.bioAuth ? 'Remove Biometric Authentication' : 'Set-up Biometric Authentication'}</Text>
                 </TouchableOpacity>
                 
             </View>

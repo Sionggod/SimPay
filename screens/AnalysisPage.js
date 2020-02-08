@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         marginBottom: 15,
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
     },
 });
  
@@ -670,15 +670,15 @@ SetBusinessType = () => {
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity style={styles.button} 
             onPress={this.get1StatHandler}>
-            <Text>{this.get_Month(this.getWantedMonth(1))}</Text>
+            <Text style={{color: 'white'}}>{this.get_Month(this.getWantedMonth(1))}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} 
             onPress={this.get2StatHandler}>
-             <Text>{this.get_Month(this.getWantedMonth(2))}</Text>
+             <Text style={{color: 'white'}}>{this.get_Month(this.getWantedMonth(2))}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} 
             onPress={this.get3StatHandler}>
-            <Text>{this.get_Month(this.getWantedMonth(3))}</Text>
+            <Text style={{color: 'white'}}>{this.get_Month(this.getWantedMonth(3))}</Text>
             </TouchableOpacity>
     </View>
         </View>

@@ -459,7 +459,8 @@ export default class WalletOverview extends Component {
 
         return(   
             <View style={styles.container}>  
-                   <View style={{width:'100%', backgroundColor: 'white', flexDirection: 'row'}}>
+           
+                   <View style={{width:'94%',height:'30%', backgroundColor: 'white', flexDirection: 'row',borderWidth: 2,borderColor:'#2990cc'}}>
                         <Picker
                             selectedValue={this.state.duration}
                             onValueChange={(itemValue) => this.setState({duration: itemValue})}
@@ -478,23 +479,26 @@ export default class WalletOverview extends Component {
                         </Picker>
                    </View>  
 
-                   <View style={{width: "100%", alignItems: 'flex-end', paddingRight:"8%"}}>
+                   <View style={{width: "94%"}}>
+                       <View style={{width:'100%',borderWidth: 2,borderColor: '#2990cc'
+                       ,backgroundColor: 'skyblue',alignItems: 'flex-end',paddingTop: '4%'}}>
                         <TouchableOpacity style={styles.button} onPress={this.getCards}>
-                            <Text>Refresh Cards</Text>
+                            <Text style={{color: 'white'}}>Refresh Cards</Text>
                         </TouchableOpacity>
+                        </View>
                    </View>  
                    
 
                <View style={{width: "94%",paddingBottom: "3%",flex: 1}}>
                     <SectionList
-                        style={{backgroundColor: 'white',width: '94%',paddingBottom: "20%",paddingLeft:'3%'}}
+                        style={{backgroundColor: 'white',width: '100%',paddingBottom: "20%"}}
                         sections={this.selectionlist(this.state.duration)}
                         renderSectionHeader={ ({section}) => <Text style={styles.SectionHeaderStyle}> { section.title } </Text> }
                         renderItem={ ({item}) => <Text style={styles.SectionListItemStyle}>
                             <Text style={{fontSize: 13}}>
                                 {item.day + "-" + this.get_Month(item.month) + "-" + item.year + "\n "}
                             </Text>
-                            { "****   ****   ****   "+item.cardnum.substring(item.cardnum.length-4) + '\n ' +item.merchant + '\n ' + '$'+ item.amount} </Text> }
+                            { "****   ****   ****   "+item.cardnum.substring(item.cardnum.length-4) + '\n ' + 'Merchant name: '+ item.merchant + '\n ' + '$'+ item.amount} </Text> }
                         
                         keyExtractor={ (item, index) => index }
                     
@@ -540,7 +544,7 @@ const styles = StyleSheet.create({
         height: 35,
         borderRadius: 5,
         marginBottom: 15,
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
     },
     SectionHeaderStyle:{
  

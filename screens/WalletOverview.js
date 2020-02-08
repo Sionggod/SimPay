@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         marginBottom: 15,
-        backgroundColor: '#99ccff',
+        backgroundColor: '#2990cc',
     },
 });
 
@@ -291,7 +291,7 @@ export default class WalletOverview extends Component {
                />  
                 <TouchableOpacity style={styles.button}
                 onPress={()=>this.props.navigation.navigate('AddCard',{email: this.state.email})}>
-                    <Text>Add Card</Text>
+                    <Text style={{color: 'white'}}>Add Card</Text>
                 </TouchableOpacity>
             </View>
         );

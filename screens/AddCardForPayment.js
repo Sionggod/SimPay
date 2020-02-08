@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
       padding: 10,
       borderRadius: 5,
       alignItems: 'center',
-      backgroundColor: '#99ccff',
+      backgroundColor: '#2990cc',
   }
 });
 const { State: TextInputState } = TextInput;
@@ -307,7 +307,7 @@ export default class AddCardForPayment extends Component {
                 style={styles.input}
                 maxLength = {3} />
                 <TouchableOpacity onPress={this.handleUpdate} style={styles.button}>
-                    <Text>Proceed to payment</Text>
+                    <Text style={{color: 'white'}}>Proceed to payment</Text>
                 </TouchableOpacity>
             </View>
             </Animated.View>
