@@ -23,12 +23,13 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     button: {
-        width: '30%',
+        width: '45%',
         padding: 5,
         borderRadius: 5,
         alignItems: 'center',
         backgroundColor: '#2990cc',
-        alignSelf:'flex-end'
+        alignSelf:'flex-end',
+        marginBottom: 15,
     },
     TextBox:{
         height: 26,
@@ -293,12 +294,12 @@ export default class ProfilePage extends Component {
                     isEditing
                     ?
                     <TouchableOpacity style={styles.button} onPress={this.EditDetails}>
-                        <Text>Edit Details</Text>
+                        <Text style={{fontSize: 16, color: 'white'}}>Edit Details</Text>
                     </TouchableOpacity>
                     : null
                 }
                 <TouchableOpacity style={styles.button} onPress={this.toggleBiometricAuth}>
-                    <Text style={{color: 'white'}}>{this.state.bioAuth ? 'Remove Biometric Authentication' : 'Set-up Biometric Authentication'}</Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>{this.state.bioAuth ? 'Remove Biometric Authentication' : 'Set-up Biometric Authentication'}</Text>
                 </TouchableOpacity>
                 
             </View>

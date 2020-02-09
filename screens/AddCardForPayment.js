@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
          marginTop: 25
      },
      button: {
-      width: 100,
+      width: 200,
       padding: 10,
       borderRadius: 5,
       alignItems: 'center',
@@ -271,9 +271,7 @@ export default class AddCardForPayment extends Component {
       const { shift } = this.state;
         return(
           <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
-            <View style={styles.container}>
-                <Text style={{fontSize: 28, marginBottom: 25}}>Card Input Form</Text>   
-
+            <View style={styles.container}>   
                 <Text style={styles.inputtext}>Name On Card</Text>
                 <TextInput
                 value={this.state.name}

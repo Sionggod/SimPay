@@ -646,7 +646,7 @@ SetBusinessType = () => {
             : null}
            <View style={{flexDirection: 'column',paddingLeft: '10%',paddingTop: '10%'}}>
           {this.state.totalAmount ? this.state.BusinessTypes.map((item)=>(
-         <Text key={item.key} style={styles.TextStyle} style={{backgroundColor: item.colour}}> { item.type } </Text>)
+         <Text key={item.key} style={styles.TextStyle} style={{backgroundColor: item.colour, fontSize: 16, color: 'white', fontWeight: 'bold'}}> { item.type } </Text>)
          ) : null}
          </View>
         </View>

@@ -498,7 +498,7 @@ export default class WalletOverview extends Component {
                             <Text style={{fontSize: 13}}>
                                 {item.day + "-" + this.get_Month(item.month) + "-" + item.year + "\n "}
                             </Text>
-                            { "****   ****   ****   "+item.cardnum.substring(item.cardnum.length-4) + '\n ' + 'Merchant name: '+ item.merchant + '\n ' + '$'+ item.amount} </Text> }
+                            { "****   ****   ****   "+item.cardnum.substring(item.cardnum.length-4) + '\n ' + 'Merchant Name: '+ item.merchant + '\n ' + '$'+ item.amount} </Text> }
                         
                         keyExtractor={ (item, index) => index }
                     
@@ -544,6 +544,7 @@ const styles = StyleSheet.create({
         height: 35,
         borderRadius: 5,
         marginBottom: 15,
+        marginRight: 5,
         backgroundColor: '#2990cc',
     },
     SectionHeaderStyle:{

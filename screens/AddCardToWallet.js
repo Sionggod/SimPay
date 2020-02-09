@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
          marginTop: 25
      },
      button: {
-      width: 100,
+      width: 200,
       padding: 10,
       borderRadius: 5,
       alignItems: 'center',
@@ -275,8 +275,7 @@ export default class AddCardToWallet extends Component {
       const { shift } = this.state;
         return(
           <Animated.View style={[styles.container, { transform: [{translateY: shift}] }]}>
-            <View style={styles.container}>
-                <Text style={{fontSize: 28, marginBottom: 25}}>Card Input Form</Text>   
+            <View style={styles.container}>   
 
                 <Text style={styles.inputtext}>Name On Card</Text>
                 <TextInput
@@ -311,7 +310,7 @@ export default class AddCardToWallet extends Component {
                 style={styles.input}
                 maxLength = {3} />
                 <TouchableOpacity onPress={this.handleUpdate} style={styles.button}>
-                    <Text style={{color: 'white'}}>Update</Text>
+                    <Text style={{color: 'white'}}>Add</Text>
                 </TouchableOpacity>
             </View>
             </Animated.View>
