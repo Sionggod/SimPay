@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {FlatList, StyleSheet, Text, View, Alert, Button, TouchableOpacity, ImageBackground } from 'react-native';  
+import { FlatList, StyleSheet, Text, View, Alert, Button, TouchableOpacity, ImageBackground } from 'react-native';
 import firebase from 'firebase';
 import SimpleCrypto from "simple-crypto-js";
 import { sha256, sha224 } from 'js-sha256';
@@ -12,20 +12,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        paddingBottom:'3%',
-    },  
-    flat:{
-        flex: 1,
-          
+        paddingBottom: '3%',
     },
-    item: {  
+    flat: {
+        flex: 1,
+
+    },
+    item: {
         alignItems: 'center',
-        justifyContent: 'center', 
-        height: 180,  
+        justifyContent: 'center',
+        height: 180,
         width: 300,
         marginVertical: 10,
-        
-    },  
+
+    },
     listItem: {
         padding: 10,
         marginVertical: 10,
@@ -47,87 +47,84 @@ const styles = StyleSheet.create({
 
 export default class WalletOverview extends Component {
 
-    
+
 
     constructor(props) {
         super(props);
-        const {navigation} = this.props;
+        const { navigation } = this.props;
         this.state = {
             email: null,
             loading: true,
             token: '',
             called: false,
         }
-        this.state.email=(navigation.getParam('email'));
-        console.log('overview' + this.state.email);
-    }  
+        this.state.email = (navigation.getParam('email'));
+    }
 
-   
+
 
     ConfirmRemoveCard = (item) => {
-        var temp = this.remove_character('@',this.state.email);
+        var temp = this.remove_character('@', this.state.email);
         var userEmail = temp.replace(/\./g, '');
-        
-        firebase.database().ref('users/'+ userEmail + '/Card/'+sha256(item.cardNum)).update(
+
+        firebase.database().ref('users/' + userEmail + '/Card/' + sha256(item.cardNum)).update(
             {
-              name: 'Deleted',
-              cvc: 'Deleted',
-              expirymonth: 'Deleted',
-              expiryyear: 'Deleted',
-              brand: 'Deleted',
-              Status:'InActive',
-           }).then(()=> {
-            this.componentWillMount();
-           });
-        
-          
+                name: 'Deleted',
+                cvc: 'Deleted',
+                expirymonth: 'Deleted',
+                expiryyear: 'Deleted',
+                brand: 'Deleted',
+                Status: 'InActive',
+            }).then(() => {
+                this.componentWillMount();
+            });
+
+
     }
 
     AlertRemoveCard = (item) => {
         Alert.alert(
             'Confirm Delete',
-            'Card number : ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length),
+            'Card number : ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length - 4, item.cardNum.length),
             [
-              {text: 'Yes', onPress: () => this.ConfirmRemoveCard(item)},
-              {
-                text: 'No',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              
+                { text: 'Yes', onPress: () => this.ConfirmRemoveCard(item) },
+                {
+                    text: 'No',
+                    style: 'cancel',
+                },
+
             ],
-            {cancelable: false},
-          );
+            { cancelable: false },
+        );
     }
 
     //handling onPress action  
-    getListViewItem = (item) => {  
+    getListViewItem = (item) => {
 
         var it = //item.key + "\n" +
-                 item.name + '\n' +
-                 item.cardNum + '\n' +
-                 item.expirymonth + '/'+ item.expiryyear + '\n' +
-                 item.cvc;
+            item.name + '\n' +
+            item.cardNum + '\n' +
+            item.expirymonth + '/' + item.expiryyear + '\n' +
+            item.cvc;
 
-                 Alert.alert('Delete Card',
-                    'Card Holder: ' + item.name+
-                    '\nCard number: ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length-4,item.cardNum.length),
-                    [
-                      {text: 'Delete', onPress: () => this.AlertRemoveCard(item)},
-                      {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel',
-                      },
-                      
-                    ],
-                    {cancelable: false},
-                  );
+        Alert.alert('Delete Card',
+            'Card Holder: ' + item.name +
+            '\nCard number: ' + '****   ****   ****   ' + item.cardNum.substring(item.cardNum.length - 4, item.cardNum.length),
+            [
+                { text: 'Delete', onPress: () => this.AlertRemoveCard(item) },
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+
+            ],
+            { cancelable: false },
+        );
         //alert(it);  
         //find item and delete in db
         //rerender the view
-    }  
-    
+    }
+
     removeGoalHandler = cardId => {
         setCoursegoals(currentGoals => {
             return currentGoals.filter((goal) => goal.id !== goalId);
@@ -140,163 +137,144 @@ export default class WalletOverview extends Component {
     }
 
     componentWillUpdate() {
-        console.log('im loading');
-        if(this.state.loading == false && this.state.called == false)
-        {
-            this.setState({loading: true});
+        if (this.state.loading == false && this.state.called == false) {
+            this.setState({ loading: true });
             this.componentWillMount();
         }
     }
 
-    reduction(email){
+    reduction(email) {
         temp = sha256(email);
-        for(i=0; i < 3;i++)
-        {
-          temp = sha256(temp.substring(0,32));
+        for (i = 0; i < 3; i++) {
+            temp = sha256(temp.substring(0, 32));
         }
         return temp;
-      }
+    }
 
     DATA = [];
-    
-    
+
+
 
     componentWillMount() {
         this.state.called = true;
         var config = {
-          apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
-          authDomain: "aspdatabase-7458c.firebaseapp.com",
-          databaseURL: "https://aspdatabase-7458c.firebaseio.com",
-          projectId: "aspdatabase-7458c",
-          storageBucket: "aspdatabase-7458c.appspot.com",
-          messagingSenderId: "974951413468",
-          appId: "1:974951413468:web:a0d27cbba22d508f51e619",
-          measurementId: "G-W02TZC7QT6"
+            apiKey: "AIzaSyDwNT6z_uPTNkYpup_E8uQjZ-0_PYDT4QM",
+            authDomain: "aspdatabase-7458c.firebaseapp.com",
+            databaseURL: "https://aspdatabase-7458c.firebaseio.com",
+            projectId: "aspdatabase-7458c",
+            storageBucket: "aspdatabase-7458c.appspot.com",
+            messagingSenderId: "974951413468",
+            appId: "1:974951413468:web:a0d27cbba22d508f51e619",
+            measurementId: "G-W02TZC7QT6"
         };
-        if(!firebase.apps.length) {
-          firebase.initializeApp(config);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(config);
         }
         DATA = [];
-        var temp = this.remove_character('@',this.state.email);
+        var temp = this.remove_character('@', this.state.email);
         var userEmail = temp.replace(/\./g, '');
 
         var _secretKey = this.reduction(this.state.email);
- 
+
         var simpleCrypto = new SimpleCrypto(_secretKey);
 
-        firebase.database().ref('users/' + userEmail + '/Card').once('value',function(snapshot) {
-            data = {key:'',name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:'',status: ''}
-             snapshot.forEach(function(child) {
-                 
-                 child.forEach(function(stuff) {
-                     if(stuff.key == 'cardno')
-                     {
-                         data.cardNum = simpleCrypto.decrypt(stuff.val());
-                     }
-                     else if(stuff.key == 'cvc')
-                     {
-                         data.cvc = simpleCrypto.decrypt(stuff.val());
-                     }
-                     else if(stuff.key == 'expirymonth')
-                     {
-                         data.expirymonth = simpleCrypto.decrypt(stuff.val());
-                     }
-                     else if(stuff.key == 'expiryyear')
-                     {
-                         data.expiryyear = simpleCrypto.decrypt(stuff.val());
-                     }
-                     else if(stuff.key == 'name')
-                     {
-                         data.name = simpleCrypto.decrypt(stuff.val());
-                     }
-                     else if(stuff.key == 'brand')
-                     {
+        firebase.database().ref('users/' + userEmail + '/Card').once('value', function (snapshot) {
+            data = { key: '', name: '', cardNum: '', expirymonth: '', expiryyear: '', cvc: '', status: '' }
+            snapshot.forEach(function (child) {
+
+                child.forEach(function (stuff) {
+                    if (stuff.key == 'cardno') {
+                        data.cardNum = simpleCrypto.decrypt(stuff.val());
+                    }
+                    else if (stuff.key == 'cvc') {
+                        data.cvc = simpleCrypto.decrypt(stuff.val());
+                    }
+                    else if (stuff.key == 'expirymonth') {
+                        data.expirymonth = simpleCrypto.decrypt(stuff.val());
+                    }
+                    else if (stuff.key == 'expiryyear') {
+                        data.expiryyear = simpleCrypto.decrypt(stuff.val());
+                    }
+                    else if (stuff.key == 'name') {
+                        data.name = simpleCrypto.decrypt(stuff.val());
+                    }
+                    else if (stuff.key == 'brand') {
                         var brand = simpleCrypto.decrypt(stuff.val());
-                        console.log(brand);
-                        if(brand == 'MasterCard')
-                        {
+                        if (brand == 'MasterCard') {
                             data.brand = require('../assets/images/cardmaster.jpg');
                         }
-                        else if(brand == 'Visa')
-                        {
+                        else if (brand == 'Visa') {
                             data.brand = require('../assets/images/cardvisa.jpg');
                         }
-                        else
-                        {
+                        else {
                             data.brand = require('../assets/images/carddefault.jpg');
                         }
-                     }
-                     else if(stuff.key == 'Status')
-                     {
-                         data.status = stuff.val();
-                     }
-                 })
-                 console.log(data.brand);
-                 if(data.status == 'Active')
+                    }
+                    else if (stuff.key == 'Status') {
+                        data.status = stuff.val();
+                    }
+                })
+                if (data.status == 'Active')
                     DATA.push(data);
-                 
-                 data = {name:'',cardNum:'',expirymonth:'',expiryyear:'',cvc:'',brand:'',status: ''}
-               });
-               //getting card info
-             //console.log('Lenght of Data is '+DATA.length);
-             //console.log(DATA[1].name);
-             
-         }.bind(this)).then(() => {
-            this.setState({loading: false, called: false})
 
-         });
+                data = { name: '', cardNum: '', expirymonth: '', expiryyear: '', cvc: '', brand: '', status: '' }
+            });
 
-      }
+        }.bind(this)).then(() => {
+            this.setState({ loading: false, called: false })
 
-      
+        });
+
+    }
+
+
     render() {
 
-         if(this.state.loading) {
-             console.log('im called'); 
-             return null;
-          }
-        
+        if (this.state.loading) {
+            return null;
+        }
 
-        return(
-            <View style={styles.container}>  
-               <View>
-                   <Text style={{fontSize:18, paddingTop: 5, justifyContent: 'flex-end' }}> 
-                      { 'Select the Card you wish to remove'} 
-                   </Text>
-               </View>
-                <FlatList  
-                    data={DATA}  
-                    renderItem={({item}) =>  
+
+        return (
+            <View style={styles.container}>
+                <View>
+                    <Text style={{ fontSize: 18, paddingTop: 5, justifyContent: 'flex-end' }}>
+                        {'Select the Card you wish to remove'}
+                    </Text>
+                </View>
+                <FlatList
+                    data={DATA}
+                    renderItem={({ item }) =>
                         <View style={styles.flat}>
-                            <TouchableOpacity style={styles.item} 
-                             onPress={this.getListViewItem.bind(this, item)}>
-                            <ImageBackground style={{width: '100%', height: '100%'}} source={item.brand}>
-                                <Text style={{fontSize:18, fontWeight: 'bold', color:'white',paddingTop: '30%', paddingLeft: '10%'}}>
-                                    {'****   ****   ****   '+item.cardNum.substring(item.cardNum.length-4,item.cardNum.length)}
-                                </Text>
-                                <Text style={{fontSize:18, fontWeight: 'bold', color:'white',paddingTop: '1%',paddingLeft:'10%'}}>  
-                                    <Text style={{fontSize: 10}}>
-                                    {
-                                      item.name +   '                Good thru '
-                                    }
+                            <TouchableOpacity style={styles.item}
+                                onPress={this.getListViewItem.bind(this, item)}>
+                                <ImageBackground style={{ width: '100%', height: '100%' }} source={item.brand}>
+                                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white', paddingTop: '30%', paddingLeft: '10%' }}>
+                                        {'****   ****   ****   ' + item.cardNum.substring(item.cardNum.length - 4, item.cardNum.length)}
                                     </Text>
-                                    {
-                                      item.expirymonth+'/'+item.expiryyear
-                                    }
-                                </Text>
-                            </ImageBackground>
+                                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white', paddingTop: '1%', paddingLeft: '10%' }}>
+                                        <Text style={{ fontSize: 10 }}>
+                                            {
+                                                item.name + '                Good thru '
+                                            }
+                                        </Text>
+                                        {
+                                            item.expirymonth + '/' + item.expiryyear
+                                        }
+                                    </Text>
+                                </ImageBackground>
                             </TouchableOpacity>
                         </View>
-                    }keyExtractor={(item => item.cardNum)} 
-               />  
+                    } keyExtractor={(item => item.cardNum)}
+                />
                 <TouchableOpacity style={styles.button}
-                onPress={()=>this.props.navigation.navigate('AddCard',{email: this.state.email})}>
-                    <Text style={{color: 'white'}}>Add Card</Text>
+                    onPress={() => this.props.navigation.navigate('AddCard', { email: this.state.email })}>
+                    <Text style={{ color: 'white' }}>Add Card</Text>
                 </TouchableOpacity>
             </View>
         );
-             
+
     }
-    
+
 
 }

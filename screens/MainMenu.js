@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TextInput, Text, View, Image, Button, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -14,20 +14,19 @@ export default class MainMenu extends Component {
 
     constructor(props) {
         super(props);
-        const {navigation} = this.props;
+        const { navigation } = this.props;
         this.state = {
             email: null,
         };
-        this.state.email=(navigation.getParam('email'));
-        console.log('QRMain ' + this.state.email);
+        this.state.email = (navigation.getParam('email'));
     }
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate('QRScan',{email: this.state.email})}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('QRScan', { email: this.state.email })}>
                     <Image source={require('../assets/images/qrscan.png')} />
                 </TouchableOpacity>
-                <Text style={{fontSize: 20, paddingTop: 15}}>Scan to Pay</Text>
+                <Text style={{ fontSize: 20, paddingTop: 15 }}>Scan to Pay</Text>
             </View>
         );
     }
