@@ -93,6 +93,7 @@ export default class CheckPayment extends Component {
             secondPassCheck: null,
             tap: 0,
         };
+
     }
     remove_character(str_to_remove, str) {
         let reg = new RegExp(str_to_remove)
@@ -146,8 +147,8 @@ export default class CheckPayment extends Component {
                     // user has bound biometrics
                     try {
                         this.setState({ modalVisible: true });
-                        let result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Use your device biometrics to complete payment', fallbackLabel: 'Use Passcode' });
-
+                        let result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Use your device biometrics to complete payment', fallbackLabel: 'use Passcode' });
+ 
                         const deviceId = Expo.Constants.deviceId;
                         // hash user email with unique device id
                         var concatEmailDeviceId = firebase.auth().currentUser.email + deviceId;
@@ -181,7 +182,6 @@ export default class CheckPayment extends Component {
     }
 
     onPayment = async () => {
-
 
 
         if (this.state.processing == false) {

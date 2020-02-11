@@ -129,6 +129,10 @@ export default class ReceiptPage extends Component {
         });
 
     }
+    gobacktoMain = () => 
+    {
+        this.props.navigation.navigate('QRMain', { email: this.state.email, inMainPage: true})
+    }
 
 
     render() {
@@ -145,7 +149,7 @@ export default class ReceiptPage extends Component {
                 <Text>Merchant ID: {this.state.merchantID}</Text>
                 <Text>Paid amount (S$): {this.state.amt}</Text>
                 <TouchableOpacity style={styles.button}
-                    onPress={() => this.props.navigation.navigate('QRMain', { email: this.state.email })}>
+                    onPress={this.gobacktoMain}>
                     <Text style={{ color: 'white' }}>Done</Text>
                 </TouchableOpacity>
             </View>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component }from 'react';
 import { Animated, Dimensions, Keyboard, UIManager, Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 
@@ -52,6 +52,9 @@ export default class LoginPage extends Component {
       shift: new Animated.Value(0),
     };
   }
+
+
+
 
   componentWillMount() {
     this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
