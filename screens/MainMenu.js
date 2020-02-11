@@ -84,7 +84,6 @@ export default class MainMenu extends Component {
           this.state.appState.match(/inactive|background/) &&
           nextAppState === 'active' && this.state.inMainPage
         ) {
-          console.log('App has come to the foreground!');
           this.showDialog();
         }
         this.setState({appState: nextAppState});

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { ScrollView, Animated, Dimensions, Keyboard, UIManager, Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
+import SimpleCrypto from "simple-crypto-js";
+import { sha256} from 'js-sha256';
 
 const styles = StyleSheet.create({
   container: {
@@ -91,6 +93,13 @@ export default class RegistrationPage extends Component {
 
   }
 
+  reduction(email) {
+    temp = sha256(email);
+    for (i = 0; i < 3; i++) {
+      temp = sha256(temp.substring(0, 32));
+    }
+    return temp;
+  }
   handleSubmit = (event) => {
     // boolean to check if all fields are valid
     var Valid = true;
@@ -139,13 +148,17 @@ export default class RegistrationPage extends Component {
         this.state.email = this.state.email.toLowerCase();
         var temp = this.remove_character('@', this.state.email);
         var userEmail = temp.replace(/\./g, '');
+        var _secretKey = this.reduction(this.state.email);
+
+        var simpleCrypto = new SimpleCrypto(_secretKey);
+
         firebase.database().ref('users/' + userEmail).once('value', function (snapshot) {
           var exists = (snapshot.val() !== null);
           if (!exists) {
             this.VerifyEmail();
             firebase.database().ref('users/' + userEmail).set(
               {
-                phone: this.state.Hp,
+                phone: simpleCrypto.encrypt(this.state.Hp),
                 biometricAuth: false,
                 biometricData: '',
               }

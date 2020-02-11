@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Animated, StatusBar, Alert, StyleSheet, TextInput, Text, View, Image, Button, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 import { sha256 } from 'js-sha256';
+import SimpleCrypto from "simple-crypto-js";
 
 const styles = StyleSheet.create({
     contentContainer: {
@@ -130,6 +131,13 @@ export default class ProfilePage extends Component {
         return str.replace(reg, '')
     }
 
+    reduction(email) {
+        temp = sha256(email);
+        for (i = 0; i < 3; i++) {
+          temp = sha256(temp.substring(0, 32));
+        }
+        return temp;
+      }
 
     componentWillMount() {
         var config = {
@@ -148,8 +156,12 @@ export default class ProfilePage extends Component {
 
         var temp = this.remove_character('@', this.state.email);
         var userEmail = temp.replace(/\./g, '');
+        var _secretKey = this.reduction(this.state.email);
+
+            var simpleCrypto = new SimpleCrypto(_secretKey);
+
         firebase.database().ref('users/' + userEmail).once('value', function (snapshot) {
-            this.setState({ phone: snapshot.val().phone });
+            this.setState({ phone: simpleCrypto.decrypt(snapshot.val().phone) });
             this.setState({ bioAuth: snapshot.val().biometricAuth });
             this.setState({ bioHash: snapshot.val().biometricData });
         }.bind(this));
@@ -179,11 +191,13 @@ export default class ProfilePage extends Component {
             this.setState({ phone: this.state.phoneText });
             var temp = this.remove_character('@', this.state.email);
             var userEmail = temp.replace(/\./g, '');
+            var _secretKey = this.reduction(this.state.email);
 
+            var simpleCrypto = new SimpleCrypto(_secretKey);
             // Get a key for a new Post.
             firebase.database().ref('users/' + userEmail).update(
                 {
-                    phone: this.state.phoneText,
+                    phone: simpleCrypto.encrypt(this.state.phoneText),
 
                 }).then(() => {
                     this.setState({ phoneText: '' });
