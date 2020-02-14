@@ -23,6 +23,7 @@ export default class MainMenu extends Component {
             dialogVisible: false,
             dialogInput: '',
             inMainPage: true,
+            FailCounter: 0,
         };
         this.state.email = (navigation.getParam('email'));
     }
@@ -70,12 +71,39 @@ export default class MainMenu extends Component {
     }
 
     handleSubmit = () => {
+
+        if(this.state.dialogInput == '')
+        {
+            Alert.alert('No input', 'Please key in your account password');
+        }
+        else
+        {
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.dialogInput).then(() => {
             // valid account 
-            this.setState({ dialogVisible: false ,dialogInput: ''});
+            this.setState({ dialogVisible: false ,dialogInput: '',FailCounter: 0});
         }).catch(() => {
+            this.state.FailCounter++;
+            if(this.state.FailCounter < 3)
             Alert.alert('Wrong Password', 'You have entered a wrong password');
+            else{
+                Alert.alert('Re-Login', 'Please re-login as there were to many failed attempts');
+            }
+               
+               
         });
+
+        if(this.state.FailCounter >= 2)
+        {
+            firebase.auth().signOut().then(function () {
+                this.props.navigation.navigate('Login');
+         }.bind(this), function (error) {
+        console.error('Sign Out Error', error);
+         });
+        
+        }
+
+       
+    }
     }
 
 
