@@ -51,9 +51,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#2990cc',
         alignItems: 'center',
     },
+    innerContainer: {
+        marginTop: '40%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
     modal: {
-        flex: 1,
-        marginTop: '90%',
+        borderRadius: 5,
+        marginTop: '60%',
+        marginLeft: '23%',
+        width: 220,
+        height: 200,
         backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
@@ -422,7 +430,7 @@ export default class CheckPayment extends Component {
 
                 {Platform.OS === 'android' ?
                     <Modal
-                        animationType="slide"
+                        animationType="fade"
                         transparent={true}
                         visible={this.state.modalVisible}
                         onShow={this.scanBiometrics}>
