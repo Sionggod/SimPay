@@ -163,6 +163,7 @@ export default class CheckPayment extends Component {
                         const hashedDeviceId = sha256(concatEmailDeviceId);
                         if (result != null) {
                             if (result.success && (hashedDeviceId == this.state.bioHash)) {
+                                // success
                                 this.setState({
                                     modalVisible: false,
                                     authenticated: true,
@@ -170,6 +171,12 @@ export default class CheckPayment extends Component {
                                 });
 
                                 this.onPayment();
+                            } else if (result.success && (hashedDeviceId != this.state.bioHash)) {
+                                // opens dialog
+                                Alert.alert('Wrong Password', 'You entered the wrong password',
+                                [
+                                    {text: 'OK', onPress: () => this.setState({dialogVisible: true})},
+                                ]);
                             } else {
                                 this.setState({
                                     failedCount: 1
