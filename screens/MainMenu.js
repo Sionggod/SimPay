@@ -86,21 +86,14 @@ export default class MainMenu extends Component {
             if(this.state.FailCounter < 3)
             Alert.alert('Wrong Password', 'You have entered a wrong password');
             else{
-                Alert.alert('Re-Login', 'Please re-login as there were to many failed attempts');
+                firebase.auth().signOut().then(function () {
+                    Alert.alert('Re-Login', 'Please re-login as there were to many failed attempts');
+             });
+             this.props.navigation.navigate('Login');
             }
                
                
         });
-
-        if(this.state.FailCounter >= 2)
-        {
-            firebase.auth().signOut().then(function () {
-                this.props.navigation.navigate('Login');
-         }.bind(this), function (error) {
-        console.error('Sign Out Error', error);
-         });
-        
-        }
 
        
     }
