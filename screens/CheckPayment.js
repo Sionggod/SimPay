@@ -173,7 +173,7 @@ export default class CheckPayment extends Component {
                                 this.onPayment();
                             } else if (result.success && (hashedDeviceId != this.state.bioHash)) {
                                 // opens dialog
-                                Alert.alert('Wrong Password', 'You entered the wrong password',
+                                Alert.alert('Wrong Device', 'Key in your account password',
                                 [
                                     {text: 'OK', onPress: () => this.setState({dialogVisible: true})},
                                 ]);
