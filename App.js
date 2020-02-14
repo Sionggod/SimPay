@@ -34,12 +34,9 @@ import SidebarMenu from './screens/SidebarMenu.js';
 
 const styles = {
     header: {
-        backgroundColor: '#4FC3F7',
-      },
-      headerTintColor: '#FFFFFF',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
+        backgroundColor: '#2990cc',
+        color: 'white',
+      }
 };
 
 global.currentScreenIndex = 0;
@@ -55,7 +52,7 @@ class NavigationDrawerStructure extends Component {
                 <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
                   <Image
                     source={require('./assets/images/drawer.png')}
-                    style={{ width: 25, height: 25, marginLeft: 5 }}
+                    style={{ width: 35, height: 35, marginLeft: 10 }}
                   />
                 </TouchableOpacity>
             </View>
@@ -73,6 +70,7 @@ const WalletStackNavigation = createStackNavigator(
                 headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
                 headerTitle: 'Wallet',
                 headerStyle: styles.header,
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},
             })
         },
         AddCard:
@@ -82,6 +80,8 @@ const WalletStackNavigation = createStackNavigator(
             {
                 headerTitle: 'Add a new card',
                 headerStyle: styles.header,
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},
+                headerTintColor: 'white',
             },
         }
     }
@@ -97,6 +97,7 @@ const StatisticNavigation = createStackNavigator(
               headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
               headerTitle: 'Budget',
               headerStyle: styles.header,
+              headerTitleStyle: {color:'white', fontWeight: 'bold'},
           })
         },
     },
@@ -112,6 +113,7 @@ const TransactionNavigation = createStackNavigator(
             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
             headerTitle: 'Transactions',
             headerStyle: styles.header,
+            headerTitleStyle: {color:'white', fontWeight: 'bold'},
         })
       },
   },
@@ -127,6 +129,7 @@ const ProfileStackNavigation = createStackNavigator(
                 headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
                 headerTitle: 'Profile',
                 headerStyle: styles.header,
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},
             })
         },
     },
@@ -140,9 +143,9 @@ const QRStackNavigation = createStackNavigator(
             screen: MainMenu,
             navigationOptions: ({ navigation }) => ({
                 headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
-                headerTitle: 'Qr Code Scanner',
+                headerTitle: 'QR Code Scanner',
                 headerStyle: styles.header,
-                
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},                
             })
         },
         QRScan:
@@ -152,6 +155,8 @@ const QRStackNavigation = createStackNavigator(
             {
                 headerTitle: 'Scan QR Code',
                 headerStyle: styles.header,
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},
+                headerTintColor: 'white',
             },
         },
         Payment:
@@ -161,6 +166,8 @@ const QRStackNavigation = createStackNavigator(
             {
                 headerTitle: 'Payment Details',
                 headerStyle: styles.header,
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},
+                headerTintColor: 'white',
             },
         },
         ConfirmPayment:
@@ -170,6 +177,8 @@ const QRStackNavigation = createStackNavigator(
             {
                 headerTitle: 'Confirm Payment Details',
                 headerStyle: styles.header,
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},
+                headerTintColor: 'white',
             },
         },
         PaymentSummary:
@@ -179,6 +188,8 @@ const QRStackNavigation = createStackNavigator(
             {
                 headerTitle: 'Payment Summary',
                 headerStyle: styles.header,
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},
+                headerTintColor: 'white',
             },
 
         },
@@ -187,8 +198,10 @@ const QRStackNavigation = createStackNavigator(
             screen: AddCardPayment,
             navigationOptions:
             {
-                headerTitle: 'Add card Payment',
+                headerTitle: 'Add Card For Payment',
                 headerStyle: styles.header,
+                headerTitleStyle: {color:'white', fontWeight: 'bold'},
+                headerTintColor: 'white',
             },
         },
     },
