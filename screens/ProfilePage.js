@@ -3,6 +3,7 @@ import { Animated, StatusBar, Alert, StyleSheet, TextInput, Text, View, Image, B
 import firebase from 'firebase';
 import { sha256 } from 'js-sha256';
 import SimpleCrypto from "simple-crypto-js";
+import Dialog from 'react-native-dialog';
 
 const styles = StyleSheet.create({
     contentContainer: {
@@ -121,9 +122,85 @@ export default class ProfilePage extends Component {
             bioAuth: null,
             bioHash: '',
             isEditing: false,
+            dialogVisible: false,
+            QuestionInput: '',
+            AnswerInput: '',
+            QuestionDialogVisible: false,
+            AnswerInput2: '',
+            invalidAnswer: '',
+            Bothfilled: '',
         };
         handleTextChange = (newText) => this.setState({ value: newText });
         this.state.email = (navigation.getParam('email'));
+    }
+
+    handleQuestionInput = (typedText) => {
+        this.setState({ QuestionInput: typedText });
+    }
+    handleAnswerInput = (typedText) => {
+        this.setState({ AnswerInput: typedText });
+    }
+    handleAnswerInput2 = (typedText) => {
+        this.setState({ AnswerInput2: typedText });
+    }
+    showDialog = () => {
+        this.setState({ dialogVisible: true });
+    }
+    closeQuestionDialog = () =>{
+        this.setState({QuestionDialogVisible: false,invalidAnswer:''})
+    }
+
+    handleSubmitAnswer = () => {
+        var temp = this.remove_character('@', this.state.email);
+        var userEmail = temp.replace(/\./g, '');
+        if(this.state.AnswerInput == this.state.AnswerInput2.toLowerCase())
+        {
+            firebase.database().ref('users/' + userEmail).update(
+            {
+                SecurityQuestion: '',
+                SecurityAnswer: '',
+                biometricData: '',
+                biometricAuth: false,
+            });
+            
+            this.setState({ bioAuth: false,QuestionDialogVisible: false,invalidAnswer:''});
+        }
+        else{
+            this.setState({invalidAnswer: 'Wrong Answer'});
+        }
+    }
+
+    handleSubmit = () => {
+
+        if(this.state.QuestionInput.length >0 && this.state.AnswerInput.length > 0)
+        {
+        const deviceId = Expo.Constants.deviceId;
+        // hash user email with unique device id
+        var concatEmailDeviceId = firebase.auth().currentUser.email + deviceId;
+        const hashedDeviceId = sha256(concatEmailDeviceId);
+
+        var temp = this.remove_character('@', this.state.email);
+        var userEmail = temp.replace(/\./g, '');
+        var _secretKey = this.reduction(this.state.email);
+
+        var simpleCrypto = new SimpleCrypto(_secretKey);
+        firebase.database().ref('users/' + userEmail).update(
+            {
+                SecurityQuestion: simpleCrypto.encrypt(this.state.QuestionInput),
+                SecurityAnswer: simpleCrypto.encrypt(this.state.AnswerInput.toLowerCase()),
+                biometricData: hashedDeviceId,
+                biometricAuth: true,
+
+            }).then(() => {
+                this.setState({ QuestionInput: '',AnswerInput: '',dialogVisible: false
+                ,bioAuth: true ,bioHash: hashedDeviceId,Bothfilled: ''});
+                
+            });
+        }
+        else{
+            this.setState({Bothfilled: 'Please fill in both Question & Answer fields'});
+        }
+        
     }
 
     remove_character(str_to_remove, str) {
@@ -207,23 +284,9 @@ export default class ProfilePage extends Component {
 
     }
 
-    bindBiometrics = () => {
-        const deviceId = Expo.Constants.deviceId;
-        // hash user email with unique device id
-        var concatEmailDeviceId = firebase.auth().currentUser.email + deviceId;
-        const hashedDeviceId = sha256(concatEmailDeviceId);
-
-        this.state.email = this.state.email.toLowerCase();
-        var temp = this.remove_character('@', this.state.email);
-        var userEmail = temp.replace(/\./g, '');
-        firebase.database().ref('users/' + userEmail).update(
-            {
-                biometricData: hashedDeviceId,
-                biometricAuth: true,
-            });
-
-        Alert.alert('Success', 'Your biometrics have been bounded to your SimPay account');
-        this.setState({ bioAuth: true });
+    bindBiometrics = () => {        
+        this.showDialog();
+        
     }
 
     unbindBiometrics = () => {
@@ -231,21 +294,34 @@ export default class ProfilePage extends Component {
         // hash user email with unique device id
         var concatEmailDeviceId = firebase.auth().currentUser.email + deviceId;
         const hashedDeviceId = sha256(concatEmailDeviceId);
-
-        // check if hashedDeviceId tallies with DB biometricData
-        if (this.state.bioHash == hashedDeviceId) {
-            this.state.email = this.state.email.toLowerCase();
+        this.state.email = this.state.email.toLowerCase();
             var temp = this.remove_character('@', this.state.email);
             var userEmail = temp.replace(/\./g, '');
+        // check if hashedDeviceId tallies with DB biometricData
+        if (this.state.bioHash == hashedDeviceId) {
+            
             firebase.database().ref('users/' + userEmail).update(
                 {
+                    SecurityQuestion: '',
+                    SecurityAnswer: '',
                     biometricData: '',
                     biometricAuth: false,
                 });
             Alert.alert('Success', 'Your bounded biometrics have been removed successfully');
             this.setState({ bioAuth: false });
         } else {
-            Alert.alert('Failed', 'Please remove your bound biometrics from your previous device first');
+            //Alert.alert('Failed', 'Please remove your bound biometrics from your previous device first');
+            var _secretKey = this.reduction(this.state.email);
+            var simpleCrypto = new SimpleCrypto(_secretKey);
+    
+            firebase.database().ref('users/' + userEmail).once('value', function (snapshot) {
+                this.setState({ QuestionInput: simpleCrypto.decrypt(snapshot.val().SecurityQuestion) });
+                this.setState({ AnswerInput: simpleCrypto.decrypt(snapshot.val().SecurityAnswer) });
+            
+            }.bind(this)).then(() => {
+                this.setState({ QuestionDialogVisible: true });
+
+            });
         }
     }
 
@@ -305,7 +381,22 @@ export default class ProfilePage extends Component {
                 <TouchableOpacity style={styles.button} onPress={this.toggleBiometricAuth}>
                     <Text style={{ fontSize: 16, color: 'white' }}>{this.state.bioAuth ? 'Remove Biometric Authentication' : 'Set-up Biometric Authentication'}</Text>
                 </TouchableOpacity>
-
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>Setting Security Question</Dialog.Title>
+                    <Dialog.Description>Please key in a question that you know the answer to</Dialog.Description>
+                    <Dialog.Description style={{color: 'red'}}>{this.state.Bothfilled}</Dialog.Description>
+                    <Dialog.Input placeholder="Question" onChangeText={this.handleQuestionInput} />
+                    <Dialog.Input placeholder="Answer" onChangeText={this.handleAnswerInput}/>
+                    <Dialog.Button label='Submit' onPress={this.handleSubmit} />
+                </Dialog.Container>
+                <Dialog.Container visible={this.state.QuestionDialogVisible}>
+                    <Dialog.Title>To unbind answer security question</Dialog.Title>
+                    <Dialog.Description>{this.state.QuestionInput}</Dialog.Description>
+                    <Dialog.Description style={{color: 'red'}}>{this.state.invalidAnswer}</Dialog.Description>
+                    <Dialog.Input placeholder="Answer" onChangeText={this.handleAnswerInput2}/>
+                    <Dialog.Button label='Submit' onPress={this.handleSubmitAnswer} />
+                    <Dialog.Button label='Cancel' onPress={this.closeQuestionDialog} />
+                </Dialog.Container>
             </View>
         );
     }
