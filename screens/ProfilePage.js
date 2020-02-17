@@ -64,8 +64,9 @@ class FloatingLabelInput extends Component {
     handleBlur = () => {
         const { onActive } = this.props;
         this.setState(
-            { isFocused: false }
-        )
+            { isFocused: false }, () => {
+                onActive()
+            })
     };
 
     componentDidUpdate() {
@@ -280,7 +281,7 @@ export default class ProfilePage extends Component {
                     this.setState({ phoneText: '' });
                 });
         }
-        this.toggleEditing();
+        this.setState({isEditing: false});
 
     }
 
@@ -342,10 +343,14 @@ export default class ProfilePage extends Component {
     }
 
     toggleEditing = () => {
-        this.setState((prevState) => ({
-            isEditing: !prevState.isEditing
-        })
-        )
+        if(this.state.nameText != '' && this.state.nameText != null && this.state.phoneText != '' && this.state.phoneText != null)
+        this.setState({isEditing: true});
+        else if(this.state.nameText != '' && this.state.nameText != null)
+            this.setState({isEditing: true});
+        else if(this.state.phoneText != '' && this.state.phoneText != null)
+            this.setState({isEditing: true});
+        else
+            this.setState({isEditing: !this.state.isEditing});
     }
 
     render() {
