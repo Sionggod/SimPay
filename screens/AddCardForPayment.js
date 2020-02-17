@@ -258,7 +258,9 @@ export default class AddCardForPayment extends Component {
             keyboardType={'numeric'}
             value={this.state.cardnumber}
             onChangeText={(cardnumber) => this.setState({ cardnumber })}
-            style={styles.input} />
+            style={styles.input} 
+            maxLength={19}
+            />
 
           <Text style={styles.inputtext}>Expiry Date</Text>
           <TextInput

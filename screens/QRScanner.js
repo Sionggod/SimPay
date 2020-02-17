@@ -24,6 +24,7 @@ export default class QRScanner extends Component {
       email: null
     };
     this.state.email = (navigation.getParam('email'));
+    this.props.navigation.setParams({inMainPage: null});
   }
   async componentDidMount() {
     this.props.navigation.addListener('willFocus', () => {

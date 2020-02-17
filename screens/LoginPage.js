@@ -90,6 +90,7 @@ export default class LoginPage extends Component {
   handleLogin = (event) => {
     if (this.state.email != null && this.state.password != null) {
       this.state.email = this.state.email.toLowerCase();
+       
       firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(function () {
         var user = firebase.auth().currentUser;
         // if user is verified then log him in
@@ -123,13 +124,13 @@ export default class LoginPage extends Component {
         }
 
 
-      });
-
+  });
 
 
     }
     else
       Alert.alert('Invalid Input', 'Key in a Username and Password');
+      
 
   }
 

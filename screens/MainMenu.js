@@ -116,6 +116,7 @@ export default class MainMenu extends Component {
       } 
 
     render() {
+        
         return (
             <View style={styles.container}>
                 <TouchableOpacity onPress={this.gotoQr}>
