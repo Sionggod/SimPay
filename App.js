@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image ,Button } from 'react-native';
 import { createAppContainer, createSwitchNavigator} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
@@ -146,18 +146,19 @@ const QRStackNavigation = createStackNavigator(
                 headerTitle: 'QR Code Scanner',
                 headerStyle: styles.header,
                 headerTitleStyle: {color:'white', fontWeight: 'bold'},                
-            })
+            }),
         },
         QRScan:
         {
             screen: QRScanner,
-            navigationOptions:
+            navigationOptions: ({ navigation }) => (
             {
                 headerTitle: 'Scan QR Code',
                 headerStyle: styles.header,
                 headerTitleStyle: {color:'white', fontWeight: 'bold'},
                 headerTintColor: 'white',
-            },
+                headerLeft: <Button color='white' title="Back "onPress={() => navigation.navigate('QRMain',{inMainPage: true})}/>,
+            }),
         },
         Payment:
         {
